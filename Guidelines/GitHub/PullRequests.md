@@ -22,6 +22,8 @@ Opening a pull request starts review; it does not authorize merging it.
 7. Resolve a thread only after its concern has been addressed or explicitly declined.
 8. Recheck the pull request immediately before merge for late comments and check-state changes.
 
+When replying with a commit reference, write the commit hash as raw text without backticks (for example, the hash 185c04f should remain 185c04f). GitHub then auto-links the hash to the commit.
+
 A thumbs-up or clean Codex review satisfies the agent-review step, but it does not replace any human approval required by the repository. Do not enable auto-merge before all review gates are satisfied.
 
 ### Codex review monitoring

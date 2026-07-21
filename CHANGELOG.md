@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.5] - 2026-07-21
+
+### Added
+
+- Default DocC documentation and GitHub Pages publishing guidance for Swift packages.
+
 ## [0.0.4] - 2026-07-21
 
 ### Added
