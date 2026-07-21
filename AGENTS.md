@@ -10,6 +10,7 @@ This public repository is the versioned source of truth for reusable ThatFactory
 - Distill durable policy from Xcode-provided skills; do not copy exported Apple skills into this repository.
 - Do not include private company information, credentials, personal absolute paths, or consumer-specific implementation details.
 - When shared and consumer guidance differ, the consumer's nearest applicable `AGENTS.md` is the explicit specialization.
+- Before changing this repository, verify that the consumer's checked-in guidelines version is current where applicable.
 
 ## Documentation changes
 

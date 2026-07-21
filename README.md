@@ -67,6 +67,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
 - [Documentation](Guidelines/Documentation.md)
 - [Swift packages](Guidelines/Packages.md)
+- [Development and reusability](Guidelines/Development.md)
 - [CI/CD](Guidelines/CICD.md)
 - [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
 - [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
@@ -83,7 +84,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.3 \
+  0.0.4 \
   --squash
 ```
 
@@ -115,7 +116,8 @@ Confirm `AgentGuidelines/VERSION`, review the subtree diff, validate local `AGEN
 3. Bring over durable policy, not the exported skill text or an SDK API catalog.
 4. Remove obsolete or conflicting rules instead of accumulating historical alternatives.
 5. Run `python3 Scripts/validate_guidelines.py`.
-6. Update `VERSION` and `CHANGELOG.md`, then create the matching tag and GitHub release.
+6. Update `VERSION` and `CHANGELOG.md`, open a pull request, and wait for approval before merging.
+7. After the pull request has merged, create the matching tag and GitHub release.
 
 ## Precedence
 

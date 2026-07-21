@@ -60,15 +60,18 @@ The common package baseline is Swift, Xcode, Platforms, License, and CI. Add opt
 
 ## Releases
 
+Never release a package directly from unreviewed changes. Every release change must first be submitted through a pull request, reviewed, and approved. This rule applies to `agent-guidelines` itself as well as every consumer package. Create and publish the release only after the PR has merged.
+
 For ThatFactory packages, “release a new version” means:
 
 1. Choose a semantic version appropriate to compatibility.
 2. Update public documentation and release notes.
 3. Run the declared CI/test workflow.
-4. Commit the release state.
-5. Create and push the matching Git tag.
-6. Create a GitHub release for that tag.
-7. Use real multiline release notes and backticks around technical names and versions.
+4. Open a pull request containing the release state and wait for approval.
+5. Merge the approved pull request.
+6. Create and push the matching Git tag.
+7. Create a GitHub release for that tag.
+8. Use real multiline release notes and backticks around technical names and versions.
 
 When using a CLI, pass multiline notes through a file so GitHub renders line breaks correctly.
 
