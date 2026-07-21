@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.2] - 2026-07-21
+
+### Added
+
+- Standard README badge conventions for ThatFactory projects and packages.
+- Git repository guidance that defaults push-capable clones to SSH remotes.
+- GitHub pull-request review and merge-gate guidance.
+- Updated and Revision badges to the repository README.
+
+### Changed
+
+- Updated GitHub workflows to `actions/checkout@v7` and documented using current stable action versions in new workflows.
+- Clarified the Redux side-effect loop and the canonical view-projection test path.
+- Expanded and tested semantic-version validation to support prerelease plus build metadata and reject invalid numeric identifiers.
+- Removed the redundant README license section while retaining the MIT license badge and root license file.
+
 ## [0.0.1] - 2026-07-21
 
 ### Added

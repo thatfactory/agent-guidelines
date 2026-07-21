@@ -5,6 +5,9 @@
 - Keep CI deterministic, reproducible, and aligned with the repository's supported Xcode, Swift, and platform versions.
 - Treat warnings introduced by a change as failures even when the compiler does not.
 - Prefer the smallest permissions required by each workflow and job.
+- For a new workflow, use the latest stable major version of every GitHub Action available at the time of creation.
+- Do not copy an older major version into a fresh workflow unless a documented compatibility constraint requires it.
+- For existing workflows, review action release notes and update deliberately rather than allowing runtime deprecation warnings to accumulate.
 - Pin third-party actions to an intentional version and review updates.
 - Do not place secrets in workflow files, logs, fixtures, or command arguments that may be echoed.
 - Keep release workflows separate from pull-request validation when their permissions differ.
