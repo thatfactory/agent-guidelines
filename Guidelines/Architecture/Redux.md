@@ -24,7 +24,7 @@ Use this guide for applications that explicitly adopt the ThatFactory Redux arch
     +--------------+      observable state       | 1. Reducer|
                                                  | 2. Middle-|
                                                  |    ware   |
-                                                 +-----+-----+ <-----------------+
+                                                 +-----+-----+ <---------------+
                                                        |                       |
                                                        | side effect           |
                                                        v                       |
