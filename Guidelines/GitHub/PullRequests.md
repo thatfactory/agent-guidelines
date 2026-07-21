@@ -49,8 +49,32 @@ When using the GitHub CLI, monitor all three surfaces:
 
 ```sh
 gh api repos/<owner>/<repository>/issues/<pull-request>/reactions
-gh pr view <pull-request> --repo <owner>/<repository> --json reviews,comments,headRefOid
+gh pr view <pull-request> --repo <owner>/<repository> --json reviews,headRefOid
 gh pr checks <pull-request> --repo <owner>/<repository>
+```
+
+Retrieve inline review threads and their resolution state through GraphQL; top-level pull-request comments do not include this information:
+
+```sh
+gh api graphql \
+  -f query='query($owner: String!, $repository: String!, $number: Int!) {
+    repository(owner: $owner, name: $repository) {
+      pullRequest(number: $number) {
+        reviewThreads(first: 100) {
+          nodes {
+            id
+            isResolved
+            comments(first: 100) {
+              nodes { id author { login } body url }
+            }
+          }
+        }
+      }
+    }
+  }' \
+  -F owner=<owner> \
+  -F repository=<repository> \
+  -F number=<pull-request>
 ```
 
 Continue polling while actively working on the pull request. Do not treat missing comments, a pending reaction, or elapsed time as review completion.
