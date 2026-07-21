@@ -51,6 +51,20 @@ The common package baseline is Swift, Xcode, Platforms, License, and CI. Add opt
 5. Integrate the package into a consumer locally only when consumer behavior must also be verified.
 6. Avoid committing consumer-specific workarounds into the package when the behavior belongs in the consumer.
 
+## DocC documentation
+
+DocC is the default documentation format for public Swift packages. Document public APIs with `///` DocC comments and keep package-level conceptual material in a DocC catalog when it needs more than declaration comments.
+
+Packages that publish documentation must build and deploy their DocC site as part of the release workflow:
+
+1. Run tests before documentation generation.
+2. Generate static-hosting documentation with `swift package generate-documentation --target <Target> --disable-indexing --output-path ./public --transform-for-static-hosting --hosting-base-path <repository-name>`.
+3. Add a root redirect to `/<repository-name>/documentation/<target-lowercase>/`.
+4. Upload `./public` with `actions/upload-pages-artifact` and deploy it with `actions/deploy-pages`.
+5. Grant the workflow `pages: write` and `id-token: write` permissions and expose the deployed URL in the README through a DocC badge.
+
+The release job must publish documentation only after the release has been approved, merged, tagged, and published. Verify the generated site locally when practical and keep the README badge URL aligned with the repository's GitHub Pages site.
+
 ## Local integration
 
 - Use Xcode's local-package workflow or an explicit temporary local dependency while developing package and consumer changes together.
