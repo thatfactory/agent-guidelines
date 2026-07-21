@@ -20,7 +20,7 @@ The repository contains documentation, not a Swift product. Consumers install a 
                   versioned GitHub repository
                              |
                        tagged release
-                         e.g. 0.0.2
+                         e.g. 0.0.3
                              |
                     git subtree add/pull
                              |
@@ -83,7 +83,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.2 \
+  0.0.3 \
   --squash
 ```
 
