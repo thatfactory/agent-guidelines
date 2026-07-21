@@ -8,19 +8,19 @@ Describe the product or package, supported platforms, and durable constraints. L
 
 Read only the guides relevant to the task:
 
-- [Swift](../AgentGuidelines/Guidelines/Swift/Swift.md)
-- [Swift style](../AgentGuidelines/Guidelines/Swift/SwiftStyle.md)
-- [SwiftUI](../AgentGuidelines/Guidelines/Swift/SwiftUI.md)
-- [SwiftLint](../AgentGuidelines/Guidelines/Swift/SwiftLint.md)
-- [Localization](../AgentGuidelines/Guidelines/Swift/Localization.md)
-- [Unit and integration testing](../AgentGuidelines/Guidelines/Testing/UnitTesting.md)
-- [Documentation](../AgentGuidelines/Guidelines/Documentation.md)
-- [Packages](../AgentGuidelines/Guidelines/Packages.md)
-- [CI/CD](../AgentGuidelines/Guidelines/CICD.md)
-- [Xcode MCP and visual verification](../AgentGuidelines/Guidelines/Xcode/MCP.md)
-- [Xcode security audits](../AgentGuidelines/Guidelines/Xcode/Security.md)
+- [Swift](AgentGuidelines/Guidelines/Swift/Swift.md)
+- [Swift style](AgentGuidelines/Guidelines/Swift/SwiftStyle.md)
+- [SwiftUI](AgentGuidelines/Guidelines/Swift/SwiftUI.md)
+- [SwiftLint](AgentGuidelines/Guidelines/Swift/SwiftLint.md)
+- [Localization](AgentGuidelines/Guidelines/Swift/Localization.md)
+- [Unit and integration testing](AgentGuidelines/Guidelines/Testing/UnitTesting.md)
+- [Documentation](AgentGuidelines/Guidelines/Documentation.md)
+- [Packages](AgentGuidelines/Guidelines/Packages.md)
+- [CI/CD](AgentGuidelines/Guidelines/CICD.md)
+- [Xcode MCP and visual verification](AgentGuidelines/Guidelines/Xcode/MCP.md)
+- [Xcode security audits](AgentGuidelines/Guidelines/Xcode/Security.md)
 
-For an application that uses Redux, also read [Redux architecture](../AgentGuidelines/Guidelines/Architecture/Redux.md).
+For an application that uses Redux, also read [Redux architecture](AgentGuidelines/Guidelines/Architecture/Redux.md).
 
 ## Physical folder map
 
