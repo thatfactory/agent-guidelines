@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.3] - 2026-07-21
+
+### Added
+
+- A Codex review-monitoring workflow covering processing reactions, clean reviews, inline feedback, replies, thread resolution, and CI checks.
+
 ## [0.0.2] - 2026-07-21
 
 ### Added

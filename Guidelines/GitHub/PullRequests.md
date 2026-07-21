@@ -24,6 +24,37 @@ Opening a pull request starts review; it does not authorize merging it.
 
 A thumbs-up or clean Codex review satisfies the agent-review step, but it does not replace any human approval required by the repository. Do not enable auto-merge before all review gates are satisfied.
 
+### Codex review monitoring
+
+Use GitHub review data, reactions, and checks together. An eyes reaction means Codex is processing the pull request; it is not an approval. A thumbs-up means the review completed without suggestions. A submitted review means its inline threads must be assessed individually.
+
+```text
+PR opened
+   |
+   v
+Codex adds eyes reaction
+   |
+   +--> thumbs-up ----------------> Clean review
+   |
+   `--> Review comments ----------> Assess each comment
+                                         |
+                               fix or decline with reason
+                                         |
+                               reply in original thread
+                                         |
+                                  resolve thread
+```
+
+When using the GitHub CLI, monitor all three surfaces:
+
+```sh
+gh api repos/<owner>/<repository>/issues/<pull-request>/reactions
+gh pr view <pull-request> --repo <owner>/<repository> --json reviews,comments,headRefOid
+gh pr checks <pull-request> --repo <owner>/<repository>
+```
+
+Continue polling while actively working on the pull request. Do not treat missing comments, a pending reaction, or elapsed time as review completion.
+
 ## Merge requirements
 
 Do not merge while any of the following is true:
