@@ -56,18 +56,13 @@ gh pr checks <pull-request> --repo <owner>/<repository>
 Retrieve inline review threads and their resolution state through GraphQL; top-level pull-request comments do not include this information:
 
 ```sh
-gh api graphql \
-  -f query='query($owner: String!, $repository: String!, $number: Int!) {
+gh api graphql --paginate \
+  -f query='query($owner: String!, $repository: String!, $number: Int!, $endCursor: String) {
     repository(owner: $owner, name: $repository) {
       pullRequest(number: $number) {
-        reviewThreads(first: 100) {
-          nodes {
-            id
-            isResolved
-            comments(first: 100) {
-              nodes { id author { login } body url }
-            }
-          }
+        reviewThreads(first: 100, after: $endCursor) {
+          nodes { id isResolved }
+          pageInfo { hasNextPage endCursor }
         }
       }
     }
@@ -77,7 +72,24 @@ gh api graphql \
   -F number=<pull-request>
 ```
 
-Continue polling while actively working on the pull request. Do not treat missing comments, a pending reaction, or elapsed time as review completion.
+For every unresolved thread identifier returned above, retrieve its complete comment history with a second paginated query:
+
+```sh
+gh api graphql --paginate \
+  -f query='query($thread: ID!, $endCursor: String) {
+    node(id: $thread) {
+      ... on PullRequestReviewThread {
+        comments(first: 100, after: $endCursor) {
+          nodes { id author { login } body url }
+          pageInfo { hasNextPage endCursor }
+        }
+      }
+    }
+  }' \
+  -F thread=<review-thread-id>
+```
+
+Continue polling while actively working on the pull request. Inspect every returned page. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion.
 
 ## Merge requirements
 
