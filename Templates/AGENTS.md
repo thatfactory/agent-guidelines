@@ -17,6 +17,7 @@ Read only the guides relevant to the task:
 - [Documentation](AgentGuidelines/Guidelines/Documentation.md)
 - [Packages](AgentGuidelines/Guidelines/Packages.md)
 - [CI/CD](AgentGuidelines/Guidelines/CICD.md)
+- [Git repositories and SSH-first cloning](AgentGuidelines/Guidelines/Git/Repositories.md)
 - [GitHub pull requests](AgentGuidelines/Guidelines/GitHub/PullRequests.md)
 - [Xcode MCP and visual verification](AgentGuidelines/Guidelines/Xcode/MCP.md)
 - [Xcode security audits](AgentGuidelines/Guidelines/Xcode/Security.md)

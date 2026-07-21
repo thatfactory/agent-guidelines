@@ -68,6 +68,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Documentation](Guidelines/Documentation.md)
 - [Swift packages](Guidelines/Packages.md)
 - [CI/CD](Guidelines/CICD.md)
+- [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
 - [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
 - [Xcode MCP and visual verification](Guidelines/Xcode/MCP.md)
 - [Xcode security audits](Guidelines/Xcode/Security.md)

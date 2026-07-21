@@ -7,6 +7,7 @@ All notable changes to this project are documented in this file.
 ### Added
 
 - Standard README badge conventions for ThatFactory projects and packages.
+- Git repository guidance that defaults push-capable clones to SSH remotes.
 - GitHub pull-request review and merge-gate guidance.
 - Updated and Revision badges to the repository README.
 
