@@ -67,6 +67,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
 - [Documentation](Guidelines/Documentation.md)
 - [Swift packages](Guidelines/Packages.md)
+- [Development and reusability](Guidelines/Development.md)
 - [CI/CD](Guidelines/CICD.md)
 - [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
 - [GitHub pull requests](Guidelines/GitHub/PullRequests.md)

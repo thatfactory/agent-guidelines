@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.4] - 2026-07-21
+
+### Added
+
+- Development guidance for reusability-first design and checking the latest shared-guidelines version before project work.
+
+### Changed
+
+- Require an approved pull request before releasing `agent-guidelines` or any consumer package.
+
 ## [0.0.3] - 2026-07-21
 
 ### Added
