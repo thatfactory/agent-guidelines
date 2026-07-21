@@ -6,7 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
-- A Codex review-monitoring workflow covering processing reactions, clean reviews, paginated GraphQL review threads, inline feedback, replies, thread resolution, and CI checks.
+- A Codex review-monitoring workflow covering paginated processing reactions and review threads, clean reviews, inline feedback, replies, thread resolution, and CI checks.
 
 ## [0.0.2] - 2026-07-21
 

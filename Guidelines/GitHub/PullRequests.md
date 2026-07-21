@@ -48,7 +48,7 @@ Codex adds eyes reaction
 When using the GitHub CLI, monitor all three surfaces:
 
 ```sh
-gh api repos/<owner>/<repository>/issues/<pull-request>/reactions
+gh api --paginate repos/<owner>/<repository>/issues/<pull-request>/reactions
 gh pr view <pull-request> --repo <owner>/<repository> --json reviews,headRefOid
 gh pr checks <pull-request> --repo <owner>/<repository>
 ```
@@ -89,7 +89,7 @@ gh api graphql --paginate \
   -F thread=<review-thread-id>
 ```
 
-Continue polling while actively working on the pull request. Inspect every returned page. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion.
+Continue polling while actively working on the pull request. Inspect every returned page for reactions, review threads, and thread comments. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion.
 
 ## Merge requirements
 
