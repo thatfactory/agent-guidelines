@@ -24,18 +24,17 @@ Use this guide for applications that explicitly adopt the ThatFactory Redux arch
     +--------------+      observable state       | 1. Reducer|
                                                  | 2. Middle-|
                                                  |    ware   |
-                                                 +-----+-----+
-                                                       |
-                                                       | side effect
-                                                       v
-                                                +--------------+
-                                                | Service      |
-                                                | package/API  |
-                                                +------+-------+
-                                                       |
-                                                       | Action?
-                                                       v
-                                                   Store again
+                                                 +-----+-----+ <-----------------+
+                                                       |                       |
+                                                       | side effect           |
+                                                       v                       |
+                                                +--------------+               |
+                                                | Service      |               |
+                                                | package/API  |               |
+                                                +------+-------+               |
+                                                       |                       |
+                                                       | Action?               |
+                                                       +-----------------------+
 ```
 
 The store reduces the original action first, then awaits middleware and sequentially dispatches returned follow-up actions. Keep ordering observable and deterministic. Do not start unstructured work inside reducers or hide state changes inside services.
@@ -225,7 +224,7 @@ Skip components that provide no value. A state-only transition needs no middlewa
 - Selector tests provide state and assert the derived domain result.
 - Middleware tests inject mocks, execute an action, and assert the returned follow-up action.
 - Service tests exercise the external boundary without involving views.
-- View-state projection tests live under the matching `Tests/View/<Feature>/` folder.
+- View-state projection tests live under the matching `<AppName>Tests/View/<Feature>/` folder, or the consumer-mapped test root.
 - Test mocks and fixture data live under the test target's `Mocks/` folder.
 
 Follow [Unit testing](../Testing/UnitTesting.md) for framework and concurrency conventions.

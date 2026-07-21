@@ -1,6 +1,8 @@
 <p align="center">
   <a href="https://developer.apple.com/xcode/"><img alt="Xcode" src="https://img.shields.io/badge/Xcode-MCP-50ace8.svg?logo=xcode&logoColor=white"></a>
   <a href="https://developers.openai.com/codex/mcp"><img alt="Codex" src="https://img.shields.io/badge/Codex-MCP-1F70C1.svg?logo=icloud&logoColor=white"></a>
+  <a href="https://github.com/thatfactory/agent-guidelines/commits/main"><img alt="Updated" src="https://img.shields.io/github/last-commit/thatfactory/agent-guidelines?label=Updated&logo=convertio&logoColor=white"></a>
+  <a href="https://github.com/thatfactory/agent-guidelines/releases"><img alt="Revision" src="https://img.shields.io/github/v/release/thatfactory/agent-guidelines?label=Revision&logo=gitbook&logoColor=white"></a>
   <a href="https://en.wikipedia.org/wiki/MIT_License"><img alt="License" src="https://img.shields.io/badge/License-MIT-67ac5b.svg?logo=googledocs&logoColor=white"></a>
   <a href="https://github.com/thatfactory/agent-guidelines/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thatfactory/agent-guidelines/actions/workflows/ci.yml/badge.svg"></a>
 </p>
@@ -18,7 +20,7 @@ The repository contains documentation, not a Swift product. Consumers install a 
                   versioned GitHub repository
                              |
                        tagged release
-                         e.g. 0.0.1
+                         e.g. 0.0.2
                              |
                     git subtree add/pull
                              |
@@ -66,6 +68,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Documentation](Guidelines/Documentation.md)
 - [Swift packages](Guidelines/Packages.md)
 - [CI/CD](Guidelines/CICD.md)
+- [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
 - [Xcode MCP and visual verification](Guidelines/Xcode/MCP.md)
 - [Xcode security audits](Guidelines/Xcode/Security.md)
 
@@ -79,7 +82,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.1 \
+  0.0.2 \
   --squash
 ```
 
@@ -123,7 +126,3 @@ For a consumer task, apply instructions in this order:
 4. The shared guides explicitly referenced by those files.
 
 Official Apple documentation remains authoritative for API behavior. A local convention can deliberately narrow a choice, but it must not rely on behavior contradicted by the current SDK documentation.
-
-## License
-
-Released under the [MIT License](LICENSE).

@@ -1,5 +1,37 @@
 # Swift Packages
 
+## README badges
+
+Start a new ThatFactory project or package README with a centered HTML badge block:
+
+```html
+<p align="center">
+  <!-- Badges in the standard order. -->
+</p>
+```
+
+Use only badges that describe the repository, in this order:
+
+1. Swift version.
+2. Xcode version.
+3. Supported platforms.
+4. Relevant package manager, runtime, or ecosystem badges, such as SPM or NPM.
+5. Relevant agent or tooling badges, such as Xcode MCP, Codex, or Claude.
+6. Updated date.
+7. Revision or latest release.
+8. License.
+9. CI.
+10. Release, publishing, or documentation status when applicable.
+
+The common package baseline is Swift, Xcode, Platforms, License, and CI. Add optional badges only when they convey useful repository-specific information. Keep the order stable even when some positions are omitted.
+
+- Point CI, publishing, and documentation badges at workflows in the current repository; never copy another repository's badge URL unchanged.
+- Use descriptive `alt` text. Preserve a repository's established Xcode badge convention when the label intentionally records the last verified Xcode version.
+- Prefer dynamic Updated and Revision badges backed by repository history or releases so maintainers do not edit dates and versions by hand.
+- Do not advertise a platform, integration, package manager, or agent that the repository does not support.
+- Keep the repository's license in a root `LICENSE` file when reuse or redistribution is permitted. A README license heading is optional; the badge is a summary, not the license grant.
+- Do not add a license to an existing repository without the owner's explicit choice of terms.
+
 ## Package boundaries
 
 - Keep a reusable package focused on one coherent capability.

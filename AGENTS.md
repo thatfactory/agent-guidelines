@@ -35,4 +35,4 @@ Fix every validation failure before releasing a version.
 - Use semantic versioning.
 - Create a Git tag and GitHub release matching `VERSION`.
 - Consumer repositories adopt releases deliberately through Git subtree updates.
-
+- Follow [the pull-request review workflow](Guidelines/GitHub/PullRequests.md) before merging any release change.
