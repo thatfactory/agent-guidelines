@@ -15,6 +15,8 @@
 - Keep each test focused on one behavior and name it in domain language.
 - Mirror production physical folders under the test target.
 - Put reusable mocks and fixtures under the test target's `Mocks/` folder.
+- Use shared test tags for recurring classification and keep their declarations alphabetical. Prefer small composable tags that can be combined to describe a test without repeating ad hoc metadata.
+- Add a short `///` comment describing each mock's test purpose.
 
 ## Assertions and control flow
 
