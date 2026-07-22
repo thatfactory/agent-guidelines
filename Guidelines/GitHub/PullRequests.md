@@ -20,7 +20,8 @@ Opening a pull request starts review; it does not authorize merging it.
 5. If feedback should not be implemented, reply in the original thread with a concise technical reason.
 6. Reply to implemented feedback with what changed and where.
 7. Resolve a thread only after its concern has been addressed or explicitly declined.
-8. Recheck the pull request immediately before merge for late comments and check-state changes.
+8. After addressing review comments, update the pull-request description so it matches the current implementation, validation, and any remaining limitations.
+9. Recheck the pull request immediately before merge for late comments and check-state changes.
 
 When replying with a commit reference, write the commit hash as raw text without backticks (for example, the hash 185c04f should remain 185c04f). GitHub then auto-links the hash to the commit.
 

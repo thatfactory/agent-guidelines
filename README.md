@@ -98,7 +98,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  <version> \
+  0.0.6 \
   --squash
 ```
 

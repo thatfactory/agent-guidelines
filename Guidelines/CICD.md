@@ -16,7 +16,7 @@
 
 Projects using GitHub Actions should keep pull-request validation in `.github/workflows/ci-pr.yml`, triggered by `pull_request` events for `opened`, `synchronize`, and `reopened`.
 
-Use self-hosted runners identified by the repository's declared `Runner labels:`. Do not hard-code a particular machine name in shared guidance.
+Use GitHub-hosted runners for jobs that can run on the hosted operating system and toolchain. When a job uses a self-hosted runner, document and select it through the repository's `Runner labels:` rather than hard-coding a machine name in shared guidance.
 
 A typical Swift package validates:
 
@@ -28,7 +28,7 @@ A typical Swift package validates:
 
 An Xcode application validates its declared scheme and test plan. Use the same project/workspace, configuration, and platform assumptions documented for local development.
 
-For Xcode projects, test with `xcodebuild test` and explicit simulators, then validate compilation with `xcodebuild build CODE_SIGNING_ALLOWED=NO` across the supported platforms. For Swift packages, use Swift Package Manager commands such as `swift test` and `swift build`; packages do not require simulator selection or signing configuration. CI validates tests and compile health, not app-store distribution.
+Xcode projects and Swift packages must run on self-hosted macOS runners with the required Xcode, Swift toolchains, simulators, certificates, and signing environment. Do not use `macos-latest` for those jobs. For Xcode projects, test with `xcodebuild test` and explicit simulators, then validate compilation with `xcodebuild build CODE_SIGNING_ALLOWED=NO` across the supported platforms. For Swift packages, use Swift Package Manager commands such as `swift test` and `swift build`; packages do not require simulator selection, but may require the self-hosted signing environment for packaging or collection workflows. Generic jobs that do not require Apple tooling may use GitHub-hosted Linux or other suitable runners. CI validates tests and compile health, not app-store distribution.
 
 ## `ci.yml`
 
