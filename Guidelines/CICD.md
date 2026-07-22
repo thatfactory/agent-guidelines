@@ -18,6 +18,10 @@ Projects using GitHub Actions should keep pull-request validation in `.github/wo
 
 Use GitHub-hosted runners for jobs that can run on the hosted operating system and toolchain. When a job uses a self-hosted runner, document and select it through the repository's `Runner labels:` rather than hard-coding a machine name in shared guidance.
 
+### Runner labels:
+
+When a workflow uses self-hosted runners, document the labels required by each job in this section of the consumer's CI/CD guide. Always include `self-hosted` and add only stable capability or environment labels needed to select the runner, such as an operating system, architecture, toolchain, or signing capability. Keep machine names and changing fleet details out of shared guidance.
+
 A typical Swift package validates:
 
 - package resolution;
