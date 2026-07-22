@@ -1,5 +1,9 @@
 # Documentation
 
+- Use PascalCase Markdown filenames without spaces.
+- Keep the folder flat until one topic genuinely requires several files.
+- Prefer current implementation over speculative future design; label known gaps explicitly.
+
 ## Code-level documentation
 
 - Document structs, classes, enums, protocols, actors, and other significant types with focused `///` DocC comments.

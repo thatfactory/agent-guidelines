@@ -84,7 +84,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.4 \
+  0.0.6 \
   --squash
 ```
 

@@ -12,7 +12,11 @@
 - Do not place secrets in workflow files, logs, fixtures, or command arguments that may be echoed.
 - Keep release workflows separate from pull-request validation when their permissions differ.
 
-## Pull-request CI
+## `ci-pr.yml`
+
+Projects using GitHub Actions should keep pull-request validation in `.github/workflows/ci-pr.yml`, triggered by `pull_request` events for `opened`, `synchronize`, and `reopened`.
+
+Use self-hosted runners identified by the repository's declared `Runner labels:`. Do not hard-code a particular machine name in shared guidance.
 
 A typical Swift package validates:
 
@@ -24,14 +28,27 @@ A typical Swift package validates:
 
 An Xcode application validates its declared scheme and test plan. Use the same project/workspace, configuration, and platform assumptions documented for local development.
 
-## Investigation
+For Xcode projects, test with `xcodebuild test` and explicit simulators, then validate compilation with `xcodebuild build CODE_SIGNING_ALLOWED=NO` across the supported platforms. For Swift packages, use Swift Package Manager commands such as `swift test` and `swift build`; packages do not require simulator selection or signing configuration. CI validates tests and compile health, not app-store distribution.
 
-1. Identify the first meaningful failing step rather than treating later cancellations as independent failures.
-2. Reproduce locally with the closest supported toolchain when practical.
-3. Separate infrastructure or dependency-resolution failures from code failures.
-4. Fix the root cause in the narrowest appropriate layer.
-5. Re-run the affected local validation before relying on remote CI.
-6. Update durable CI documentation when the workflow or investigation process changes.
+## `ci.yml`
+
+Validation of merges to `main` should live in `.github/workflows/ci.yml`, triggered by `push` on `main`. Use the same build, test, lint, and platform coverage as pull-request validation unless the repository documents a deliberate difference.
+
+## Failure investigation
+
+1. Use GitHub MCP connector tools to inspect check runs and logs for the failing commit or pull request.
+2. Use `gh` for fast local triage when needed.
+3. Reproduce locally with the exact build or test command shown in the failing job logs.
+
+Useful commands:
+
+```bash
+gh run list --limit 10
+gh run view <run-id>
+gh run view <run-id> --log
+```
+
+Distinguish compiler errors from lint violations, test failures from simulator or runtime infrastructure failures, and single-job failures from cross-platform matrix failures. Identify the first meaningful failing step, fix the narrowest root cause, and re-run affected validation.
 
 ## Releases
 

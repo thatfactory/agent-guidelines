@@ -39,6 +39,28 @@ Use this guide for applications that explicitly adopt the ThatFactory Redux arch
 
 The store reduces the original action first, then awaits middleware and sequentially dispatches returned follow-up actions. Keep ordering observable and deterministic. Do not start unstructured work inside reducers or hide state changes inside services.
 
+## Store
+
+Use one observable store as the source of truth and inject it at the application root. A store implementation may expose aliases like these:
+
+```swift
+typealias AppStore = Store<AppState, AppAction>
+typealias StateType = Equatable & Codable
+typealias ActionType = Equatable
+typealias Reducer<State: StateType, Action: ActionType> = (State, Action) -> State
+typealias Middleware<State: StateType, Action: ActionType> = (State, Action) async -> Action?
+```
+
+Dispatch is asynchronous and ordered:
+
+1. Reduce the original action.
+2. Capture the resulting state.
+3. Await each registered middleware with that state and action.
+4. Collect returned actions.
+5. Dispatch follow-up actions sequentially.
+
+Use only `await store.dispatch(_:)`. Do not add a fire-and-forget dispatch API.
+
 ## Canonical physical folders
 
 These are filesystem folders, not Xcode groups. New single-application repositories use this structure by default:
@@ -118,6 +140,8 @@ Put the root state and domain sub-states in `Redux/State/`. Prefer focused value
 
 State stores durable facts. Avoid storing values that are cheap, deterministic derivations unless caching is an explicit measured requirement.
 
+Sub-states should conform to `Equatable` and `Codable`; add `Sendable` when their values and concurrency boundaries require it. Keep root state and root actions for genuine cross-domain behavior. Keep domain action cases descriptive of intent or outcomes and route them through the root action.
+
 ### Reducer
 
 Put reducer functions in `Redux/Reducer/`. A reducer receives state and an action and returns new state. It must not:
@@ -135,7 +159,7 @@ Use the smallest state and action inputs that correctly express the transition. 
 
 Put middleware in `Redux/Middleware/`. Middleware may call injected services and return a follow-up action. It must not mutate store state directly.
 
-Inject services, clocks, identifier generators, and providers through parameters so middleware tests remain deterministic. Register middleware in one root composition file such as `AppMiddlewares.swift`.
+Inject services, providers, managers, clocks, and identifier generators through parameters so middleware tests remain deterministic. Register middleware in one root composition file such as `AppMiddlewares.swift`. Reducers own every state mutation.
 
 Create a feature subfolder when a domain has multiple middleware files:
 
@@ -158,6 +182,8 @@ Put focused external-boundary abstractions in `Services/<Capability>/`. Services
 
 Prefer a protocol or otherwise injectable contract when a service must be replaced in tests. Keep transport-specific details behind the service boundary.
 
+Views dispatch actions; middleware calls services. Views never call a service directly for Redux-owned behavior.
+
 ### Tools
 
 Put genuinely cross-cutting implementation utilities in `Tools/`. This is not a miscellaneous folder. Feature-only formatters, helpers, constants, or factories stay beside that feature. Promote them to `Tools/` only after they have a clear cross-feature role.
@@ -176,6 +202,8 @@ View/Account/
 ```
 
 If a projection exists only to render one screen, it is view-layer code even when its input is `AppState`.
+
+Projection tests mirror the production view path under the test target.
 
 ### Resources
 
