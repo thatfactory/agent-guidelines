@@ -13,7 +13,8 @@ Use this guide for Apple-platform applications and Swift packages that emit runt
 
 ## AppLogger and identity
 
-- Use `AppLogger` rather than `print`, direct `Logger` instances, or project-specific logging wrappers that duplicate it.
+- Use the shared [AppLogger Swift package](https://github.com/thatfactory/applogger) rather than `print`, direct `Logger` instances, or project-specific logging backends that duplicate it.
+- Add the package's `AppLogger` library product to each target that emits logs. Follow the package's current integration instructions for dependency configuration and version requirements.
 - Give each artifact an explicit, stable, lowercase subsystem in reverse-DNS form: `com.thatfactory.<artifact>`.
 - A package always uses its own subsystem, even when its code runs inside a consuming application. This allows filtering all ThatFactory logs or one artifact independently.
 - Choose stable categories from the artifact's reusable domain. Categories are not a global vocabulary: a language-evaluation package might use `evaluation`, a progression engine might use `progression`, and an application might use `session` or `lifecycle`.
