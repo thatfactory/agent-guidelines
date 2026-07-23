@@ -7,3 +7,7 @@ When developing a new feature or responding to a feature request, consider share
 ## Guidelines version
 
 Before changing a project, verify that it uses the latest released version of `agent-guidelines`. Check the project's `AgentGuidelines/VERSION` against the latest release, update the subtree or equivalent when it is behind, and read the updated applicable guides before starting implementation. This check is manual and must be performed at the beginning of each project task.
+
+## Logging
+
+Applications own their orchestration, lifecycle, and product-domain diagnostics. Follow the shared [logging guide](Logging.md) and rely on each dependency to log its own implementation. Do not duplicate or reformat package-internal operations in the application log.

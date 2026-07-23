@@ -15,6 +15,7 @@ Read only the guides relevant to the task:
 - [Localization](AgentGuidelines/Guidelines/Swift/Localization.md)
 - [Unit and integration testing](AgentGuidelines/Guidelines/Testing/UnitTesting.md)
 - [Documentation](AgentGuidelines/Guidelines/Documentation.md)
+- [Logging](AgentGuidelines/Guidelines/Logging.md)
 - [Packages](AgentGuidelines/Guidelines/Packages.md)
 - [CI/CD](AgentGuidelines/Guidelines/CICD.md)
 - [Git repositories and SSH-first cloning](AgentGuidelines/Guidelines/Git/Repositories.md)

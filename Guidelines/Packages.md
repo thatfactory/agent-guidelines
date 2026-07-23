@@ -43,6 +43,10 @@ The common package baseline is Swift, Xcode, Platforms, License, and CI. Add opt
 - Put sources under `Sources/<Target>/` and tests under `Tests/<Target>Tests/`.
 - Keep resources in the target that owns them and use the package bundle for lookup.
 
+## Logging
+
+Packages own any diagnostics emitted by their implementation. Follow the shared [logging guide](Logging.md) for AppLogger usage, subsystem identity, package emoji prefixes, domain-owned categories, concise messages, privacy, and test coverage. A consuming application must not reproduce package-internal logs.
+
 ## Development workflow
 
 1. Read the package's local `AGENTS.md`, README, DocC, and public API before changing behavior.

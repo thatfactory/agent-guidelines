@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.7] - 2026-07-23
+
+### Added
+
+- Shared logging ownership, subsystem, package emoji, message design, privacy, testing, and filtering guidance.
+- Logging pointers for application development, Swift packages, and consumer instruction templates.
+
 ## [0.0.6] - 2026-07-22
 
 ### Added
