@@ -25,7 +25,15 @@ Read only the guides relevant to the task:
 
 For an application that uses Redux, also read [Redux architecture](AgentGuidelines/Guidelines/Architecture/Redux.md).
 
-When reviewing a consumer pull request, do not review or comment on files under `AgentGuidelines/**` after exact tagged-tree provenance has been verified. This tracked, synchronized subtree is reviewed centrally in `thatfactory/agent-guidelines`; verify its `VERSION`, compare its tree with the matching central tag, and verify the required `.gitattributes` rule. If provenance does not match exactly, review the subtree contents and stop the merge. Report substantive guideline feedback against the central pull request.
+Add the following section to the consumer repository's root `AGENTS.md` so it is loaded for root-level Codex and pull-request work:
+
+```md
+## Codex review scope
+
+For consumer pull requests, do not substantively review `AgentGuidelines/**` after exact tagged-tree provenance has been verified. Verify its `VERSION`, compare its tree with the matching central tag, and verify the required `.gitattributes` rule. If provenance does not match exactly, review the subtree contents and stop the merge. Report substantive guideline feedback against the central `agent-guidelines` pull request.
+```
+
+This tracked, synchronized subtree is reviewed centrally in `thatfactory/agent-guidelines`; the root-level instruction ensures the review scope is loaded even when Codex starts from the repository root.
 
 ## Physical folder map
 
