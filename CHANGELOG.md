@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.8] - 2026-07-23
+
+### Added
+
+- Consumer guidance for keeping `AgentGuidelines/` tracked while collapsing synchronized files in GitHub pull-request diffs with `.gitattributes`.
+- Pull-request conventions for isolated subtree commits, explicit version notes, central review links, and continued CI validation.
+
 ## [0.0.7] - 2026-07-23
 
 ### Added

@@ -85,8 +85,15 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.7 \
+  0.0.8 \
   --squash
+```
+
+Keep the subtree tracked, but add this to the consumer's tracked `.gitattributes` so GitHub collapses synchronized guideline files in pull-request diffs by default:
+
+```gitattributes
+# Synced from thatfactory/agent-guidelines; keep tracked but collapse GitHub diffs.
+AgentGuidelines/** linguist-generated
 ```
 
 Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions.
@@ -99,11 +106,11 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.7 \
+  0.0.8 \
   --squash
 ```
 
-Confirm `AgentGuidelines/VERSION`, review the subtree diff, validate local `AGENTS.md` pointers, and run the consumer's relevant tests. Updates are intentionally not automatic: one guideline release cannot silently change every project.
+Confirm `AgentGuidelines/VERSION`, ensure the `.gitattributes` rule above is present, review the subtree diff, validate local `AGENTS.md` pointers, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
 
 ## Maintain the source of truth
 

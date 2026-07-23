@@ -86,6 +86,7 @@ def validate_readme_contract(errors: list[str]) -> None:
         "https://github.com/thatfactory/agent-guidelines.git": "subtree remote",
         "git subtree add": "subtree installation command",
         "git subtree pull": "subtree update command",
+        "AgentGuidelines/** linguist-generated": "generated subtree attribute",
     }
     for value, description in required.items():
         if value not in readme:
