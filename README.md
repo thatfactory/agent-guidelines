@@ -9,7 +9,7 @@
 
 # Agent Guidelines
 
-`agent-guidelines` is ThatFactory's public, versioned source of truth for reusable instructions given to coding agents. It centralizes stable decisions about Swift development, Redux architecture, testing, documentation, packages, CI/CD, localization, and Xcode tooling while leaving product context and exceptions in each consuming repository.
+`agent-guidelines` is ThatFactory's public, versioned source of truth for reusable instructions given to coding agents. It centralizes stable decisions about Swift development, Redux architecture, testing, documentation, logging, packages, CI/CD, localization, and Xcode tooling while leaving product context and exceptions in each consuming repository.
 
 The repository contains documentation, not a Swift product. Consumers install a tagged release as a Git subtree at `AgentGuidelines/`, so every agent sees ordinary version-controlled files at predictable paths.
 
@@ -66,6 +66,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Localization](Guidelines/Swift/Localization.md)
 - [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
 - [Documentation](Guidelines/Documentation.md)
+- [Logging](Guidelines/Logging.md)
 - [Swift packages](Guidelines/Packages.md)
 - [Development and reusability](Guidelines/Development.md)
 - [CI/CD](Guidelines/CICD.md)
@@ -74,7 +75,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Xcode MCP and visual verification](Guidelines/Xcode/MCP.md)
 - [Xcode security audits](Guidelines/Xcode/Security.md)
 
-Only reference the guides that apply. A UI-agnostic package normally uses Swift, style, testing, documentation, packages, CI/CD, and Xcode guidance, but not Redux or SwiftUI guidance.
+Only reference the guides that apply. A UI-agnostic package normally uses Swift, style, testing, documentation, logging, packages, CI/CD, and Xcode guidance, but not Redux or SwiftUI guidance.
 
 ## Add to a consumer
 
@@ -84,7 +85,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.6 \
+  0.0.7 \
   --squash
 ```
 
@@ -98,7 +99,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.6 \
+  0.0.7 \
   --squash
 ```
 
