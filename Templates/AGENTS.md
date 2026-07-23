@@ -25,6 +25,8 @@ Read only the guides relevant to the task:
 
 For an application that uses Redux, also read [Redux architecture](AgentGuidelines/Guidelines/Architecture/Redux.md).
 
+When reviewing a consumer pull request, do not review or comment on files under `AgentGuidelines/**`. This tracked, synchronized subtree is reviewed centrally in `thatfactory/agent-guidelines`; verify only its release version and the required `.gitattributes` rule, and report substantive guideline feedback against the central pull request.
+
 ## Physical folder map
 
 Replace these examples with exact repository paths:

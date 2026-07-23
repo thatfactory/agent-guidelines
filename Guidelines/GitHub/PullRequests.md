@@ -9,6 +9,10 @@ Use this guide whenever creating, reviewing, updating, or merging a GitHub pull 
 - Run the relevant local validation and document anything that could not be run.
 - Open the pull request without auto-merge and keep it unmerged while automated or agent review is pending. Use draft state only when configured reviewers also run on drafts.
 
+## Consumer subtree review scope
+
+When reviewing a consumer pull request, do not review or comment on files under `AgentGuidelines/**`. The subtree is a tracked, synchronized copy marked `linguist-generated`; substantive guideline changes are reviewed in the central `thatfactory/agent-guidelines` pull request. Verify only that the consumer points to the intended tagged release and keeps the required `.gitattributes` rule. Report guideline feedback against the central pull request instead.
+
 ## Review gate
 
 Opening a pull request starts review; it does not authorize merging it.

@@ -46,6 +46,10 @@ python3 Scripts/validate_guidelines.py
 
 Fix every validation failure before releasing a version.
 
+## Consumer pull-request review scope
+
+When reviewing a consumer pull request, do not review or comment on files under `AgentGuidelines/**`. That subtree is a tracked, synchronized copy marked `linguist-generated`; substantive guideline changes are reviewed in this repository. Verify only that the consumer points to the intended tagged release and keeps the required `.gitattributes` rule. Report guideline feedback against the central `agent-guidelines` pull request instead.
+
 ## Releases
 
 - Use semantic versioning.

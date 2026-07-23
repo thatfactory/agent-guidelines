@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.9] - 2026-07-23
+
+### Added
+
+- Consumer pull-request review scope that excludes synchronized `AgentGuidelines/**` files from substantive Codex and human review outside the central repository.
+
 ## [0.0.8] - 2026-07-23
 
 ### Added
