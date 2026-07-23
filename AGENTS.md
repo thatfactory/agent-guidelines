@@ -48,7 +48,7 @@ Fix every validation failure before releasing a version.
 
 ## Consumer pull-request review scope
 
-When reviewing a consumer pull request, do not review or comment on files under `AgentGuidelines/**`. That subtree is a tracked, synchronized copy marked `linguist-generated`; substantive guideline changes are reviewed in this repository. Verify only that the consumer points to the intended tagged release and keeps the required `.gitattributes` rule. Report guideline feedback against the central `agent-guidelines` pull request instead.
+When reviewing a consumer pull request, do not review or comment on files under `AgentGuidelines/**` after exact tagged-tree provenance has been verified. That subtree is a tracked, synchronized copy marked `linguist-generated`; substantive guideline changes are reviewed in this repository. Verify the intended `AgentGuidelines/VERSION`, compare the subtree tree with the matching central tag (for example with `git subtree split --prefix=AgentGuidelines HEAD` and a tree comparison after fetching that tag), and verify the required `.gitattributes` rule. If provenance does not match exactly, review the subtree contents and stop the merge. Report substantive guideline feedback against the central `agent-guidelines` pull request instead.
 
 ## Releases
 
