@@ -48,5 +48,25 @@ class SemanticVersionTests(unittest.TestCase):
                 self.assertIsNone(VALIDATOR.SEMVER.fullmatch(version))
 
 
+class SwiftFormattingConfigurationTests(unittest.TestCase):
+    """Verifies the shared Swift formatting contract."""
+
+    def test_swift_format_configuration(self) -> None:
+        """Accepts the exhaustive Xcode-aligned swift-format configuration."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_swift_format_configuration(errors)
+
+        self.assertEqual(errors, [])
+
+    def test_editor_configuration(self) -> None:
+        """Accepts the shared Swift EditorConfig values."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_editor_configuration(errors)
+
+        self.assertEqual(errors, [])
+
+
 if __name__ == "__main__":
     unittest.main()

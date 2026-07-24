@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.10] - 2026-07-24
+
+### Added
+
+- Shared Xcode-aligned swift-format and EditorConfig configuration.
+- Reusable format, warning-lint, and strict-lint commands for Swift consumers.
+
+### Changed
+
+- Replaced SwiftLint guidance with toolchain-native swift-format guidance.
+
 ## [0.0.9] - 2026-07-23
 
 ### Added
