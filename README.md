@@ -9,9 +9,9 @@
 
 # Agent Guidelines
 
-`agent-guidelines` is ThatFactory's public, versioned source of truth for reusable instructions given to coding agents. It centralizes stable decisions about Swift development, Redux architecture, testing, documentation, logging, packages, CI/CD, localization, and Xcode tooling while leaving product context and exceptions in each consuming repository.
+`agent-guidelines` is ThatFactory's public, versioned source of truth for reusable instructions and development configuration. It centralizes stable decisions about Swift development, Redux architecture, testing, documentation, logging, packages, CI/CD, localization, and Xcode tooling while leaving product context and exceptions in each consuming repository.
 
-The repository contains documentation, not a Swift product. Consumers install a tagged release as a Git subtree at `AgentGuidelines/`, so every agent sees ordinary version-controlled files at predictable paths.
+The repository contains documentation and supporting configuration, not a Swift product. Consumers install a tagged release as a Git subtree at `AgentGuidelines/`, so every agent and supported tool sees ordinary version-controlled files at predictable paths.
 
 ## How it fits together
 
@@ -35,6 +35,7 @@ The repository contains documentation, not a Swift product. Consumers install a 
 |                                                     |        |
 |  AgentGuidelines/                                   |        |
 |  |-- VERSION                                        |        |
+|  |-- Configurations/                                 |        |
 |  `-- Guidelines/ <----------------------------------+        |
 |      |-- Architecture/Redux.md                              |
 |      |-- Swift/SwiftUI.md                                   |
@@ -62,7 +63,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Swift](Guidelines/Swift/Swift.md)
 - [Swift style](Guidelines/Swift/SwiftStyle.md)
 - [SwiftUI](Guidelines/Swift/SwiftUI.md)
-- [SwiftLint](Guidelines/Swift/SwiftLint.md)
+- [Swift format](Guidelines/Swift/SwiftFormat.md)
 - [Localization](Guidelines/Swift/Localization.md)
 - [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
 - [Documentation](Guidelines/Documentation.md)
@@ -85,8 +86,15 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.9 \
-  --squash
+    0.0.10 \
+    --squash
+```
+
+Swift consumers that adopt the shared formatter expose its configuration at the repository root so Xcode and other tools discover it:
+
+```sh
+ln -s AgentGuidelines/Configurations/Swift/.swift-format .swift-format
+ln -s AgentGuidelines/Configurations/Swift/.editorconfig .editorconfig
 ```
 
 Keep the subtree tracked, but add this to the consumer's tracked `.gitattributes` so GitHub collapses synchronized guideline files in pull-request diffs by default:
@@ -106,8 +114,8 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.9 \
-  --squash
+    0.0.10 \
+    --squash
 ```
 
 Confirm `AgentGuidelines/VERSION`, ensure the `.gitattributes` rule above is present, review the subtree diff, validate local `AGENTS.md` pointers, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
