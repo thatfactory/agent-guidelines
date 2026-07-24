@@ -12,9 +12,9 @@
 
 ## Xcode build integration
 
-- Add a **Swift Format** run-script phase to every independently buildable app target. Place it before **Compile Sources** so compilation consumes the formatted files.
+- Add a **Swift Format** run-script phase to every independently buildable app or test target that compiles Swift source. Place it before **Compile Sources** so compilation consumes the formatted files.
 - Skip the phase when `CI=true`; CI must remain non-mutating and run `lint-strict` in one dedicated job.
-- Invoke `AgentGuidelines/Scripts/swift_format.sh format-and-lint` over the repository's production and test source folders.
+- Invoke `AgentGuidelines/Scripts/swift_format.sh format-and-lint` only over source folders compiled by that target, including shared folders it consumes. Exclude unrelated app and test sources so an invalid file outside the selected build cannot block compilation.
 - Run the phase on every build rather than using dependency analysis. A no-op formatting pass is intentionally cheaper than allowing locally generated formatting debt.
 - Source mutation requires either declared source inputs and outputs or disabling Xcode's **User Script Sandboxing** for the affected configurations. Record and review that choice locally; never disable sandboxing without the formatting phase requiring it.
 - Validate the integration in Xcode with an open, deliberately misformatted file. Confirm formatting happens before compilation and that editor saving, cursor state, and undo behavior remain acceptable.
