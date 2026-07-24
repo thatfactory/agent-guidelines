@@ -8,6 +8,7 @@ All notable changes to this project are documented in this file.
 
 - Pre-compilation Xcode build-phase guidance and a reusable `format-and-lint` command for human and agent workflows.
 - An easy-to-find record of Xcode-aligned layout settings, enabled rule overrides, and deliberate non-adoptions.
+- Pull-request guidance that prevents duplicate manual Codex requests when automatic review is enabled.
 
 ### Changed
 
