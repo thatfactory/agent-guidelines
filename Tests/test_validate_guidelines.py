@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 VALIDATOR_PATH = Path(__file__).resolve().parents[1] / "Scripts" / "validate_guidelines.py"
@@ -58,6 +61,25 @@ class SwiftFormattingConfigurationTests(unittest.TestCase):
         VALIDATOR.validate_swift_format_configuration(errors)
 
         self.assertEqual(errors, [])
+
+    def test_swift_format_configuration_rejects_undocumented_rule_change(self) -> None:
+        """Rejects a changed rule value even when the exhaustive key set is unchanged."""
+        configuration = json.loads(
+            VALIDATOR.SWIFT_FORMAT_CONFIGURATION.read_text(encoding="utf-8")
+        )
+        configuration["rules"]["NeverForceUnwrap"] = True
+
+        with tempfile.TemporaryDirectory(dir=VALIDATOR.ROOT) as directory:
+            path = Path(directory) / ".swift-format"
+            path.write_text(json.dumps(configuration), encoding="utf-8")
+            errors: list[str] = []
+
+            with mock.patch.object(VALIDATOR, "SWIFT_FORMAT_CONFIGURATION", path):
+                VALIDATOR.validate_swift_format_configuration(errors)
+
+        self.assertTrue(
+            any("NeverForceUnwrap must be False, found True" in error for error in errors)
+        )
 
     def test_editor_configuration(self) -> None:
         """Accepts the shared Swift EditorConfig values."""

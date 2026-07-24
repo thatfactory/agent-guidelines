@@ -18,49 +18,49 @@ SWIFT_FORMAT_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".swift-format"
 EDITOR_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".editorconfig"
 SWIFT_FORMAT_SCRIPT = ROOT / "Scripts" / "swift_format.sh"
 EXPECTED_SWIFT_FORMAT_RULES = {
-    "AllPublicDeclarationsHaveDocumentation",
-    "AlwaysUseLiteralForEmptyCollectionInit",
-    "AlwaysUseLowerCamelCase",
-    "AmbiguousTrailingClosureOverload",
-    "AvoidRetroactiveConformances",
-    "BeginDocumentationCommentWithOneLineSummary",
-    "DoNotUseSemicolons",
-    "DontRepeatTypeInStaticProperties",
-    "FileScopedDeclarationPrivacy",
-    "FullyIndirectEnum",
-    "GroupNumericLiterals",
-    "IdentifiersMustBeASCII",
-    "NeverForceUnwrap",
-    "NeverUseForceTry",
-    "NeverUseImplicitlyUnwrappedOptionals",
-    "NoAccessLevelOnExtensionDeclaration",
-    "NoAssignmentInExpressions",
-    "NoBlockComments",
-    "NoCasesWithOnlyFallthrough",
-    "NoEmptyLinesOpeningClosingBraces",
-    "NoEmptyTrailingClosureParentheses",
-    "NoLabelsInCasePatterns",
-    "NoLeadingUnderscores",
-    "NoParensAroundConditions",
-    "NoPlaygroundLiterals",
-    "NoVoidReturnOnFunctionSignature",
-    "OmitExplicitReturns",
-    "OneCasePerLine",
-    "OneVariableDeclarationPerLine",
-    "OnlyOneTrailingClosureArgument",
-    "OrderedImports",
-    "ReplaceForEachWithForLoop",
-    "ReturnVoidInsteadOfEmptyTuple",
-    "TypeNamesShouldBeCapitalized",
-    "UseEarlyExits",
-    "UseExplicitNilCheckInConditions",
-    "UseLetInEveryBoundCaseVariable",
-    "UseShorthandTypeNames",
-    "UseSingleLinePropertyGetter",
-    "UseSynthesizedInitializer",
-    "UseTripleSlashForDocumentationComments",
-    "UseWhereClausesInForLoops",
-    "ValidateDocumentationComments",
+    "AllPublicDeclarationsHaveDocumentation": False,
+    "AlwaysUseLiteralForEmptyCollectionInit": True,
+    "AlwaysUseLowerCamelCase": True,
+    "AmbiguousTrailingClosureOverload": True,
+    "AvoidRetroactiveConformances": True,
+    "BeginDocumentationCommentWithOneLineSummary": False,
+    "DoNotUseSemicolons": True,
+    "DontRepeatTypeInStaticProperties": True,
+    "FileScopedDeclarationPrivacy": True,
+    "FullyIndirectEnum": True,
+    "GroupNumericLiterals": True,
+    "IdentifiersMustBeASCII": True,
+    "NeverForceUnwrap": False,
+    "NeverUseForceTry": True,
+    "NeverUseImplicitlyUnwrappedOptionals": False,
+    "NoAccessLevelOnExtensionDeclaration": True,
+    "NoAssignmentInExpressions": True,
+    "NoBlockComments": True,
+    "NoCasesWithOnlyFallthrough": True,
+    "NoEmptyLinesOpeningClosingBraces": True,
+    "NoEmptyTrailingClosureParentheses": True,
+    "NoLabelsInCasePatterns": True,
+    "NoLeadingUnderscores": False,
+    "NoParensAroundConditions": True,
+    "NoPlaygroundLiterals": True,
+    "NoVoidReturnOnFunctionSignature": True,
+    "OmitExplicitReturns": False,
+    "OneCasePerLine": True,
+    "OneVariableDeclarationPerLine": True,
+    "OnlyOneTrailingClosureArgument": True,
+    "OrderedImports": True,
+    "ReplaceForEachWithForLoop": True,
+    "ReturnVoidInsteadOfEmptyTuple": True,
+    "TypeNamesShouldBeCapitalized": True,
+    "UseEarlyExits": False,
+    "UseExplicitNilCheckInConditions": True,
+    "UseLetInEveryBoundCaseVariable": True,
+    "UseShorthandTypeNames": True,
+    "UseSingleLinePropertyGetter": True,
+    "UseSynthesizedInitializer": True,
+    "UseTripleSlashForDocumentationComments": True,
+    "UseWhereClausesInForLoops": True,
+    "ValidateDocumentationComments": True,
 }
 
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
@@ -187,13 +187,22 @@ def validate_swift_format_configuration(errors: list[str]) -> None:
             f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
             "rules must be an exhaustive non-empty object"
         )
-    elif set(rules) != EXPECTED_SWIFT_FORMAT_RULES:
-        missing = sorted(EXPECTED_SWIFT_FORMAT_RULES - set(rules))
-        unexpected = sorted(set(rules) - EXPECTED_SWIFT_FORMAT_RULES)
-        errors.append(
-            f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
-            f"rule map mismatch; missing={missing!r}, unexpected={unexpected!r}"
-        )
+    else:
+        missing = sorted(set(EXPECTED_SWIFT_FORMAT_RULES) - set(rules))
+        unexpected = sorted(set(rules) - set(EXPECTED_SWIFT_FORMAT_RULES))
+        if missing or unexpected:
+            errors.append(
+                f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
+                f"rule map mismatch; missing={missing!r}, unexpected={unexpected!r}"
+            )
+        for rule in sorted(set(rules) & set(EXPECTED_SWIFT_FORMAT_RULES)):
+            expected = EXPECTED_SWIFT_FORMAT_RULES[rule]
+            actual = rules[rule]
+            if actual != expected:
+                errors.append(
+                    f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
+                    f"{rule} must be {expected!r}, found {actual!r}"
+                )
 
 
 def validate_editor_configuration(errors: list[str]) -> None:

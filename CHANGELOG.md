@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.11] - 2026-07-25
+
+### Added
+
+- Pre-compilation Xcode build-phase guidance and a reusable `format-and-lint` command for human and agent workflows.
+- An easy-to-find record of Xcode-aligned layout settings, enabled rule overrides, and deliberate non-adoptions.
+- Pull-request guidance that prevents duplicate manual Codex requests when automatic review is enabled.
+
+### Changed
+
+- Enabled empty-array literals, force-try rejection, brace whitespace cleanup, `where` clauses in eligible loops, and documentation-comment validation.
+
 ## [0.0.10] - 2026-07-24
 
 ### Added
