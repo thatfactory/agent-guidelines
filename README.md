@@ -35,12 +35,12 @@ The repository contains documentation and supporting configuration, not a Swift 
 |                                                     |        |
 |  AgentGuidelines/                                   |        |
 |  |-- VERSION                                        |        |
-|  |-- Configurations/                                 |        |
+|  |-- Configurations/                                |        |
 |  `-- Guidelines/ <----------------------------------+        |
-|      |-- Architecture/Redux.md                              |
-|      |-- Swift/SwiftUI.md                                   |
-|      |-- Testing/UnitTesting.md                             |
-|      `-- Xcode/MCP.md                                       |
+|      |-- Architecture/Redux.md                               |
+|      |-- Swift/SwiftUI.md                                    |
+|      |-- Testing/UnitTesting.md                              |
+|      `-- Xcode/MCP.md                                        |
 |                                                              |
 |  Sources and project files                                   |
 +----------------------------+---------------------------------+
