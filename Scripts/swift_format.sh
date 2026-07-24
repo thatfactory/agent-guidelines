@@ -3,7 +3,7 @@
 set -euo pipefail
 
 usage() {
-    echo "Usage: $0 <format|lint|lint-strict> <path>..." >&2
+    echo "Usage: $0 <format|format-and-lint|lint|lint-strict> <path>..." >&2
 }
 
 if [[ $# -lt 2 ]]; then
@@ -34,12 +34,24 @@ common_arguments=(
     --parallel
 )
 
+format_sources() {
+    "${formatter[@]}" format --in-place "${common_arguments[@]}" "$@"
+}
+
+lint_sources() {
+    "${formatter[@]}" lint "${common_arguments[@]}" "$@"
+}
+
 case "$mode" in
     format)
-        "${formatter[@]}" format --in-place "${common_arguments[@]}" "$@"
+        format_sources "$@"
+        ;;
+    format-and-lint)
+        format_sources "$@"
+        lint_sources "$@"
         ;;
     lint)
-        "${formatter[@]}" lint "${common_arguments[@]}" "$@"
+        lint_sources "$@"
         ;;
     lint-strict)
         "${formatter[@]}" lint --strict "${common_arguments[@]}" "$@"

@@ -62,6 +62,13 @@ EXPECTED_SWIFT_FORMAT_RULES = {
     "UseWhereClausesInForLoops",
     "ValidateDocumentationComments",
 }
+EXPECTED_SWIFT_FORMAT_RULE_OVERRIDES = {
+    "AlwaysUseLiteralForEmptyCollectionInit": True,
+    "NeverUseForceTry": True,
+    "NoEmptyLinesOpeningClosingBraces": True,
+    "UseWhereClausesInForLoops": True,
+    "ValidateDocumentationComments": True,
+}
 
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 SEMVER = re.compile(
@@ -194,6 +201,14 @@ def validate_swift_format_configuration(errors: list[str]) -> None:
             f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
             f"rule map mismatch; missing={missing!r}, unexpected={unexpected!r}"
         )
+    else:
+        for rule, expected in EXPECTED_SWIFT_FORMAT_RULE_OVERRIDES.items():
+            actual = rules.get(rule)
+            if actual != expected:
+                errors.append(
+                    f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
+                    f"{rule} must be {expected!r}, found {actual!r}"
+                )
 
 
 def validate_editor_configuration(errors: list[str]) -> None:
