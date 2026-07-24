@@ -25,7 +25,7 @@ The repository contains documentation and supporting configuration, not a Swift 
                     git subtree add/pull
                              |
                              v
-+---------------- Consumer project or package ----------------+
++---------------- Consumer project or package -----------------+
 |                                                              |
 |  AGENTS.md                                                   |
 |  |-- local product/package context                           |
