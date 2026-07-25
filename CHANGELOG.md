@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.13] - 2026-07-26
+
+### Added
+
+- A reusable `agent-guidelines-audit` skill and mandatory completion gate before handoff, pull requests, merge readiness, and releases.
+- A canonical Redux Store template plus dependency-container and middleware-composition guidance.
+- Consumer Stack guidance for recording toolchain, platform, strict-concurrency, and actor-isolation settings.
+
+### Changed
+
+- Clarified Redux folder ownership, familiar domain grouping, model-versus-tool classification, service-local helpers, presentation models, and one-component-per-file organization.
+- Required documentation for new Swift declarations, meaningful `MARK` sections, one meaningful SwiftUI view per file, and deterministic previews where possible.
+- Clarified when target isolation defaults replace explicit annotations and when compiler-verified boundaries still require them.
+- Enabled conditional-import sorting and expanded validation for Swift templates, the audit skill, Stack guidance, and formatting policy.
+
 ## [0.0.12] - 2026-07-25
 
 ### Added

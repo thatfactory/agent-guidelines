@@ -23,7 +23,7 @@
     ]
   },
   "orderedImports" : {
-    "includeConditionalImports" : false,
+    "includeConditionalImports" : true,
     "shouldGroupImports" : true
   },
   "prioritizeKeepingFunctionOutputTogether" : false,

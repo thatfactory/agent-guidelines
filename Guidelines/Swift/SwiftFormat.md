@@ -38,6 +38,7 @@ The checked-in configuration starts from the exhaustive Xcode toolchain dump. Th
 - `NoEmptyLinesOpeningClosingBraces`: replaces SwiftLint's opening- and closing-brace vertical-whitespace checks.
 - `UseWhereClausesInForLoops`: preserves the former SwiftLint `for_where` behavior.
 - `ValidateDocumentationComments`: validates documentation already present, including parameter coverage after signature changes, without requiring every declaration to be documented.
+- `includeConditionalImports`: sorts imports inside conditional-compilation blocks together with ordinary imports.
 
 Rules not listed here retain the exhaustive Xcode dump values. In particular, universal public documentation, force-unwrap rejection, implicit-return rewriting, early-exit rewriting, leading-underscore rejection, and implicitly unwrapped optional rejection remain disabled until adopted deliberately. swift-format has no equivalent for repository-specific import bans or sorted enum cases.
 

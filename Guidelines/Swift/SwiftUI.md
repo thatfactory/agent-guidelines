@@ -6,6 +6,7 @@ Use official Apple documentation and Xcode's current SwiftUI skills for API-spec
 
 - Keep a parent view focused on composition.
 - Model meaningful sections such as headers, lists, metadata, sidebars, and footers as separate `View` types with narrow inputs.
+- Keep each independently meaningful `View` in its own file, including private supporting views. Give every view its own deterministic preview when the required dependencies can be represented safely.
 - Do not extract sections into computed `some View` properties merely to shorten `body`; computed properties remain in the parent's invalidation boundary.
 - Tiny fragments reused within one body may use a small helper when they have no independent state, input, or invalidation story.
 - Keep view initializers cheap. Do not decode data, access files, build large structures, or allocate formatters in `init`.
