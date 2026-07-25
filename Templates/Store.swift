@@ -5,7 +5,8 @@ typealias AppStore = Store<AppState, AppAction>
 typealias StateType = Equatable & Sendable & Codable
 typealias ActionType = Equatable & Sendable
 typealias Reducer<State: StateType, Action: ActionType> = (State, Action) -> State
-typealias Middleware<State: StateType, Action: ActionType> = (State, Action) async -> Action?
+typealias Middleware<State: StateType, Action: ActionType> =
+    @MainActor (State, Action) async -> Action?
 
 /// A class representing the state management store for the app.
 ///
