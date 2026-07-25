@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.12] - 2026-07-25
+
+### Added
+
+- Login-shell guidance for using explicitly authorized `gh` credentials exported by local shell startup configuration without exposing token values.
+
 ## [0.0.11] - 2026-07-25
 
 ### Added

@@ -40,3 +40,13 @@ When `gh` authentication appears inconsistent:
 5. Use SSH for Git transport only when the CLI remains unavailable after retry and the operation is specifically a Git fetch, commit, or push. Continue using `gh` for GitHub API operations whenever it is working.
 
 An environment mismatch is not evidence that the user's GitHub account or token is invalid. Record the failed command and exact non-secret error, retry after the authentication check, and report the blocker only after repeated attempts fail.
+
+### Login-shell credentials
+
+Some developer environments export `GITHUB_TOKEN` from a shell startup file rather than from the non-interactive process that launched the agent. When the user has explicitly authorized using that local configuration, retry `gh` in a login shell that sources the user's startup configuration:
+
+```sh
+zsh -lc 'source "$HOME/.zshrc"; gh auth status'
+```
+
+Run the required `gh` operation in that same shell after authentication succeeds. Never print, inspect, copy, or persist the token value; suppress unrelated startup output when practical, and do not source a startup file merely to bypass a credential or permission boundary without the user's authorization.

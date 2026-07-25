@@ -86,7 +86,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.11 \
+    0.0.12 \
     --squash
 ```
 
@@ -114,7 +114,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.11 \
+    0.0.12 \
     --squash
 ```
 
