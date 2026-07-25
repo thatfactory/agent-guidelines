@@ -11,6 +11,9 @@
 - Do not add Xcode boilerplate filename, author, or creation-date headers.
 - Prefer one primary type or concern per file.
 - Match a type file's name to its primary type.
+- Put the declaration named by the file immediately after imports and file-level directives. Opening `EffectAssetLoader.swift`, for example, must reveal `EffectAssetLoader` before supporting declarations. A shared canonical template may retain type aliases that its documented layout deliberately places first.
+- Put a supporting type used only by one primary type inside an extension of that primary type when the relationship forms a natural namespace. Put a supporting type used by other files in its own named file instead.
+- Keep physical folders flat until one topic genuinely contains several files. When grouping becomes useful, organize related models, services, tools, views, and Redux components by a familiar domain, feature, or capability so readers can reason about them together.
 
 Example:
 
@@ -21,5 +24,21 @@ guard isEnabled else {
 
 withAnimation {
     isPresented = true
+}
+```
+
+Namespaced supporting types keep their ownership visible:
+
+```swift
+struct Measurement {
+    // ...
+}
+
+// MARK: - Errors
+
+extension Measurement {
+    enum ValidationError: Error {
+        case invalidValue
+    }
 }
 ```

@@ -81,11 +81,45 @@ class SwiftFormattingConfigurationTests(unittest.TestCase):
             any("NeverForceUnwrap must be False, found True" in error for error in errors)
         )
 
+    def test_swift_format_configuration_requires_conditional_import_sorting(self) -> None:
+        """Rejects disabling conditional import sorting."""
+        configuration = json.loads(
+            VALIDATOR.SWIFT_FORMAT_CONFIGURATION.read_text(encoding="utf-8")
+        )
+        configuration["orderedImports"]["includeConditionalImports"] = False
+
+        with tempfile.TemporaryDirectory(dir=VALIDATOR.ROOT) as directory:
+            path = Path(directory) / ".swift-format"
+            path.write_text(json.dumps(configuration), encoding="utf-8")
+            errors: list[str] = []
+
+            with mock.patch.object(VALIDATOR, "SWIFT_FORMAT_CONFIGURATION", path):
+                VALIDATOR.validate_swift_format_configuration(errors)
+
+        self.assertTrue(
+            any(
+                "orderedImports.includeConditionalImports must be True" in error
+                for error in errors
+            )
+        )
+
     def test_editor_configuration(self) -> None:
         """Accepts the shared Swift EditorConfig values."""
         errors: list[str] = []
 
         VALIDATOR.validate_editor_configuration(errors)
+
+        self.assertEqual(errors, [])
+
+
+class AgentGuidelinesAuditSkillTests(unittest.TestCase):
+    """Verifies the mandatory completion-audit skill contract."""
+
+    def test_audit_skill_contract(self) -> None:
+        """Accepts the skill, Development rule, and consumer template."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_audit_skill(errors)
 
         self.assertEqual(errors, [])
 

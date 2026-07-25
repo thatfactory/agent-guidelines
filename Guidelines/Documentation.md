@@ -6,7 +6,8 @@
 
 ## Code-level documentation
 
-- Document structs, classes, enums, protocols, actors, and other significant types with focused `///` DocC comments.
+- Document every new struct, class, enum, protocol, actor, and function with focused `///` DocC comments.
+- Use `// MARK: -` pragmas to separate meaningful logical sections so source files remain easy to scan and navigate.
 - Update documentation when changing a documented API, parameter, behavior, or invariant.
 - End documentation sentences with periods.
 - Explain intent, contracts, units, side effects, isolation, and non-obvious constraints; do not restate syntax.

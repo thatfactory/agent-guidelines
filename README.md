@@ -86,7 +86,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.12 \
+    0.0.13 \
     --squash
 ```
 
@@ -106,6 +106,16 @@ AgentGuidelines/** linguist-generated
 
 Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions.
 
+Redux applications also copy [the canonical Store](Templates/Store.swift) as is, following the composition and placement rules in [Redux architecture](Guidelines/Architecture/Redux.md).
+
+Expose the completion-audit skill at the consumer repository root so Codex can discover it:
+
+```sh
+mkdir -p .agents/skills
+ln -s ../../AgentGuidelines/.agents/skills/agent-guidelines-audit \
+  .agents/skills/agent-guidelines-audit
+```
+
 ## Update a consumer
 
 Review the target release's changelog, then pull it deliberately:
@@ -114,7 +124,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.12 \
+    0.0.13 \
     --squash
 ```
 

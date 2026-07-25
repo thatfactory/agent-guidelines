@@ -17,6 +17,9 @@ CHANGELOG = ROOT / "CHANGELOG.md"
 SWIFT_FORMAT_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".swift-format"
 EDITOR_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".editorconfig"
 SWIFT_FORMAT_SCRIPT = ROOT / "Scripts" / "swift_format.sh"
+AUDIT_SKILL = ROOT / ".agents" / "skills" / "agent-guidelines-audit" / "SKILL.md"
+DEVELOPMENT_GUIDELINE = ROOT / "Guidelines" / "Development.md"
+AGENTS_TEMPLATE = ROOT / "Templates" / "AGENTS.md"
 EXPECTED_SWIFT_FORMAT_RULES = {
     "AllPublicDeclarationsHaveDocumentation": False,
     "AlwaysUseLiteralForEmptyCollectionInit": True,
@@ -81,7 +84,7 @@ FORBIDDEN = {
 
 
 def text_files() -> list[Path]:
-    suffixes = {".md", ".py", ".yml", ".yaml", ".txt"}
+    suffixes = {".md", ".py", ".swift", ".yml", ".yaml", ".txt"}
     files = [path for path in ROOT.rglob("*") if path.is_file() and path.suffix in suffixes]
     files.extend(path for path in (ROOT / "VERSION", ROOT / "LICENSE") if path.is_file())
     files.extend(
@@ -144,6 +147,7 @@ def validate_readme_contract(errors: list[str]) -> None:
         "AgentGuidelines/** linguist-generated": "generated subtree attribute",
         "AgentGuidelines/Configurations/Swift/.swift-format": "swift-format symlink command",
         "AgentGuidelines/Configurations/Swift/.editorconfig": "EditorConfig symlink command",
+        ".agents/skills/agent-guidelines-audit": "completion-audit skill setup",
     }
     for value, description in required.items():
         if value not in readme:
@@ -180,6 +184,16 @@ def validate_swift_format_configuration(errors: list[str]) -> None:
                 f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
                 f"{key} must be {expected!r}, found {actual!r}"
             )
+
+    include_conditional_imports = configuration.get("orderedImports", {}).get(
+        "includeConditionalImports"
+    )
+    if include_conditional_imports is not True:
+        errors.append(
+            f"{SWIFT_FORMAT_CONFIGURATION.relative_to(ROOT)}: "
+            "orderedImports.includeConditionalImports must be True, "
+            f"found {include_conditional_imports!r}"
+        )
 
     rules = configuration.get("rules")
     if not isinstance(rules, dict) or not rules:
@@ -238,6 +252,39 @@ def validate_swift_format_script(errors: list[str]) -> None:
         errors.append(f"{SWIFT_FORMAT_SCRIPT.relative_to(ROOT)}: script is not executable")
 
 
+def validate_audit_skill(errors: list[str]) -> None:
+    if not AUDIT_SKILL.is_file():
+        errors.append(f"{AUDIT_SKILL.relative_to(ROOT)}: missing audit skill")
+        return
+
+    skill = AUDIT_SKILL.read_text(encoding="utf-8")
+    required_skill_values = {
+        "name: agent-guidelines-audit": "skill name",
+        "before claiming completion": "completion trigger",
+        "git diff --check": "diff validation",
+    }
+    for value, description in required_skill_values.items():
+        if value not in skill:
+            errors.append(
+                f"{AUDIT_SKILL.relative_to(ROOT)}: missing {description}: {value!r}"
+            )
+
+    development = DEVELOPMENT_GUIDELINE.read_text(encoding="utf-8")
+    if "$agent-guidelines-audit" not in development:
+        errors.append(
+            f"{DEVELOPMENT_GUIDELINE.relative_to(ROOT)}: "
+            "missing mandatory $agent-guidelines-audit invocation"
+        )
+
+    agents_template = AGENTS_TEMPLATE.read_text(encoding="utf-8")
+    if "AgentGuidelines/Guidelines/Development.md" not in agents_template:
+        errors.append(
+            f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing Development.md pointer"
+        )
+    if "## Stack" not in agents_template:
+        errors.append(f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing Stack section")
+
+
 def main() -> int:
     errors: list[str] = []
     validate_links(errors)
@@ -248,6 +295,7 @@ def main() -> int:
     validate_swift_format_configuration(errors)
     validate_editor_configuration(errors)
     validate_swift_format_script(errors)
+    validate_audit_skill(errors)
 
     if errors:
         print("Guideline validation failed:")
