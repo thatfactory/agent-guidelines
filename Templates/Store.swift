@@ -11,9 +11,10 @@ typealias Middleware<State: StateType, Action: ActionType> = (State, Action) asy
 ///
 /// The `Store` class is responsible for managing the state of the application and handling actions
 /// through a reducer and optional middlewares. It's an `@Observable`, which allows SwiftUI views
-/// to observe state changes. Middlewares execute on the main actor (make it the default isolation
-/// in Xcode) to keep captured dependencies aligned with their UI-based isolation and to avoid Swift
-/// runtime crashes seen when metadata was fetched off the main thread.
+/// to observe state changes. This template requires every application and test target that compiles
+/// or exercises it to set `Default Actor Isolation` to `MainActor` and
+/// `nonisolated(nonsending) By Default` to `Yes`. These settings keep middleware on the main actor
+/// without redundant isolation annotations.
 ///
 /// - Parameters:
 ///   - State: The type representing the state of the application.

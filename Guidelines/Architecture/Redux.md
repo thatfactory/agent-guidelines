@@ -41,7 +41,7 @@ The store reduces the original action first, then awaits middleware and sequenti
 
 ## Store
 
-Use one observable store as the source of truth and inject it at the application root. New projects copy [the canonical Store template](../../Templates/Store.swift) as is. Do not change its dispatch ordering, isolation, observation exclusions, compiler-crash workaround, or documentation.
+Use one observable store as the source of truth and inject it at the application root. The canonical Store requires `Default Actor Isolation` set to `MainActor` and `nonisolated(nonsending) By Default` set to `Yes` in every application and test target that compiles or exercises it. New projects copy [the Store template](../../Templates/Store.swift) as is; do not add redundant isolation annotations or change its dispatch ordering, observation exclusions, or documentation.
 
 Dispatch is asynchronous and ordered:
 
