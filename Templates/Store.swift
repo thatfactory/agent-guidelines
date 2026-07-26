@@ -5,16 +5,15 @@ typealias AppStore = Store<AppState, AppAction>
 typealias StateType = Equatable & Sendable & Codable
 typealias ActionType = Equatable & Sendable
 typealias Reducer<State: StateType, Action: ActionType> = (State, Action) -> State
-typealias Middleware<State: StateType, Action: ActionType> =
-    @MainActor (State, Action) async -> Action?
+typealias Middleware<State: StateType, Action: ActionType> = (State, Action) async -> Action?
 
 /// A class representing the state management store for the app.
 ///
 /// The `Store` class is responsible for managing the state of the application and handling actions
 /// through a reducer and optional middlewares. It's an `@Observable`, which allows SwiftUI views
-/// to observe state changes. Middlewares execute on the main actor to keep captured dependencies
-/// aligned with their UI-based isolation and to avoid Swift runtime crashes seen when metadata
-/// was fetched off the main thread.
+/// to observe state changes. Middlewares execute on the main actor (make it the default isolation
+/// in Xcode) to keep captured dependencies aligned with their UI-based isolation and to avoid Swift
+/// runtime crashes seen when metadata was fetched off the main thread.
 ///
 /// - Parameters:
 ///   - State: The type representing the state of the application.
@@ -27,7 +26,6 @@ typealias Middleware<State: StateType, Action: ActionType> =
 /// let store = AppStore(initialState: AppState(), reducer: appReducer)
 /// await store.dispatch(.someAction)
 /// ```
-@MainActor
 @Observable final class Store<State: StateType, Action: ActionType> {
     private(set) var state: State
 
