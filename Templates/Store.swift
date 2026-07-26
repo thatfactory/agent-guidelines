@@ -46,12 +46,6 @@ typealias Middleware<State: StateType, Action: ActionType> =
         self.middlewares = middlewares
         self.reducer = reducer
     }
-
-    /// Workaround for Swift 6.2 compiler crash (Xcode 26.3 RC) in the SIL optimizer's
-    /// `EarlyPerfInliner` pass on the synthesized isolated deinit for this `@MainActor @Observable`
-    /// generic class. Adding an explicit `nonisolated deinit` avoids the problematic code path.
-    /// See: https://github.com/swiftlang/swift/issues/82523
-    nonisolated deinit {}
 }
 
 // MARK: - Dispatcher
