@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.14] - 2026-07-27
+
+### Changed
+
+- Clarify Store/Middleware @MainActor usage.
+- Removed workaround for a resolved Xcode issue.
+
 ## [0.0.13] - 2026-07-26
 
 ### Added
