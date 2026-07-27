@@ -59,24 +59,25 @@ The subtree does not automatically import every guide into an agent's context. A
 
 ## Guideline catalog
 
-- [Redux architecture and physical folder organization](Guidelines/Architecture/Redux.md)
-- [Swift](Guidelines/Swift/Swift.md)
-- [Swift style](Guidelines/Swift/SwiftStyle.md)
-- [SwiftUI](Guidelines/Swift/SwiftUI.md)
-- [Swift format](Guidelines/Swift/SwiftFormat.md)
-- [Localization](Guidelines/Swift/Localization.md)
-- [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
-- [Documentation](Guidelines/Documentation.md)
-- [Logging](Guidelines/Logging.md)
-- [Swift packages](Guidelines/Packages.md)
-- [Development and reusability](Guidelines/Development.md)
+- [Agent workflow and tool execution](Guidelines/AgentWorkflow.md)
 - [CI/CD](Guidelines/CICD.md)
+- [Development and reusability](Guidelines/Development.md)
+- [Documentation](Guidelines/Documentation.md)
 - [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
 - [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
+- [Localization](Guidelines/Swift/Localization.md)
+- [Logging](Guidelines/Logging.md)
+- [Redux architecture and physical folder organization](Guidelines/Architecture/Redux.md)
+- [Swift](Guidelines/Swift/Swift.md)
+- [Swift format](Guidelines/Swift/SwiftFormat.md)
+- [Swift packages](Guidelines/Packages.md)
+- [Swift style](Guidelines/Swift/SwiftStyle.md)
+- [SwiftUI](Guidelines/Swift/SwiftUI.md)
+- [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
 - [Xcode MCP and visual verification](Guidelines/Xcode/MCP.md)
 - [Xcode security audits](Guidelines/Xcode/Security.md)
 
-Only reference the guides that apply. A UI-agnostic package normally uses Swift, style, testing, documentation, logging, packages, CI/CD, and Xcode guidance, but not Redux or SwiftUI guidance.
+Only reference the guides that apply. Agent workflow normally applies to both applications and packages. A UI-agnostic package normally also uses Swift, style, testing, documentation, logging, packages, CI/CD, and Xcode guidance, but not Redux or SwiftUI guidance.
 
 ## Add to a consumer
 
@@ -86,7 +87,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.14 \
+    0.0.15 \
     --squash
 ```
 
@@ -106,6 +107,14 @@ AgentGuidelines/** linguist-generated
 
 Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions.
 
+### Configure global Codex instructions
+
+Copy the contents of [`Templates/GlobalCodexInstructions.md`](Templates/GlobalCodexInstructions.md) into the user's global Codex instructions.
+
+These instructions only bootstrap discovery of repository-local `AGENTS.md` files and shared guides. Repository engineering policy remains versioned in this repository rather than duplicated in each user's global configuration.
+
+Review this template when upgrading `agent-guidelines`, because the recommended global bootstrap instructions may change between releases. Installing or updating the Git subtree does not update a user's global Codex configuration.
+
 Redux applications also copy [the canonical Store](Templates/Store.swift) as is, following the composition and placement rules in [Redux architecture](Guidelines/Architecture/Redux.md).
 
 Expose the completion-audit skill at the consumer repository root so Codex can discover it:
@@ -124,7 +133,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.14 \
+    0.0.15 \
     --squash
 ```
 

@@ -8,6 +8,7 @@ Describe the product or package, supported platforms, and durable constraints. L
 
 Read only the guides relevant to the task:
 
+- [Agent workflow](AgentGuidelines/Guidelines/AgentWorkflow.md)
 - [Swift](AgentGuidelines/Guidelines/Swift/Swift.md)
 - [Swift style](AgentGuidelines/Guidelines/Swift/SwiftStyle.md)
 - [SwiftUI](AgentGuidelines/Guidelines/Swift/SwiftUI.md)
