@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.15] - 2026-07-27
+
+### Added
+
+- A shared agent-workflow guide for bounded grouping of independent repository inspections, with dependency, ordering, scope, and output-size safeguards.
+- A versioned global Codex instruction template that bootstraps discovery of repository-local guidance without duplicating engineering policy.
+
+### Changed
+
+- Linked the workflow guide from the consumer template, documented the manual global Codex setup, and required alphabetical ordering of the README guideline catalog.
+
 ## [0.0.14] - 2026-07-27
 
 ### Changed

@@ -19,6 +19,7 @@ This public repository is the versioned source of truth for reusable ThatFactory
 - Keep examples generic and concise.
 - Use relative Markdown links inside this repository.
 - Update `README.md` when adding, moving, or removing a guide.
+- Keep the README guideline catalog sorted alphabetically by link label.
 - Update `CHANGELOG.md` and `VERSION` for a release.
 - When releasing a new version, update the version in both the README installation command and the README consumer-update command. Keep both commands aligned with the new release, for example:
 
