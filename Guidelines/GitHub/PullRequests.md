@@ -8,7 +8,7 @@ Use this guide whenever creating, reviewing, updating, or merging a GitHub pull 
 - Follow the repository's pull-request template and local contribution instructions.
 - Run the relevant local validation and document anything that could not be run.
 - Open the pull request without auto-merge and keep it unmerged while automated or agent review is pending. Use draft state only when configured reviewers also run on drafts.
-- When automatic Codex review is enabled, opening the pull request schedules the review. Do not also post `@codex review` or make another manual request; duplicate reviews waste review capacity and tokens. Request a review manually only when automatic review is disabled.
+- When automatic Codex review is enabled, opening the pull request schedules the review. Do not also post `@codex review` or make another manual request; duplicate reviews waste review capacity and tokens. Do not request a Codex review manually unless the user explicitly asks for one.
 
 ## Consumer subtree review scope
 
