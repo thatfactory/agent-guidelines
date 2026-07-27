@@ -12,6 +12,7 @@ All notable changes to this project are documented in this file.
 ### Changed
 
 - Linked the workflow guide from the consumer template, documented the manual global Codex setup, and required alphabetical ordering of the README guideline catalog.
+- Clarified that Codex review requests are automatic by default and must not be triggered manually without an explicit user request.
 
 ## [0.0.14] - 2026-07-27
 
