@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.16] - 2026-08-13
+
+### Changed
+
+- Required SwiftUI dynamic properties to precede ordinary stored properties and clarified deterministic preview expectations.
+- Required one top-level type per file, focused function decomposition, logical enum grouping, and consistent declaration-modifier and multiline-signature layout.
+- Documented which declaration layout conventions remain review-guided because swift-format cannot enforce them without broad source reflow.
+
 ## [0.0.15] - 2026-07-27
 
 ### Added
