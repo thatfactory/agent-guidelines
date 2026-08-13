@@ -42,6 +42,8 @@ The checked-in configuration starts from the exhaustive Xcode toolchain dump. Th
 
 Rules not listed here retain the exhaustive Xcode dump values. In particular, universal public documentation, force-unwrap rejection, implicit-return rewriting, early-exit rewriting, leading-underscore rejection, and implicitly unwrapped optional rejection remain disabled until adopted deliberately. swift-format has no equivalent for repository-specific import bans or sorted enum cases.
 
+Declaration layout rules from [Swift style](SwiftStyle.md), including keeping modifiers on the declaration line and preserving an intentionally multiline signature, remain review-guided. The formatter preserves a correctly authored layout, but it has no focused rule that forces those shapes; disabling `respectsExistingLineBreaks` would broadly reflow otherwise intentional source formatting.
+
 ## Focused exceptions
 
 - Prefer a focused `// swift-format-ignore: RuleName` immediately before the affected declaration or statement when a rule conflicts with required semantics. Add a short preceding comment explaining why.
