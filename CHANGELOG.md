@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.18] - 2026-08-18
+
+### Changed
+
+- Corrected the standard README badge order to place DocC/documentation before license, updated date, revision, CI badges, and release/publishing status.
+
 ## [0.0.17] - 2026-08-18
 
 ### Added
