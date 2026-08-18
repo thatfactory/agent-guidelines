@@ -17,11 +17,12 @@ Use only badges that describe the repository, in this order:
 3. Supported platforms.
 4. Relevant package manager, runtime, or ecosystem badges, such as SPM or NPM.
 5. Relevant agent or tooling badges, such as Xcode MCP, Codex, or Claude.
-6. Updated date.
-7. Revision or latest release.
-8. License.
-9. CI.
-10. Release, publishing, or documentation status when applicable.
+6. DocC, documentation.
+7. License.
+8. Updated date.
+9. Revision or latest release.
+10. CI badges.
+11. Release/publishing status when applicable.
 
 The common package baseline is Swift, Xcode, Platforms, License, and CI. Add optional badges only when they convey useful repository-specific information. Keep the order stable even when some positions are omitted.
 
