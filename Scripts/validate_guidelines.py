@@ -17,6 +17,8 @@ CHANGELOG = ROOT / "CHANGELOG.md"
 SWIFT_FORMAT_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".swift-format"
 EDITOR_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".editorconfig"
 SWIFT_FORMAT_SCRIPT = ROOT / "Scripts" / "swift_format.sh"
+SWIFT_FORMAT_GUIDELINE = ROOT / "Guidelines" / "Swift" / "SwiftFormat.md"
+CONSUMER_SETUP_SCRIPT = ROOT / "Scripts" / "validate_consumer_setup.py"
 AUDIT_SKILL = ROOT / ".agents" / "skills" / "agent-guidelines-audit" / "SKILL.md"
 DEVELOPMENT_GUIDELINE = ROOT / "Guidelines" / "Development.md"
 AGENTS_TEMPLATE = ROOT / "Templates" / "AGENTS.md"
@@ -148,6 +150,8 @@ def validate_readme_contract(errors: list[str]) -> None:
         "AgentGuidelines/Configurations/Swift/.swift-format": "swift-format symlink command",
         "AgentGuidelines/Configurations/Swift/.editorconfig": "EditorConfig symlink command",
         ".agents/skills/agent-guidelines-audit": "completion-audit skill setup",
+        "validate_consumer_setup.py": "consumer setup validation command",
+        "--require-swift-format": "explicit Swift-format adoption validation",
     }
     for value, description in required.items():
         if value not in readme:
@@ -252,6 +256,33 @@ def validate_swift_format_script(errors: list[str]) -> None:
         errors.append(f"{SWIFT_FORMAT_SCRIPT.relative_to(ROOT)}: script is not executable")
 
 
+def validate_swift_format_guideline(errors: list[str]) -> None:
+    contents = SWIFT_FORMAT_GUIDELINE.read_text(encoding="utf-8")
+    required = {
+        "## Swift package integration": "Swift package workflow",
+        "format-and-lint \\": "local package formatting command",
+        "Package.swift": "package manifest formatting scope",
+        "## CI integration": "CI workflow",
+        "lint-strict \\": "strict CI command",
+        "Never run `format` or `format-and-lint` in CI": "non-mutating CI rule",
+    }
+    for value, description in required.items():
+        if value not in contents:
+            errors.append(
+                f"{SWIFT_FORMAT_GUIDELINE.relative_to(ROOT)}: "
+                f"missing {description}: {value!r}"
+            )
+
+
+def validate_consumer_setup_script(errors: list[str]) -> None:
+    if not CONSUMER_SETUP_SCRIPT.is_file():
+        errors.append(f"{CONSUMER_SETUP_SCRIPT.relative_to(ROOT)}: missing script")
+    elif not os.access(CONSUMER_SETUP_SCRIPT, os.X_OK):
+        errors.append(
+            f"{CONSUMER_SETUP_SCRIPT.relative_to(ROOT)}: script is not executable"
+        )
+
+
 def validate_audit_skill(errors: list[str]) -> None:
     if not AUDIT_SKILL.is_file():
         errors.append(f"{AUDIT_SKILL.relative_to(ROOT)}: missing audit skill")
@@ -262,6 +293,10 @@ def validate_audit_skill(errors: list[str]) -> None:
         "name: agent-guidelines-audit": "skill name",
         "before claiming completion": "completion trigger",
         "git diff --check": "diff validation",
+        "validate_consumer_setup.py": "consumer integration validation",
+        "format-and-lint": "local Swift-format audit",
+        "lint-strict": "strict Swift-format CI audit",
+        "no unresolved P0/P1 blocker remains": "Codex review stopping rule",
     }
     for value, description in required_skill_values.items():
         if value not in skill:
@@ -295,6 +330,8 @@ def main() -> int:
     validate_swift_format_configuration(errors)
     validate_editor_configuration(errors)
     validate_swift_format_script(errors)
+    validate_swift_format_guideline(errors)
+    validate_consumer_setup_script(errors)
     validate_audit_skill(errors)
 
     if errors:

@@ -111,6 +111,14 @@ class SwiftFormattingConfigurationTests(unittest.TestCase):
 
         self.assertEqual(errors, [])
 
+    def test_swift_format_guideline(self) -> None:
+        """Accepts the documented package and non-mutating CI workflows."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_swift_format_guideline(errors)
+
+        self.assertEqual(errors, [])
+
 
 class AgentGuidelinesAuditSkillTests(unittest.TestCase):
     """Verifies the mandatory completion-audit skill contract."""
@@ -120,6 +128,14 @@ class AgentGuidelinesAuditSkillTests(unittest.TestCase):
         errors: list[str] = []
 
         VALIDATOR.validate_audit_skill(errors)
+
+        self.assertEqual(errors, [])
+
+    def test_consumer_setup_script(self) -> None:
+        """Accepts the executable deterministic consumer validator."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_consumer_setup_script(errors)
 
         self.assertEqual(errors, [])
 

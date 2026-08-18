@@ -1,4 +1,4 @@
 interface:
   display_name: "Agent Guidelines Audit"
-  short_description: "Audit completed work against shared guidelines"
-  default_prompt: "Use $agent-guidelines-audit to audit this completed change before handoff."
+  short_description: "Audit work and shared-guideline integration"
+  default_prompt: "Use $agent-guidelines-audit to audit this completed change and its consumer guideline integration before handoff."
