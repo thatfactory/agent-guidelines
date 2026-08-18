@@ -2,6 +2,19 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.17] - 2026-08-18
+
+### Added
+
+- A version-marked consumer Code Review contract that defines P0/P1 release blockers, non-blocking P2/P3 observations, and bounded follow-up review scope.
+- A deterministic consumer-setup validator for review-contract drift, subtree review scope, `.gitattributes`, local guide links, audit-skill wiring, and Swift-format adoption.
+
+### Changed
+
+- Expanded the global Codex instruction template and pull-request workflow to prioritize concrete release risk, group shared root causes, and stop review loops after blockers are resolved.
+- Extended the completion-audit skill to verify consumer integration, review convergence, Swift-format configuration, local execution, and non-mutating CI coverage.
+- Documented explicit Swift package formatting before tests and added a strict Swift-format CI template with package path coverage.
+
 ## [0.0.16] - 2026-08-13
 
 ### Changed
