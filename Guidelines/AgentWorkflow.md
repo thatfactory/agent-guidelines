@@ -42,6 +42,14 @@ Bound the combined output of grouped operations so that every result can be insp
 
 Do not expand the investigation merely because additional operations can be executed concurrently.
 
+## Bounded iteration
+
+Before starting an iterative review, remediation, or model-assisted refinement loop, define its objective, blocking threshold, round budget, and stop condition. New non-blocking observations do not reset the budget or widen the original objective.
+
+Do not translate feedback directly into both a change and another review request. Classify the feedback, group items with the same root cause, batch accepted corrections, and rerun only the validation or bounded review needed to verify them.
+
+Stop when the stated acceptance condition is satisfied. Zero possible comments, improvements, or edge cases is not a valid completion criterion. For pull-request review severity, state tracking, and round limits, follow [GitHub pull requests](GitHub/PullRequests.md).
+
 ## Efficiency
 
 Avoid unnecessary repeated model and tool cycles when several independent operations are already known.
