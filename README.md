@@ -125,6 +125,14 @@ ln -s ../../AgentGuidelines/.agents/skills/agent-guidelines-audit \
   .agents/skills/agent-guidelines-audit
 ```
 
+Validate the checked-in consumer integration directly or through the completion-audit skill:
+
+```sh
+python3 AgentGuidelines/Scripts/validate_consumer_setup.py
+```
+
+The validator checks the version-marked root Code Review contract, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. Swift consumers using the shared formatter pass `--require-swift-format-links` to validate those configuration symlinks too.
+
 ## Update a consumer
 
 Review the target release's changelog, then pull it deliberately:
@@ -137,7 +145,7 @@ git subtree pull \
     --squash
 ```
 
-Confirm `AgentGuidelines/VERSION`, ensure the `.gitattributes` rule above is present, review the subtree diff, validate local `AGENTS.md` pointers, synchronize the marked code-review contract when its version changes, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
+Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract when its version changes, run `python3 AgentGuidelines/Scripts/validate_consumer_setup.py`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
 
 ## Maintain the source of truth
 

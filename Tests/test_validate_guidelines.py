@@ -123,6 +123,14 @@ class AgentGuidelinesAuditSkillTests(unittest.TestCase):
 
         self.assertEqual(errors, [])
 
+    def test_consumer_setup_script(self) -> None:
+        """Accepts the executable deterministic consumer validator."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_consumer_setup_script(errors)
+
+        self.assertEqual(errors, [])
+
 
 if __name__ == "__main__":
     unittest.main()
