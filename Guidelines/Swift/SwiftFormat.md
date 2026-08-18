@@ -19,6 +19,58 @@
 - Source mutation requires either declared source inputs and outputs or disabling Xcode's **User Script Sandboxing** for the affected configurations. Record and review that choice locally; never disable sandboxing without the formatting phase requiring it.
 - Validate the integration in Xcode with an open, deliberately misformatted file. Confirm formatting happens before compilation and that editor saving, cursor state, and undo behavior remain acceptable.
 
+## Swift package integration
+
+- Do not make `swift build` or `swift test` rewrite package sources. Formatting is an explicit local preparation step; builds and tests remain reproducible and non-mutating.
+- Before building, testing, or handing off a package change, format and lint every checked-in Swift source root plus the manifest. A package with the standard layout runs:
+
+  ```sh
+  AgentGuidelines/Scripts/swift_format.sh format-and-lint \
+    Package.swift \
+    Sources \
+    Tests
+
+  swift test
+  ```
+
+- Omit a path only when it does not exist, and add nonstandard checked-in Swift source roots such as `Plugins` or `Examples`. Do not scan `.build`, generated artifacts, vendored dependencies, or another package's sources.
+- Keep formatting and testing as consecutive, independently visible commands. A repository-owned convenience script may compose them, but formatting must finish before `swift test` begins and a formatting failure must stop the workflow.
+- SwiftPM command plugins may provide an additional manual entry point, but they do not replace the shared configuration, wrapper, or CI check. Do not add a formatter package dependency solely to duplicate the toolchain-provided formatter without a documented repository need.
+
+[SwiftPM build-tool plugins](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0303-swiftpm-extensible-build-tools.md) have read-only access to package source directories. This makes non-mutating lint possible in a custom build integration, but source-rewriting formatting does not belong inside the build. Prefer the explicit workflow above unless a package documents why every build must also pay the cost of a dedicated lint plugin.
+
+## CI integration
+
+- Run `lint-strict` in a dedicated, non-mutating job for pull requests and merges to the protected branch. Never run `format` or `format-and-lint` in CI.
+- Use the same explicit source scope as the local workflow. Package CI includes `Package.swift`, `Sources`, `Tests`, and any additional checked-in Swift roots that exist. Xcode-project CI covers the union of source folders compiled by the project's independently buildable targets.
+- Select the consumer's documented self-hosted macOS runner labels and supported Xcode toolchain. Keep repository-specific runner labels and Xcode selection outside this shared example.
+
+A typical Swift package job is:
+
+```yaml
+swift-format:
+  name: Swift Format
+  runs-on: [self-hosted, macOS, ARM64]
+
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Select and log Xcode
+      run: |
+        xcodebuild -version
+        xcode-select -p
+
+    - name: Run strict swift-format lint
+      run: |
+        AgentGuidelines/Scripts/swift_format.sh lint-strict \
+          Package.swift \
+          Sources \
+          Tests
+```
+
+Adapt the runner labels and path list to the consumer. Keep the command shape unchanged so local execution, the consumer validator, and CI use the same shared wrapper and strict policy.
+
 ## Shared customizations
 
 The checked-in configuration starts from the exhaustive Xcode toolchain dump. These deliberate overrides are the shared policy and must be reapplied when the toolchain changes.

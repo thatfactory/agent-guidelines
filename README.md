@@ -131,7 +131,7 @@ Validate the checked-in consumer integration directly or through the completion-
 python3 AgentGuidelines/Scripts/validate_consumer_setup.py
 ```
 
-The validator checks the version-marked root Code Review contract, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. Swift consumers using the shared formatter pass `--require-swift-format-links` to validate those configuration symlinks too.
+The validator checks the version-marked root Code Review contract, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, it also requires both configuration symlinks and a non-mutating `lint-strict` CI invocation. Pass `--require-swift-format` only when auditing formatter adoption before adding that guide link.
 
 ## Update a consumer
 

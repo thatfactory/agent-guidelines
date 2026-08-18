@@ -111,6 +111,14 @@ class SwiftFormattingConfigurationTests(unittest.TestCase):
 
         self.assertEqual(errors, [])
 
+    def test_swift_format_guideline(self) -> None:
+        """Accepts the documented package and non-mutating CI workflows."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_swift_format_guideline(errors)
+
+        self.assertEqual(errors, [])
+
 
 class AgentGuidelinesAuditSkillTests(unittest.TestCase):
     """Verifies the mandatory completion-audit skill contract."""

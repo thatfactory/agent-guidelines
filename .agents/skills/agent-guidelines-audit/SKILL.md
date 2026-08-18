@@ -14,7 +14,7 @@ Perform a final, evidence-based compliance pass. Treat the applicable guidelines
 3. Read the shared guides referenced by those instructions that apply to the changed files and workflow.
 4. Inspect `git status`, the complete diff, and relevant untracked files. Preserve unrelated user changes.
 5. Check the consumer's `AgentGuidelines/VERSION` and provenance when the task changes or depends on the synchronized subtree. Do not update it implicitly.
-6. When the repository contains an `AgentGuidelines/` subtree, run `python3 AgentGuidelines/Scripts/validate_consumer_setup.py` from the consumer root. Add `--require-swift-format-links` when the consumer is expected to use the shared Swift formatter. Treat failures as integration drift to fix or report before handoff.
+6. When the repository contains an `AgentGuidelines/` subtree, run `python3 AgentGuidelines/Scripts/validate_consumer_setup.py` from the consumer root. The validator detects Swift-format adoption from the root `AGENTS.md`; add `--require-swift-format` only when the repository must adopt it before that link is present. Treat failures as integration drift to fix or report before handoff.
 
 Do not inspect or require the user's global Codex instructions. They are user-level state outside the repository audit boundary; validate the checked-in root `AGENTS.md` contract instead.
 
@@ -42,6 +42,14 @@ Run the repository's declared non-destructive checks in proportion to the change
 - relevant builds or package validation;
 - repository-specific validators;
 - `git diff --check`.
+
+When the shared Swift-format guide applies:
+
+- For implementation work, run `AgentGuidelines/Scripts/swift_format.sh format-and-lint` over every changed or applicable checked-in Swift source root before tests. For review-only work, use `lint-strict` so the audit does not mutate files.
+- Confirm the root `.swift-format` and `.editorconfig` symlinks resolve to the synchronized shared configurations.
+- Confirm pull-request and protected-branch CI run the shared wrapper with `lint-strict` in a dedicated non-mutating job. Reject `format` or `format-and-lint` in CI and verify the listed paths cover the repository's checked-in Swift roots.
+- For Xcode projects, verify every independently buildable app or test target has the target-scoped pre-compilation phase described by the guide, including its `CI=true` bypass.
+- For Swift packages, format `Package.swift`, `Sources`, `Tests`, and other checked-in Swift roots that exist before running `swift test`. Do not require `swift build` or `swift test` themselves to rewrite source; formatting and testing are consecutive, independently visible checks.
 
 Use fresh successful evidence already produced in the same task instead of rerunning expensive checks without reason. Distinguish automated compilation and simulator evidence from hardware, signing, deployment, or manual validation that automation cannot prove.
 
