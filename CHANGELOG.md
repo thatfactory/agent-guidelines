@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.19] - 2026-08-19
+
+### Added
+
+- Added a complete README badge-block example covering Swift, Xcode, platform, package manager, agent/tooling, DocC, license, updated, revision, CI, and publishing badges.
+
+### Changed
+
+- Updated this repository's README badges to use the canonical order and applicable tooling, release, and maintenance badges.
+- Updated the README contract validator to require the canonical `Xcode MCP` badge alt text.
+
 ## [0.0.18] - 2026-08-18
 
 ### Changed

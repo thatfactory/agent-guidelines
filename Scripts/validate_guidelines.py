@@ -140,7 +140,7 @@ def validate_version(errors: list[str]) -> None:
 def validate_readme_contract(errors: list[str]) -> None:
     readme = README.read_text(encoding="utf-8")
     required = {
-        'alt="Xcode"': "Xcode badge alt text",
+        'alt="Xcode MCP"': "Xcode MCP badge alt text",
         "thatfactory/agent-guidelines/actions/workflows/ci.yml": "CI badge repository",
         "--prefix=AgentGuidelines": "subtree destination",
         "https://github.com/thatfactory/agent-guidelines.git": "subtree remote",
