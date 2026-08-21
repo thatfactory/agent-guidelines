@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.20] - 2026-08-21
+
+### Changed
+
+- Documented squash merge as the default for ThatFactory repositories and instructed agents to use `gh pr merge <pull-request> --squash` instead of attempting merge commits.
+
 ## [0.0.19] - 2026-08-19
 
 ### Added
