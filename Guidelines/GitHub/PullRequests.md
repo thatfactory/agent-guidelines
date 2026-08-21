@@ -151,6 +151,10 @@ gh api graphql --paginate \
 
 Continue polling only while an allowed review round is pending. Inspect every returned page for reactions, review threads, and thread comments. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion, and do not submit a duplicate request merely because polling has not completed.
 
+## Merge method
+
+ThatFactory repositories use squash merges by default. Do not attempt a merge commit; GitHub rejects that method in these repositories, and retrying with squash wastes execution time and tokens. Use the GitHub UI or `gh pr merge <pull-request> --squash` after all review, approval, and check requirements are satisfied. Use another merge method only when the repository explicitly allows it and the owner authorizes the exception.
+
 ## Merge requirements
 
 Do not merge while any of the following is true:
