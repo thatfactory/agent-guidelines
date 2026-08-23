@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.21] - 2026-08-23
+
+### Changed
+
+- Clarified that the bounded review-round policy applies to Codex GitHub reviews, while otherwise-authorized ChatGPT and Reasoning Relay delegations use their own workflow limits.
+- Namespaced Codex review tracking fields and advanced the consumer code-review contract to v2.
+
 ## [0.0.20] - 2026-08-21
 
 ### Changed

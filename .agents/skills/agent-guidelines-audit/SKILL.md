@@ -31,7 +31,7 @@ Review the actual change rather than only checking whether files exist:
 - Check logging ownership, subsystem, categories, emoji, privacy, severity, metadata stability, and noise controls when logging changed.
 - Check durable documentation, package configuration, CI/CD, Xcode project configuration, security-sensitive changes, and physical-device limitations when they are in scope. Compare documented Swift and concurrency settings with the effective application and test-target settings; flag both redundant isolation annotations and missing annotations at compiler-verified boundaries.
 - Search for stale type names, superseded files, direct APIs forbidden by the new architecture, empty folders, and references to removed behavior.
-- For pull-request or merge readiness, apply the root `## Code Review Rules`: confirm the review covers the current head, no allowed review round is pending, every thread has a disposition, and no unresolved P0/P1 blocker remains. Treat P2/P3 observations as non-blocking and never request another Codex review unless the repository owner explicitly authorizes it.
+- For pull-request or merge readiness, apply the root `## Code Review Rules`: confirm the Codex review covers the current head, no allowed Codex review round is pending, every Codex review thread has a disposition, and no unresolved P0/P1 blocker remains. Treat P2/P3 observations as non-blocking and never request another Codex review unless the repository owner explicitly authorizes it. This Codex review-round budget does not apply to otherwise-authorized Reasoning Relay/ChatGPT review delegations; do not block them waiting for a Codex-budget exception.
 
 ## Validate the evidence
 

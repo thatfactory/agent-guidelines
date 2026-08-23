@@ -48,33 +48,35 @@ When replying with a commit reference, write the commit hash as raw text without
 
 A thumbs-up or clean Codex review satisfies the agent-review step, but it does not replace any human approval required by the repository. Do not enable auto-merge before all review gates are satisfied.
 
-### Review state and round budget
+### Codex review state and round budget
 
-Track enough state to prevent duplicate requests and unbounded review loops:
+This round budget applies only to Codex GitHub reviews: the configured automatic Codex review and any manual `@codex review` request. It does not apply to ChatGPT review or reasoning delegated through Reasoning Relay. An otherwise-authorized Reasoning Relay workflow may request as many Relay review or follow-up delegations as its own governing workflow requires; those requests neither consume this Codex budget nor require repository-owner authorization under it. Do not block an agentic goal waiting for a Codex-budget exception before issuing an otherwise-authorized Reasoning Relay request.
+
+Track enough Codex-review state to prevent duplicate requests and unbounded Codex review loops:
 
 ```text
-initial_review_sha
-last_reviewed_sha
-review_requested_sha
-review_round
-pending_review
-unresolved_p0
-unresolved_p1
-deferred_findings
+codex_initial_review_sha
+codex_last_reviewed_sha
+codex_review_requested_sha
+codex_review_round
+codex_pending_review
+codex_unresolved_p0
+codex_unresolved_p1
+codex_deferred_findings
 ```
 
-The automatic review is the one initial full review. Do not request another review after each fix. A repository owner may explicitly authorize at most one delta-scoped verification review after the known P0/P1 findings have been batch-remediated.
+The automatic Codex review is the one initial full Codex review. Do not request another Codex review after each fix. A repository owner may explicitly authorize at most one delta-scoped Codex verification review after the known P0/P1 findings have been batch-remediated.
 
-Before sending that request, verify that no Codex review is pending, no existing request targets the current head SHA, the current head differs from `last_reviewed_sha`, and the verification-round budget is unused. Persist `review_requested_sha`, increment `review_round`, and mark `pending_review` before waiting for a result so a retry cannot submit a duplicate request.
+Before sending that Codex request, verify that no Codex review is pending, no existing request targets the current head SHA, the current head differs from `codex_last_reviewed_sha`, and the Codex verification-round budget is unused. Persist `codex_review_requested_sha`, increment `codex_review_round`, and mark `codex_pending_review` before waiting for a result so a retry cannot submit a duplicate request.
 
-When authorized, scope the verification request explicitly:
+When authorized, scope the Codex verification request explicitly:
 
 ```text
 @codex review only unresolved P0/P1 findings and changes since <last-reviewed-sha>.
 Do not search unchanged code for new P2/P3 issues.
 ```
 
-Do not request a third review or restart a full review without separate, explicit repository-owner authorization and a named unresolved P0/P1 concern. A new finding in verification must be a P0/P1 defect introduced by the remediation or genuinely hidden by the previous blocker.
+Do not request a third Codex review or restart a full Codex review without separate, explicit repository-owner authorization and a named unresolved P0/P1 concern. This restriction does not cap Reasoning Relay/ChatGPT review delegations. A new finding in Codex verification must be a P0/P1 defect introduced by the remediation or genuinely hidden by the previous blocker.
 
 Stop the review loop when no unresolved P0/P1 finding remains, every thread has an explicit disposition, required checks pass, and required human authorization is present. Zero comments, zero possible improvements, and zero technical debt are not completion criteria.
 

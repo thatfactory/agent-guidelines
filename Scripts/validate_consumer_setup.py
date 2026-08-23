@@ -10,8 +10,8 @@ from pathlib import Path
 
 
 GUIDELINES_ROOT = Path(__file__).resolve().parents[1]
-CONTRACT_BEGIN = "<!-- BEGIN THATFACTORY CODE REVIEW CONTRACT v1 -->"
-CONTRACT_END = "<!-- END THATFACTORY CODE REVIEW CONTRACT v1 -->"
+CONTRACT_BEGIN = "<!-- BEGIN THATFACTORY CODE REVIEW CONTRACT v2 -->"
+CONTRACT_END = "<!-- END THATFACTORY CODE REVIEW CONTRACT v2 -->"
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 SWIFT_FORMAT_GUIDE = "AgentGuidelines/Guidelines/Swift/SwiftFormat.md"
 STRICT_FORMAT_COMMAND = re.compile(

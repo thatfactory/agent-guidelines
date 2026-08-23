@@ -37,7 +37,7 @@ This public repository is the versioned source of truth for reusable ThatFactory
     --squash
   ```
 
-<!-- BEGIN THATFACTORY CODE REVIEW CONTRACT v1 -->
+<!-- BEGIN THATFACTORY CODE REVIEW CONTRACT v2 -->
 ## Code Review Rules
 
 Review for release-blocking defects introduced or materially exposed by the pull request. A clean review means no unresolved P0/P1 findings; it does not mean exhaustive or perfect software.
@@ -50,8 +50,10 @@ Treat P2/P3 observations as non-blocking, including defense-in-depth, theoretica
 
 In an initial review, report substantiated blockers together. A follow-up review is limited to unresolved P0/P1 findings, changes since the last reviewed commit, and code directly affected by those changes. Do not restart an unrestricted review of unchanged code. A new follow-up finding must be a P0/P1 defect introduced by the remediation or genuinely hidden by the previous blocker.
 
-Automatic Codex review is the initial review. Do not request a manual Codex review unless the repository owner explicitly asks. Never request another review after each remediation commit. Within the normal review budget, at most one owner-authorized, delta-scoped verification review may be requested under [the pull-request review workflow](Guidelines/GitHub/PullRequests.md).
-<!-- END THATFACTORY CODE REVIEW CONTRACT v1 -->
+The review-round budget below applies only to Codex GitHub reviews: the configured automatic Codex review and any manual `@codex review` request. It does not apply to ChatGPT review or reasoning delegated through Reasoning Relay. An otherwise-authorized Reasoning Relay workflow may request as many Relay review or follow-up delegations as its own governing workflow requires; those requests neither consume the Codex budget nor require repository-owner authorization under it.
+
+Automatic Codex review is the initial Codex review. Do not request a manual Codex review unless the repository owner explicitly asks. Never request another Codex review after each remediation commit. Within the normal Codex review budget, at most one owner-authorized, delta-scoped Codex verification review may be requested under [the pull-request review workflow](Guidelines/GitHub/PullRequests.md).
+<!-- END THATFACTORY CODE REVIEW CONTRACT v2 -->
 
 ## Validation
 
