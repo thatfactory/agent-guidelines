@@ -296,6 +296,8 @@ def validate_audit_skill(errors: list[str]) -> None:
         "validate_consumer_setup.py": "consumer integration validation",
         "format-and-lint": "local Swift-format audit",
         "lint-strict": "strict Swift-format CI audit",
+        "AppLogger": "AppLogger integration audit",
+        "Logging.md": "shared Logging guide reference",
         "no unresolved P0/P1 blocker remains": "Codex review stopping rule",
     }
     for value, description in required_skill_values.items():
