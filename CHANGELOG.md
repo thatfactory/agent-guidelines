@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.22] - 2026-08-24
+
+### Added
+
+- Required completion audits to verify and repair shared AppLogger integration for ThatFactory Apple-platform applications and Swift packages.
+
 ## [0.0.21] - 2026-08-23
 
 ### Changed
