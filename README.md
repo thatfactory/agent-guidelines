@@ -106,7 +106,7 @@ Keep the subtree tracked, but add this to the consumer's tracked `.gitattributes
 AgentGuidelines/** linguist-generated
 ```
 
-Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions. Keep the version-marked code-review contract directly in the repository-root `AGENTS.md`; Markdown links to shared guides are navigation, not automatic instruction includes.
+Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions. Keep the version-marked code-review and documentation-maintenance contracts directly in the repository-root `AGENTS.md`; Markdown links to shared guides are navigation, not automatic instruction includes.
 
 ### Configure global Codex instructions
 
@@ -132,7 +132,7 @@ Validate the checked-in consumer integration directly or through the completion-
 python3 AgentGuidelines/Scripts/validate_consumer_setup.py
 ```
 
-The validator checks the version-marked root Code Review contract, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, it also requires both configuration symlinks and a non-mutating `lint-strict` CI invocation. Pass `--require-swift-format` only when auditing formatter adoption before adding that guide link.
+The validator checks the version-marked root Code Review and Documentation Maintenance contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, it also requires both configuration symlinks and a non-mutating `lint-strict` CI invocation. Pass `--require-swift-format` only when auditing formatter adoption before adding that guide link.
 
 ## Update a consumer
 
@@ -146,7 +146,7 @@ git subtree pull \
     --squash
 ```
 
-Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract when its version changes, run `python3 AgentGuidelines/Scripts/validate_consumer_setup.py`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
+Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review and documentation-maintenance contracts when their versions change, run `python3 AgentGuidelines/Scripts/validate_consumer_setup.py`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
 
 ## Maintain the source of truth
 
