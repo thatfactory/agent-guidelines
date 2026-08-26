@@ -34,10 +34,16 @@ class ConsumerSetupTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         contract_errors: list[str] = []
         contract = VALIDATOR.extract_contract(template, contract_errors, "template")
+        documentation_contract = VALIDATOR.extract_documentation_contract(
+            template, contract_errors, "template"
+        )
         self.assertEqual(contract_errors, [])
         self.assertIsNotNone(contract)
+        self.assertIsNotNone(documentation_contract)
 
         agents = f"""# Project Instructions
+
+{documentation_contract}
 
 {contract}
 
@@ -137,6 +143,22 @@ jobs:
 
         self.assertTrue(
             any("code-review contract does not match" in error for error in self.validate())
+        )
+
+    def test_rejects_stale_documentation_maintenance_contract(self) -> None:
+        """Rejects a consumer root documentation contract that drifted from the template."""
+        agents_path = self.consumer_root / "AGENTS.md"
+        agents = agents_path.read_text(encoding="utf-8")
+        agents_path.write_text(
+            agents.replace("Regardless of change size", "Only for large changes", 1),
+            encoding="utf-8",
+        )
+
+        self.assertTrue(
+            any(
+                "documentation-maintenance contract does not match" in error
+                for error in self.validate()
+            )
         )
 
     def test_rejects_copied_audit_skill(self) -> None:

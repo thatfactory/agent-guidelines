@@ -12,6 +12,12 @@ from pathlib import Path
 GUIDELINES_ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_BEGIN = "<!-- BEGIN THATFACTORY CODE REVIEW CONTRACT v2 -->"
 CONTRACT_END = "<!-- END THATFACTORY CODE REVIEW CONTRACT v2 -->"
+DOCUMENTATION_CONTRACT_BEGIN = (
+    "<!-- BEGIN THATFACTORY DOCUMENTATION MAINTENANCE CONTRACT v1 -->"
+)
+DOCUMENTATION_CONTRACT_END = (
+    "<!-- END THATFACTORY DOCUMENTATION MAINTENANCE CONTRACT v1 -->"
+)
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 SWIFT_FORMAT_GUIDE = "AgentGuidelines/Guidelines/Swift/SwiftFormat.md"
 STRICT_FORMAT_COMMAND = re.compile(
@@ -36,16 +42,42 @@ def read_text(path: Path, errors: list[str], label: str) -> str | None:
         return None
 
 
-def extract_contract(contents: str, errors: list[str], label: str) -> str | None:
-    if contents.count(CONTRACT_BEGIN) != 1 or contents.count(CONTRACT_END) != 1:
-        errors.append(
-            f"{label}: expected exactly one {CONTRACT_BEGIN!r} and {CONTRACT_END!r}"
-        )
+def extract_marked_block(
+    contents: str,
+    begin: str,
+    end: str,
+    errors: list[str],
+    label: str,
+) -> str | None:
+    if contents.count(begin) != 1 or contents.count(end) != 1:
+        errors.append(f"{label}: expected exactly one {begin!r} and {end!r}")
         return None
 
-    start = contents.index(CONTRACT_BEGIN)
-    end = contents.index(CONTRACT_END, start) + len(CONTRACT_END)
-    return contents[start:end].strip()
+    start = contents.index(begin)
+    finish = contents.index(end, start) + len(end)
+    return contents[start:finish].strip()
+
+
+def extract_contract(contents: str, errors: list[str], label: str) -> str | None:
+    return extract_marked_block(
+        contents,
+        CONTRACT_BEGIN,
+        CONTRACT_END,
+        errors,
+        label,
+    )
+
+
+def extract_documentation_contract(
+    contents: str, errors: list[str], label: str
+) -> str | None:
+    return extract_marked_block(
+        contents,
+        DOCUMENTATION_CONTRACT_BEGIN,
+        DOCUMENTATION_CONTRACT_END,
+        errors,
+        label,
+    )
 
 
 def validate_symlink(path: Path, expected: Path, errors: list[str], label: str) -> None:
@@ -211,6 +243,22 @@ def validate_consumer_setup(
         ):
             errors.append(
                 "consumer AGENTS.md: code-review contract does not match "
+                "AgentGuidelines/Templates/AGENTS.md"
+            )
+
+        expected_documentation_contract = extract_documentation_contract(
+            template, errors, "AgentGuidelines template"
+        )
+        actual_documentation_contract = extract_documentation_contract(
+            agents, errors, "consumer AGENTS.md"
+        )
+        if (
+            expected_documentation_contract is not None
+            and actual_documentation_contract is not None
+            and actual_documentation_contract != expected_documentation_contract
+        ):
+            errors.append(
+                "consumer AGENTS.md: documentation-maintenance contract does not match "
                 "AgentGuidelines/Templates/AGENTS.md"
             )
 

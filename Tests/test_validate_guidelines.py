@@ -120,6 +120,18 @@ class SwiftFormattingConfigurationTests(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+class DocumentationGuidelineTests(unittest.TestCase):
+    """Verifies the documentation-maintenance policy contract."""
+
+    def test_documentation_guideline(self) -> None:
+        """Accepts the durable-change, stale-doc, and anti-churn rules."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_documentation_guideline(errors)
+
+        self.assertEqual(errors, [])
+
+
 class AgentGuidelinesAuditSkillTests(unittest.TestCase):
     """Verifies the mandatory completion-audit skill contract."""
 
