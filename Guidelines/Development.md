@@ -25,7 +25,7 @@ Before claiming implementation is complete, handing work to the user, preparing,
 
 If the skill is not discoverable in a subtree consumer, read and follow its [SKILL.md](../.agents/skills/agent-guidelines-audit/SKILL.md) directly. The audit is a final verification gate, not a substitute for reading and applying the relevant guidelines during implementation. Resolve in-scope findings and rerun affected checks before handoff. Do not broaden the requested scope merely to satisfy the audit.
 
-For subtree consumers, the audit runs `python3 AgentGuidelines/Scripts/validate_consumer_setup.py` to detect drift in the root Code Review contract, Codex subtree-review scope, `.gitattributes`, local guide links, and repository skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, the validator also requires the shared configuration symlinks and strict non-mutating CI adoption. User-level global Codex instructions are outside this repository audit.
+For subtree consumers, the audit runs `python3 AgentGuidelines/Scripts/validate_consumer_setup.py` to detect drift in the root Code Review and Documentation Maintenance contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and repository skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, the validator also requires the shared configuration symlinks and strict non-mutating CI adoption. User-level global Codex instructions are outside this repository audit.
 
 ## Logging
 

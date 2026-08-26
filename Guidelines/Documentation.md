@@ -1,5 +1,7 @@
 # Documentation
 
+Documentation is part of implementation. For every codebase change, evaluate whether durable project knowledge or any existing documentation is affected; do not treat documentation as optional cleanup after code and tests are complete.
+
 - Use PascalCase Markdown filenames without spaces.
 - Keep the folder flat until one topic genuinely requires several files.
 - Prefer current implementation over speculative future design; label known gaps explicitly.
@@ -17,9 +19,10 @@
 ## Project-level documentation
 
 - Keep durable architecture and cross-cutting guides in the consumer's declared documentation folder.
-- Update a guide when a change alters the documented architecture, data flow, public API, persistence, navigation, localization process, testing workflow, or delivery workflow.
-- Do not update broad guides for minor implementation changes already explained by code and DocC.
-- Remove or rewrite stale documentation when its feature or workflow is removed.
+- Update project documentation when a change alters durable or core feature behavior, architecture, data flow, public API, persistence, navigation, localization process, testing workflow, delivery workflow, configuration, or another documented contract.
+- Regardless of change size, update or remove existing documentation when the implementation makes a documented statement inaccurate, incomplete, misleading, or obsolete.
+- Do not create broad documentation for incidental implementation details that are neither durable knowledge nor already documented. A small change that leaves durable knowledge and existing documentation accurate needs no project-level documentation edit.
+- When renaming or removing behavior, search durable documentation for old names, examples, defaults, diagrams, setup steps, and references that may now be stale.
 - Keep investigations, temporary plans, and one-time spike notes out of durable documentation unless they become lasting guidance.
 - Prefer ASCII diagrams in fenced code blocks when universal rendering matters.
 
@@ -27,13 +30,16 @@
 
 When reviewing a change, ask:
 
-- Does it alter a documented public API or invariant?
+- Which existing documentation describes the changed feature, API, configuration, workflow, or invariant?
+- Does the change alter durable or core feature behavior?
+- Would any existing statement become inaccurate, incomplete, misleading, or obsolete even if the implementation change is small?
 - Does it introduce a reusable architectural pattern?
 - Does it change data flow, ownership, persistence, localization, testing, or delivery?
 - Does it remove or supersede an existing guide?
 - Are code comments and project guides consistent with the implementation?
+- If no documentation changed, is that because no durable knowledge changed and no existing documented claim was affected?
 
-Flag missing documentation only when the change affects durable knowledge. Avoid documentation churn for small fixes.
+Treat known stale documentation as incomplete implementation. Avoid documentation churn when the change neither affects durable knowledge nor changes an existing documented claim.
 
 ## Shared versus local guidance
 

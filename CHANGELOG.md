@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.23] - 2026-08-26
+
+### Added
+
+- Added a versioned documentation-maintenance contract to the consumer `AGENTS.md` template and consumer-setup validation so guideline upgrades detect projects that have not adopted the contract.
+
+### Changed
+
+- Strengthened documentation guidance and the completion audit so durable behavior changes and any change that makes existing documentation stale require documentation updates, while incidental implementation details do not create documentation churn.
+
 ## [0.0.22] - 2026-08-24
 
 ### Added

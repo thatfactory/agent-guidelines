@@ -21,6 +21,7 @@ SWIFT_FORMAT_GUIDELINE = ROOT / "Guidelines" / "Swift" / "SwiftFormat.md"
 CONSUMER_SETUP_SCRIPT = ROOT / "Scripts" / "validate_consumer_setup.py"
 AUDIT_SKILL = ROOT / ".agents" / "skills" / "agent-guidelines-audit" / "SKILL.md"
 DEVELOPMENT_GUIDELINE = ROOT / "Guidelines" / "Development.md"
+DOCUMENTATION_GUIDELINE = ROOT / "Guidelines" / "Documentation.md"
 AGENTS_TEMPLATE = ROOT / "Templates" / "AGENTS.md"
 EXPECTED_SWIFT_FORMAT_RULES = {
     "AllPublicDeclarationsHaveDocumentation": False,
@@ -152,6 +153,7 @@ def validate_readme_contract(errors: list[str]) -> None:
         ".agents/skills/agent-guidelines-audit": "completion-audit skill setup",
         "validate_consumer_setup.py": "consumer setup validation command",
         "--require-swift-format": "explicit Swift-format adoption validation",
+        "documentation-maintenance contract": "documentation contract synchronization",
     }
     for value, description in required.items():
         if value not in readme:
@@ -274,6 +276,24 @@ def validate_swift_format_guideline(errors: list[str]) -> None:
             )
 
 
+def validate_documentation_guideline(errors: list[str]) -> None:
+    contents = DOCUMENTATION_GUIDELINE.read_text(encoding="utf-8")
+    required = {
+        "Documentation is part of implementation": "implementation-time documentation rule",
+        "Regardless of change size": "existing-document staleness rule",
+        "inaccurate, incomplete, misleading, or obsolete": "stale documentation criteria",
+        "A small change that leaves durable knowledge and existing documentation accurate": (
+            "minor-change documentation churn guardrail"
+        ),
+    }
+    for value, description in required.items():
+        if value not in contents:
+            errors.append(
+                f"{DOCUMENTATION_GUIDELINE.relative_to(ROOT)}: "
+                f"missing {description}: {value!r}"
+            )
+
+
 def validate_consumer_setup_script(errors: list[str]) -> None:
     if not CONSUMER_SETUP_SCRIPT.is_file():
         errors.append(f"{CONSUMER_SETUP_SCRIPT.relative_to(ROOT)}: missing script")
@@ -298,6 +318,8 @@ def validate_audit_skill(errors: list[str]) -> None:
         "lint-strict": "strict Swift-format CI audit",
         "AppLogger": "AppLogger integration audit",
         "Logging.md": "shared Logging guide reference",
+        "## Audit documentation consistency": "documentation drift audit",
+        "Known stale documentation blocks completion": "stale documentation stopping rule",
         "no unresolved P0/P1 blocker remains": "Codex review stopping rule",
     }
     for value, description in required_skill_values.items():
@@ -318,6 +340,14 @@ def validate_audit_skill(errors: list[str]) -> None:
         errors.append(
             f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing Development.md pointer"
         )
+    if "BEGIN THATFACTORY DOCUMENTATION MAINTENANCE CONTRACT v1" not in agents_template:
+        errors.append(
+            f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing documentation-maintenance contract"
+        )
+    if "AgentGuidelines/Guidelines/Documentation.md" not in agents_template:
+        errors.append(
+            f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing Documentation.md pointer"
+        )
     if "## Stack" not in agents_template:
         errors.append(f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing Stack section")
 
@@ -333,6 +363,7 @@ def main() -> int:
     validate_editor_configuration(errors)
     validate_swift_format_script(errors)
     validate_swift_format_guideline(errors)
+    validate_documentation_guideline(errors)
     validate_consumer_setup_script(errors)
     validate_audit_skill(errors)
 

@@ -30,9 +30,19 @@ Review the actual change rather than only checking whether files exist:
 - Check tests for the required framework, mirrored paths, shared tags, Given/When/Then structure, deterministic seams, and coverage of changed behavior and failure paths.
 - Check logging ownership, subsystem, categories, emoji, privacy, severity, metadata stability, and noise controls when logging changed.
 - For every Apple-platform application or Swift package in scope, except the AppLogger provider repository itself, verify integration with the shared [Logging guide](../../../Guidelines/Logging.md): confirm the AppLogger dependency is declared, the `AppLogger` library product is linked to every target that emits diagnostics, and any new project has it available in its primary runtime target before its first log call. Search the actual package or Xcode dependency graph rather than relying on an `import` alone, and treat `print`, direct `Logger` instances, or duplicate logging backends as incomplete integration when they emit project diagnostics. When implementation is authorized, add or repair the dependency and target linkage and migrate affected calls while preserving the guide's ownership, subsystem, category, emoji, privacy, severity, and noise rules; report an exact blocker when target or platform constraints make safe integration ambiguous.
-- Check durable documentation, package configuration, CI/CD, Xcode project configuration, security-sensitive changes, and physical-device limitations when they are in scope. Compare documented Swift and concurrency settings with the effective application and test-target settings; flag both redundant isolation annotations and missing annotations at compiler-verified boundaries.
+- Check package configuration, CI/CD, Xcode project configuration, security-sensitive changes, and physical-device limitations when they are in scope. Compare documented Swift and concurrency settings with the effective application and test-target settings; flag both redundant isolation annotations and missing annotations at compiler-verified boundaries.
 - Search for stale type names, superseded files, direct APIs forbidden by the new architecture, empty folders, and references to removed behavior.
 - For pull-request or merge readiness, apply the root `## Code Review Rules`: confirm the Codex review covers the current head, no allowed Codex review round is pending, every Codex review thread has a disposition, and no unresolved P0/P1 blocker remains. Treat P2/P3 observations as non-blocking and never request another Codex review unless the repository owner explicitly authorizes it. This Codex review-round budget does not apply to otherwise-authorized Reasoning Relay/ChatGPT review delegations; do not block them waiting for a Codex-budget exception.
+
+## Audit documentation consistency
+
+When implementation, configuration, or workflow behavior changed, perform an explicit documentation-drift pass:
+
+1. Read the applicable [Documentation guide](../../../Guidelines/Documentation.md) and identify code-level or durable project documentation that describes the affected feature, API, configuration, workflow, or invariant.
+2. Compare those documented claims with the final implementation. Require a documentation update when the change alters durable or core behavior, or when any existing documented claim becomes inaccurate, incomplete, misleading, or obsolete, regardless of change size.
+3. Search relevant durable documentation for changed names, removed behavior, defaults, examples, diagrams, setup steps, and references. Inspect matches in context rather than assuming a keyword search alone proves consistency.
+4. Do not require new project-level prose for incidental implementation details that are not durable and do not affect an existing documented claim.
+5. When implementation is authorized, update or remove stale documentation in the same change. For review-only work, report the drift without editing. Known stale documentation blocks completion.
 
 ## Validate the evidence
 
@@ -68,6 +78,7 @@ Summarize:
 - the instruction and guideline areas audited;
 - consumer-integration validation and any drift found;
 - findings fixed during the audit;
+- documentation updated or removed, or why no documentation change was required;
 - validation commands and outcomes;
 - any deliberate deviations, unavailable evidence, or remaining blockers.
 
