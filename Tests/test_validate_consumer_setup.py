@@ -37,11 +37,17 @@ class ConsumerSetupTests(unittest.TestCase):
         documentation_contract = VALIDATOR.extract_documentation_contract(
             template, contract_errors, "template"
         )
+        external_dependency_contract = VALIDATOR.extract_external_dependency_contract(
+            template, contract_errors, "template"
+        )
         self.assertEqual(contract_errors, [])
         self.assertIsNotNone(contract)
         self.assertIsNotNone(documentation_contract)
+        self.assertIsNotNone(external_dependency_contract)
 
         agents = f"""# Project Instructions
+
+{external_dependency_contract}
 
 {documentation_contract}
 
@@ -157,6 +163,26 @@ jobs:
         self.assertTrue(
             any(
                 "documentation-maintenance contract does not match" in error
+                for error in self.validate()
+            )
+        )
+
+    def test_rejects_stale_external_dependency_contract(self) -> None:
+        """Rejects a consumer root dependency contract that drifted from the template."""
+        agents_path = self.consumer_root / "AGENTS.md"
+        agents = agents_path.read_text(encoding="utf-8")
+        agents_path.write_text(
+            agents.replace(
+                "only with explicit repository-owner approval",
+                "whenever the implementation agent prefers",
+                1,
+            ),
+            encoding="utf-8",
+        )
+
+        self.assertTrue(
+            any(
+                "external-dependency contract does not match" in error
                 for error in self.validate()
             )
         )

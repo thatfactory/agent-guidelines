@@ -132,6 +132,18 @@ class DocumentationGuidelineTests(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+class ExternalDependencyPolicyTests(unittest.TestCase):
+    """Verifies the native-first external dependency policy contract."""
+
+    def test_external_dependency_policy(self) -> None:
+        """Accepts the development, package, template, and audit policy wiring."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_external_dependency_policy(errors)
+
+        self.assertEqual(errors, [])
+
+
 class AgentGuidelinesAuditSkillTests(unittest.TestCase):
     """Verifies the mandatory completion-audit skill contract."""
 

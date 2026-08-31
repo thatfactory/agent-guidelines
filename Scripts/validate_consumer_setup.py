@@ -18,6 +18,12 @@ DOCUMENTATION_CONTRACT_BEGIN = (
 DOCUMENTATION_CONTRACT_END = (
     "<!-- END THATFACTORY DOCUMENTATION MAINTENANCE CONTRACT v1 -->"
 )
+EXTERNAL_DEPENDENCY_CONTRACT_BEGIN = (
+    "<!-- BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1 -->"
+)
+EXTERNAL_DEPENDENCY_CONTRACT_END = (
+    "<!-- END THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1 -->"
+)
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 SWIFT_FORMAT_GUIDE = "AgentGuidelines/Guidelines/Swift/SwiftFormat.md"
 STRICT_FORMAT_COMMAND = re.compile(
@@ -75,6 +81,18 @@ def extract_documentation_contract(
         contents,
         DOCUMENTATION_CONTRACT_BEGIN,
         DOCUMENTATION_CONTRACT_END,
+        errors,
+        label,
+    )
+
+
+def extract_external_dependency_contract(
+    contents: str, errors: list[str], label: str
+) -> str | None:
+    return extract_marked_block(
+        contents,
+        EXTERNAL_DEPENDENCY_CONTRACT_BEGIN,
+        EXTERNAL_DEPENDENCY_CONTRACT_END,
         errors,
         label,
     )
@@ -259,6 +277,22 @@ def validate_consumer_setup(
         ):
             errors.append(
                 "consumer AGENTS.md: documentation-maintenance contract does not match "
+                "AgentGuidelines/Templates/AGENTS.md"
+            )
+
+        expected_external_dependency_contract = extract_external_dependency_contract(
+            template, errors, "AgentGuidelines template"
+        )
+        actual_external_dependency_contract = extract_external_dependency_contract(
+            agents, errors, "consumer AGENTS.md"
+        )
+        if (
+            expected_external_dependency_contract is not None
+            and actual_external_dependency_contract is not None
+            and actual_external_dependency_contract != expected_external_dependency_contract
+        ):
+            errors.append(
+                "consumer AGENTS.md: external-dependency contract does not match "
                 "AgentGuidelines/Templates/AGENTS.md"
             )
 
