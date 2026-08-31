@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.24] - 2026-08-31
+
+### Added
+
+- Added a versioned external-dependency contract to consumer `AGENTS.md` files so applications, games, and reusable packages default to native or ThatFactory-owned implementations and require explicit repository-owner approval plus a durable decision record for third-party product dependencies.
+- Extended the completion audit and consumer-setup validation to detect unapproved or undocumented dependency additions and contract drift.
+
+### Changed
+
+- Clarified package guidance so first-party packages cannot conceal third-party runtime dependencies and guideline-mandated tooling remains tooling-only.
+
 ## [0.0.23] - 2026-08-26
 
 ### Added

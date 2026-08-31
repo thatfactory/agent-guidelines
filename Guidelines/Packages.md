@@ -61,6 +61,7 @@ The common package baseline is Swift, Xcode, Platforms, License, and CI. Add opt
 - Keep a reusable package focused on one coherent capability.
 - Prefer UI-agnostic domain APIs unless UI is the package's explicit purpose.
 - Do not add application Redux, navigation, persistence, or product policy to a generic package.
+- A first-party package must not introduce or conceal a third-party runtime dependency. Follow the [external dependency policy](Development.md#external-dependencies) before changing the dependency graph.
 - Keep public APIs minimal and stable. Prefer composing focused types over introducing umbrella abstractions before multiple consumers need them.
 - Declare platform and Swift toolchain requirements explicitly in `Package.swift`.
 - New Swift packages must start on the latest supported Swift language and toolchain version. Before adding a major package capability to an older package, plan and complete the required Swift/toolchain modernization first.
@@ -85,6 +86,8 @@ Packages own any diagnostics emitted by their implementation. Follow the shared 
 DocC is the default documentation format for public Swift packages. Document public APIs with `///` DocC comments and keep package-level conceptual material in a DocC catalog when it needs more than declaration comments.
 
 Before adopting the DocC command, an existing package must be updated to the latest supported Swift toolchain and declare the Swift-DocC plugin dependency in `Package.swift` (for example, `.package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "<current-plugin-version>")`). New packages must declare this prerequisite from the beginning when they publish DocC.
+
+The Swift-DocC plugin is a guideline-mandated tooling dependency under the [external dependency policy](Development.md#external-dependencies). Keep it tooling-only; do not link it into library or product runtime targets.
 
 Packages that publish documentation must build and deploy their DocC site as part of the release workflow:
 

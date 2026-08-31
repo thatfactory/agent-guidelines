@@ -22,6 +22,7 @@ CONSUMER_SETUP_SCRIPT = ROOT / "Scripts" / "validate_consumer_setup.py"
 AUDIT_SKILL = ROOT / ".agents" / "skills" / "agent-guidelines-audit" / "SKILL.md"
 DEVELOPMENT_GUIDELINE = ROOT / "Guidelines" / "Development.md"
 DOCUMENTATION_GUIDELINE = ROOT / "Guidelines" / "Documentation.md"
+PACKAGES_GUIDELINE = ROOT / "Guidelines" / "Packages.md"
 AGENTS_TEMPLATE = ROOT / "Templates" / "AGENTS.md"
 EXPECTED_SWIFT_FORMAT_RULES = {
     "AllPublicDeclarationsHaveDocumentation": False,
@@ -154,6 +155,7 @@ def validate_readme_contract(errors: list[str]) -> None:
         "validate_consumer_setup.py": "consumer setup validation command",
         "--require-swift-format": "explicit Swift-format adoption validation",
         "documentation-maintenance contract": "documentation contract synchronization",
+        "external-dependency contract": "external dependency contract synchronization",
     }
     for value, description in required.items():
         if value not in readme:
@@ -294,6 +296,50 @@ def validate_documentation_guideline(errors: list[str]) -> None:
             )
 
 
+def validate_external_dependency_policy(errors: list[str]) -> None:
+    development = DEVELOPMENT_GUIDELINE.read_text(encoding="utf-8")
+    required_development = {
+        "## External dependencies": "external dependency policy section",
+        "Do not introduce a new third-party source or binary dependency": (
+            "native and first-party default"
+        ),
+        "explicit approval from the repository owner": "repository-owner approval gate",
+        "durable repository documentation": "durable exception record",
+        "Tooling dependencies explicitly required by these shared guidelines": (
+            "tooling-only exception"
+        ),
+    }
+    for value, description in required_development.items():
+        if value not in development:
+            errors.append(
+                f"{DEVELOPMENT_GUIDELINE.relative_to(ROOT)}: "
+                f"missing {description}: {value!r}"
+            )
+
+    packages = PACKAGES_GUIDELINE.read_text(encoding="utf-8")
+    required_packages = {
+        "[external dependency policy](Development.md#external-dependencies)": (
+            "package dependency policy pointer"
+        ),
+        "must not introduce or conceal a third-party runtime dependency": (
+            "first-party package boundary"
+        ),
+        "guideline-mandated tooling dependency": "DocC tooling exception",
+    }
+    for value, description in required_packages.items():
+        if value not in packages:
+            errors.append(
+                f"{PACKAGES_GUIDELINE.relative_to(ROOT)}: "
+                f"missing {description}: {value!r}"
+            )
+
+    template = AGENTS_TEMPLATE.read_text(encoding="utf-8")
+    if "BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1" not in template:
+        errors.append(
+            f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing external-dependency contract"
+        )
+
+
 def validate_consumer_setup_script(errors: list[str]) -> None:
     if not CONSUMER_SETUP_SCRIPT.is_file():
         errors.append(f"{CONSUMER_SETUP_SCRIPT.relative_to(ROOT)}: missing script")
@@ -320,6 +366,8 @@ def validate_audit_skill(errors: list[str]) -> None:
         "Logging.md": "shared Logging guide reference",
         "## Audit documentation consistency": "documentation drift audit",
         "Known stale documentation blocks completion": "stale documentation stopping rule",
+        "new third-party dependency": "third-party dependency audit",
+        "repository-owner approval": "third-party dependency approval gate",
         "no unresolved P0/P1 blocker remains": "Codex review stopping rule",
     }
     for value, description in required_skill_values.items():
@@ -344,6 +392,10 @@ def validate_audit_skill(errors: list[str]) -> None:
         errors.append(
             f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing documentation-maintenance contract"
         )
+    if "BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1" not in agents_template:
+        errors.append(
+            f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing external-dependency contract"
+        )
     if "AgentGuidelines/Guidelines/Documentation.md" not in agents_template:
         errors.append(
             f"{AGENTS_TEMPLATE.relative_to(ROOT)}: missing Documentation.md pointer"
@@ -364,6 +416,7 @@ def main() -> int:
     validate_swift_format_script(errors)
     validate_swift_format_guideline(errors)
     validate_documentation_guideline(errors)
+    validate_external_dependency_policy(errors)
     validate_consumer_setup_script(errors)
     validate_audit_skill(errors)
 
