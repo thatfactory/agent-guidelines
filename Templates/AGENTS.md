@@ -23,6 +23,7 @@ Read only the guides relevant to the task:
 - [Git repositories and SSH-first cloning](AgentGuidelines/Guidelines/Git/Repositories.md)
 - [GitHub pull requests](AgentGuidelines/Guidelines/GitHub/PullRequests.md)
 - [Xcode MCP and visual verification](AgentGuidelines/Guidelines/Xcode/MCP.md)
+- [Xcode project settings](AgentGuidelines/Guidelines/Xcode/ProjectSettings.md)
 - [Xcode security audits](AgentGuidelines/Guidelines/Xcode/Security.md)
 
 For an application that uses Redux, also read [Redux architecture](AgentGuidelines/Guidelines/Architecture/Redux.md).
@@ -101,7 +102,7 @@ Replace these examples with exact repository paths:
 
 ## Stack
 
-Record the supported Xcode, Swift, and platform versions. State strict-concurrency mode, default actor isolation, infer-isolated-conformance behavior, and `nonisolated(nonsending)` defaults when they apply. Clarify whether application, package, and test targets share those settings.
+Record the supported Xcode, Swift, and platform versions. Follow the shared Xcode project-settings baseline and record any exact, scoped exception in the local specialization or linked durable documentation.
 
 ## Local specialization
 

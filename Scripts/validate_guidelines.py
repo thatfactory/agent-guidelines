@@ -18,8 +18,20 @@ SWIFT_FORMAT_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".swift-format"
 EDITOR_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".editorconfig"
 SWIFT_FORMAT_SCRIPT = ROOT / "Scripts" / "swift_format.sh"
 SWIFT_FORMAT_GUIDELINE = ROOT / "Guidelines" / "Swift" / "SwiftFormat.md"
+LOCALIZATION_GUIDELINE = ROOT / "Guidelines" / "Swift" / "Localization.md"
+XCODE_PROJECT_SETTINGS_GUIDELINE = ROOT / "Guidelines" / "Xcode" / "ProjectSettings.md"
+LOCALIZATION_PREPARATION_SCRIPT = ROOT / "Scripts" / "prepare_localizable_symbols.py"
+LOCALIZATION_VALIDATION_SCRIPT = ROOT / "Scripts" / "validate_string_catalogs.py"
 CONSUMER_SETUP_SCRIPT = ROOT / "Scripts" / "validate_consumer_setup.py"
 AUDIT_SKILL = ROOT / ".agents" / "skills" / "agent-guidelines-audit" / "SKILL.md"
+MARKDOWN_WRAPPING_SCRIPT = (
+    ROOT
+    / ".agents"
+    / "skills"
+    / "agent-guidelines-audit"
+    / "scripts"
+    / "check_markdown_wrapping.py"
+)
 DEVELOPMENT_GUIDELINE = ROOT / "Guidelines" / "Development.md"
 DOCUMENTATION_GUIDELINE = ROOT / "Guidelines" / "Documentation.md"
 PACKAGES_GUIDELINE = ROOT / "Guidelines" / "Packages.md"
@@ -85,6 +97,26 @@ FORBIDDEN = {
     "mobile-ios-" + "chauffeur": "work-repository identifier",
     "black" + "lane": "work-repository identifier",
 }
+UPCOMING_FEATURE_SETTINGS = (
+    "SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE",
+    "SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN",
+    "SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION",
+    "SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION",
+    "SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY",
+    "SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES",
+    "SWIFT_UPCOMING_FEATURE_GLOBAL_ACTOR_ISOLATED_TYPES_USABILITY",
+    "SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY",
+    "SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS",
+    "SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS",
+    "SWIFT_UPCOMING_FEATURE_INFER_ISOLATED_CONFORMANCES",
+    "SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES",
+    "SWIFT_UPCOMING_FEATURE_INTERNAL_IMPORTS_BY_DEFAULT",
+    "SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES",
+    "SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY",
+    "SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY",
+    "SWIFT_UPCOMING_FEATURE_NONISOLATED_NONSENDING_BY_DEFAULT",
+    "SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION",
+)
 
 
 def text_files() -> list[Path]:
@@ -296,6 +328,96 @@ def validate_documentation_guideline(errors: list[str]) -> None:
             )
 
 
+def validate_localization_guideline(errors: list[str]) -> None:
+    contents = LOCALIZATION_GUIDELINE.read_text(encoding="utf-8")
+    required = {
+        "using-generated-localizable-symbols-in-your-code": "Apple generated-symbol reference",
+        "localizing-your-app-using-agents": "Apple agent-localization reference",
+        "Xcode-generated `LocalizedStringResource` symbols": "generated-symbol default",
+        "prepare_localizable_symbols.py": "shared symbol-preparation workflow",
+        "validate_string_catalogs.py": "shared catalog-validation workflow",
+        "stale extracted entry": "stale-entry policy",
+        "marked `new` or `needs_review`": "translation-state policy",
+        "placeholder positions, semantic names, and conversion types": (
+            "format-signature policy"
+        ),
+        "product voice, terminology": "consumer-specific translation boundary",
+        "small repository-owned wrapper": "consumer configuration boundary",
+    }
+    for value, description in required.items():
+        if value not in contents:
+            errors.append(
+                f"{LOCALIZATION_GUIDELINE.relative_to(ROOT)}: "
+                f"missing {description}: {value!r}"
+            )
+
+
+def validate_localization_scripts(errors: list[str]) -> None:
+    scripts = {
+        LOCALIZATION_PREPARATION_SCRIPT: (
+            "Prepare String Catalog entries for generated Swift symbols",
+            "symbol_issues",
+            "--check",
+        ),
+        LOCALIZATION_VALIDATION_SCRIPT: (
+            "Validate String Catalogs and generated-symbol Swift source usage",
+            "--catalog-directory",
+            "--source-directory",
+            "--required-language",
+            "format_signature_issues",
+            "translation_state_issues",
+            "literal_localization_references",
+        ),
+    }
+    for script, required_values in scripts.items():
+        if not script.is_file():
+            errors.append(f"{script.relative_to(ROOT)}: missing localization script")
+            continue
+        if not os.access(script, os.X_OK):
+            errors.append(f"{script.relative_to(ROOT)}: localization script is not executable")
+        contents = script.read_text(encoding="utf-8")
+        if "Headroom" in contents:
+            errors.append(f"{script.relative_to(ROOT)}: contains consumer-specific logic")
+        for value in required_values:
+            if value not in contents:
+                errors.append(
+                    f"{script.relative_to(ROOT)}: missing localization behavior {value!r}"
+                )
+
+
+def validate_xcode_project_settings_guideline(errors: list[str]) -> None:
+    contents = XCODE_PROJECT_SETTINGS_GUIDELINE.read_text(encoding="utf-8")
+    required = {
+        "https://developer.apple.com/documentation/xcode/build-settings-reference": (
+            "official Apple build-settings reference"
+        ),
+        "GCC_TREAT_WARNINGS_AS_ERRORS": "C and Objective-C warning policy",
+        "MTL_TREAT_WARNINGS_AS_ERRORS": "Metal warning policy",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS": "Swift warning policy",
+        "SWIFT_APPROACHABLE_CONCURRENCY = YES": "approachable concurrency baseline",
+        "SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor": "default actor isolation baseline",
+        "SWIFT_STRICT_CONCURRENCY = complete": "strict concurrency baseline",
+        "newest stable Swift language mode": "future-facing Swift language policy",
+        "project-level `.xcconfig`": "project-level configuration ownership",
+        "unit-test and UI-test targets": "test-target effective-value audit",
+        "nearest applicable `AGENTS.md`": "local exception source",
+        "condition for removing or revisiting the exception": "exception lifecycle",
+    }
+    for value, description in required.items():
+        if value not in contents:
+            errors.append(
+                f"{XCODE_PROJECT_SETTINGS_GUIDELINE.relative_to(ROOT)}: "
+                f"missing {description}: {value!r}"
+            )
+
+    for setting in UPCOMING_FEATURE_SETTINGS:
+        if setting not in contents:
+            errors.append(
+                f"{XCODE_PROJECT_SETTINGS_GUIDELINE.relative_to(ROOT)}: "
+                f"missing Xcode 27 upcoming-feature baseline: {setting!r}"
+            )
+
+
 def validate_external_dependency_policy(errors: list[str]) -> None:
     development = DEVELOPMENT_GUIDELINE.read_text(encoding="utf-8")
     required_development = {
@@ -366,15 +488,42 @@ def validate_audit_skill(errors: list[str]) -> None:
         "Logging.md": "shared Logging guide reference",
         "## Audit documentation consistency": "documentation drift audit",
         "Known stale documentation blocks completion": "stale documentation stopping rule",
+        "## Audit documentation formatting": "documentation formatting audit",
+        "check_markdown_wrapping.py": "Markdown line-wrapping check",
+        "existing root Markdown files and declared durable documentation folders": (
+            "documentation-convention adoption pass"
+        ),
         "new third-party dependency": "third-party dependency audit",
         "repository-owner approval": "third-party dependency approval gate",
         "no unresolved P0/P1 blocker remains": "Codex review stopping rule",
+        "## Audit Xcode project settings": "Xcode project-settings audit",
+        "Xcode/ProjectSettings.md": "shared Xcode project-settings guide reference",
+        "GCC_TREAT_WARNINGS_AS_ERRORS": "warnings-as-errors project audit",
+        "SWIFT_UPCOMING_FEATURE_": "future-facing upcoming-feature audit",
+        "SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor": "actor-isolation project audit",
+        "SWIFT_VERSION": "Swift language-version project audit",
+        "xcodebuild -showBuildSettings": "effective target build-setting inspection",
+        "nearest applicable `AGENTS.md`": "project-setting exception lookup",
+        "## Audit localization": "localization audit",
+        "Swift/Localization.md": "shared Localization guide reference",
+        "prepare_localizable_symbols.py": "generated-symbol preparation audit",
+        "validate_string_catalogs.py": "String Catalog validation audit",
+        "A local wrapper may": "consumer localization-wrapper boundary",
     }
     for value, description in required_skill_values.items():
         if value not in skill:
             errors.append(
                 f"{AUDIT_SKILL.relative_to(ROOT)}: missing {description}: {value!r}"
             )
+
+    if not MARKDOWN_WRAPPING_SCRIPT.is_file():
+        errors.append(
+            f"{MARKDOWN_WRAPPING_SCRIPT.relative_to(ROOT)}: missing Markdown wrapping checker"
+        )
+    elif not os.access(MARKDOWN_WRAPPING_SCRIPT, os.X_OK):
+        errors.append(
+            f"{MARKDOWN_WRAPPING_SCRIPT.relative_to(ROOT)}: checker is not executable"
+        )
 
     development = DEVELOPMENT_GUIDELINE.read_text(encoding="utf-8")
     if "$agent-guidelines-audit" not in development:
@@ -416,6 +565,9 @@ def main() -> int:
     validate_swift_format_script(errors)
     validate_swift_format_guideline(errors)
     validate_documentation_guideline(errors)
+    validate_localization_guideline(errors)
+    validate_localization_scripts(errors)
+    validate_xcode_project_settings_guideline(errors)
     validate_external_dependency_policy(errors)
     validate_consumer_setup_script(errors)
     validate_audit_skill(errors)

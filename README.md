@@ -76,6 +76,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [SwiftUI](Guidelines/Swift/SwiftUI.md)
 - [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
 - [Xcode MCP and visual verification](Guidelines/Xcode/MCP.md)
+- [Xcode project settings](Guidelines/Xcode/ProjectSettings.md)
 - [Xcode security audits](Guidelines/Xcode/Security.md)
 
 Only reference the guides that apply. Agent workflow normally applies to both applications and packages. A UI-agnostic package normally also uses Swift, style, testing, documentation, logging, packages, CI/CD, and Xcode guidance, but not Redux or SwiftUI guidance.
@@ -88,7 +89,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.24 \
+    0.0.25 \
     --squash
 ```
 
@@ -142,7 +143,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.24 \
+    0.0.25 \
     --squash
 ```
 

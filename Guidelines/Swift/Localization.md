@@ -1,6 +1,6 @@
 # Localization
 
-Follow Apple's [Localizing your app using agents](https://developer.apple.com/documentation/xcode/localizing-your-app-using-agents) workflow and current Xcode localization tools. Consumer repositories declare their supported languages, catalog locations, key conventions, and generated-symbol policy locally.
+Follow Apple's [Localizing your app using agents](https://developer.apple.com/documentation/xcode/localizing-your-app-using-agents) workflow and current Xcode localization tools. Consumer repositories declare their supported languages, catalog and source locations, product voice, terminology, and narrow exceptions locally.
 
 ## Source artifacts
 
@@ -8,6 +8,14 @@ Follow Apple's [Localizing your app using agents](https://developer.apple.com/do
 - Do not create a parallel catalog or migrate an existing `.strings` setup unless the task includes that migration.
 - An app target uses its main bundle by default. Swift packages and frameworks must resolve localized resources from their own bundle, using the current Apple-recommended bundle API.
 - Keep one source of truth for translator context: either the source comment or the catalog comment.
+
+## Generated symbols
+
+- Define user-facing text in the appropriate String Catalog first and use Xcode-generated `LocalizedStringResource` symbols from Swift. Enable Generate String Catalog Symbols when an older project does not already generate them.
+- Give a string a semantic catalog key when deriving a readable symbol from its source value would be ambiguous. Name formatted variables in the source value so Xcode generates labeled parameters.
+- Use generated properties and functions directly in SwiftUI, and resolve them with `String(localized:)` or `AttributedString(localized:)` only where that concrete value is required.
+- Generated Swift is build output. Inspect it through Xcode or `xcstringstool` when useful, but never edit or check it in.
+- Do not add new localizable Swift literals after a project adopts generated symbols. Use `Text(verbatim:)` only for nonlinguistic punctuation, identifiers, and other intentionally unlocalized content.
 
 ## User-facing values
 
@@ -23,6 +31,9 @@ Follow Apple's [Localizing your app using agents](https://developer.apple.com/do
 - Add translator comments for ambiguous language and describe interpolated placeholders by position and meaning.
 - Use locale-aware `FormatStyle` APIs for dates, numbers, lists, measurements, and currencies.
 - Avoid runtime case transformations for localized interface text; allow translations to choose appropriate casing.
+- Keep placeholder positions, semantic names, and conversion types identical across source and translated variants.
+- Add language-specific plural variants for counts instead of branching between singular and plural text in Swift.
+- Preserve the distinction between unavailable data and numeric zero.
 
 ## Layout
 
@@ -35,9 +46,36 @@ Follow Apple's [Localizing your app using agents](https://developer.apple.com/do
 
 1. Inspect the consumer's local localization instructions and catalogs.
 2. Ask Xcode's current documentation or localization capability for the supported workflow.
-3. Add or update source-language content and translator context.
-4. Update only the languages in scope.
-5. Build to validate catalog syntax, extraction, generated symbols, and bundle lookup.
-6. Use previews or runtime visual verification for truncation, layout direction, and formatting when relevant.
+3. Add the key, source-language value, and translator comment directly to the catalog. Mark an explicitly maintained generated-symbol entry as manual and use named placeholders for formatted values.
+4. Inspect the generated API through Xcode's catalog inspector or, when needed, `xcrun xcstringstool generate-symbols`. Use the generated property or function from Swift.
+5. For a legacy catalog whose keys were extracted from Swift literals, run the shared preparation script once. It preserves comments, variants, and translations, leaves stale entries for an explicit decision, and refuses to invent a missing source value for an already-manual semantic key. Use `--check` for a nonmutating readiness check.
+6. Use Xcode's localization coordinator and String Catalog tools to add or update only the languages in scope. Do not replace contextual translation decisions with ad hoc JSON-rewriting scripts.
+7. Resolve every stale extracted entry and every active translated value marked `new` or `needs_review`. Keep agent output machine-translated until a fluent reviewer approves it.
+8. Run the shared catalog validator after every catalog or localization-source change. It checks generated-symbol readiness, stale entries, required languages, translation states, format signatures, and Swift literals that bypass generated symbols.
+9. Open each changed catalog in Xcode and require zero catalog-editor errors or warnings; these diagnostics do not necessarily become compiler warnings.
+10. Build and test source and translated languages. Exercise long strings, every plural branch, and right-to-left layout even when no right-to-left locale ships.
+11. Have a fluent reviewer inspect machine translations before recording them as reviewed.
+
+## Shared scripts
+
+Supply project-specific paths and supported languages at the consumer boundary:
+
+```sh
+python3 AgentGuidelines/Scripts/prepare_localizable_symbols.py \
+  <path-to-Localizable.xcstrings> \
+  --check
+
+python3 AgentGuidelines/Scripts/validate_string_catalogs.py \
+  --catalog-directory <catalog-directory> \
+  --source-directory <swift-source-directory> \
+  --required-language <language-identifier>
+```
+
+Repeat directory, catalog, or language options when the project has several. A consumer may keep a small repository-owned wrapper so existing developer and CI commands supply its paths and languages consistently; the wrapper must delegate to the synchronized shared script rather than copy its validation or migration logic.
 
 Do not invent translations from an unrelated project's conventions. Product vocabulary and tone remain consumer-specific.
+
+## References
+
+- [Using generated localizable symbols in your code](https://developer.apple.com/documentation/xcode/using-generated-localizable-symbols-in-your-code)
+- [Localizing your app using agents](https://developer.apple.com/documentation/xcode/localizing-your-app-using-agents)
