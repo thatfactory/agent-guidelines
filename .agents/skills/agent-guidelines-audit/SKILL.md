@@ -48,14 +48,17 @@ For every checked-in `.xcodeproj`, read and apply the shared [Xcode project-sett
 
 ## Audit localization
 
-When the repository contains localized Apple-platform targets or String Catalogs, read the shared [Localization guide](../../../Guidelines/Swift/Localization.md) and the consumer's local translation guidance:
+When the repository contains localized targets or String Catalogs, read the shared [Localization guide](../../../Guidelines/Localization.md) and the consumer's local translation guidance:
 
 1. Keep supported languages, catalog and source paths, product voice, glossary, non-translatable terms, and project-specific exceptions in consumer documentation. Do not move those specifics into shared guidance or infer them from another product.
 2. Confirm the project uses generated localizable symbols for maintained Swift catalog entries, does not check generated Swift into source control, and does not add localizable Swift literals that bypass the generated API.
 3. Require the synchronized `prepare_localizable_symbols.py` and `validate_string_catalogs.py` logic. A local wrapper may supply project paths and languages to preserve a stable developer or CI command, but it must not retain a forked copy of shared migration or validation logic.
 4. Run the consumer's documented nonmutating preparation check and catalog validator. Confirm CI runs the validator for localized projects and that every configured catalog and Swift source root is covered.
-5. Inspect stale entries, required-language coverage, translation states, plural variants, and format placeholders in context. Require Xcode catalog-editor diagnostics plus source/translated-language, long-text, plural, and right-to-left verification when affected.
-6. Preserve machine-translation state until fluent review. Treat missing required validation, unresolved catalog errors, or undocumented project-specific deviations as incomplete implementation.
+5. Inspect stale entries, required-language coverage, translation states, plural variants, and format placeholders in context. Require source/translated-language, long-text, plural, and right-to-left verification when affected.
+6. Establish the explicit Git base for the completed change. If any added, copied, modified, renamed, or untracked `.xcstrings` file exists relative to that base, open every changed catalog in Xcode and inspect its String Catalog editor diagnostics. Record the repository-relative catalog path, selected Xcode version and build, and an explicit result of zero editor errors and zero editor warnings for each catalog.
+7. From the consumer root, run `python3 AgentGuidelines/.agents/skills/agent-guidelines-audit/scripts/check_xcstrings_inspection.py --base-ref <base-ref> --inspected-catalog <catalog-path> --evidence-output <temporary-evidence-path>`, repeating `--inspected-catalog` for every changed catalog. In this source repository, use `.agents/skills/agent-guidelines-audit/scripts/check_xcstrings_inspection.py`. Keep the JSON evidence outside the repository and summarize its catalog paths, Xcode build, and zero-diagnostic results in the completion handoff and pull-request description.
+8. Fail closed when a changed catalog lacks that recorded editor evidence. A catalog validator, `xcstringstool`, warning-clean build, test run, or unrecorded statement that Xcode was checked is not a substitute. Do not claim audit success, open or update a pull request, or declare merge readiness until the evidence gate passes.
+9. Preserve machine-translation state until fluent review. Treat missing required validation, unresolved catalog errors or warnings, missing catalog-editor evidence, or undocumented project-specific deviations as incomplete implementation.
 
 ## Audit documentation consistency
 
@@ -113,6 +116,7 @@ Summarize:
 - findings fixed during the audit;
 - documentation updated or removed, or why no documentation change was required;
 - validation commands and outcomes;
+- changed-String-Catalog detection and, when applicable, the recorded Xcode version, catalog paths, and zero catalog-editor errors and warnings;
 - any deliberate deviations, unavailable evidence, or remaining blockers.
 
 Do not say the work is done merely because the audit ran. Say it is ready only when the requested outcome is complete and the relevant evidence passes.

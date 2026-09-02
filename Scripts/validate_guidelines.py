@@ -18,7 +18,7 @@ SWIFT_FORMAT_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".swift-format"
 EDITOR_CONFIGURATION = ROOT / "Configurations" / "Swift" / ".editorconfig"
 SWIFT_FORMAT_SCRIPT = ROOT / "Scripts" / "swift_format.sh"
 SWIFT_FORMAT_GUIDELINE = ROOT / "Guidelines" / "Swift" / "SwiftFormat.md"
-LOCALIZATION_GUIDELINE = ROOT / "Guidelines" / "Swift" / "Localization.md"
+LOCALIZATION_GUIDELINE = ROOT / "Guidelines" / "Localization.md"
 XCODE_PROJECT_SETTINGS_GUIDELINE = ROOT / "Guidelines" / "Xcode" / "ProjectSettings.md"
 LOCALIZATION_PREPARATION_SCRIPT = ROOT / "Scripts" / "prepare_localizable_symbols.py"
 LOCALIZATION_VALIDATION_SCRIPT = ROOT / "Scripts" / "validate_string_catalogs.py"
@@ -31,6 +31,14 @@ MARKDOWN_WRAPPING_SCRIPT = (
     / "agent-guidelines-audit"
     / "scripts"
     / "check_markdown_wrapping.py"
+)
+STRING_CATALOG_INSPECTION_SCRIPT = (
+    ROOT
+    / ".agents"
+    / "skills"
+    / "agent-guidelines-audit"
+    / "scripts"
+    / "check_xcstrings_inspection.py"
 )
 DEVELOPMENT_GUIDELINE = ROOT / "Guidelines" / "Development.md"
 DOCUMENTATION_GUIDELINE = ROOT / "Guidelines" / "Documentation.md"
@@ -510,9 +518,14 @@ def validate_audit_skill(errors: list[str]) -> None:
         "xcodebuild -showBuildSettings": "effective target build-setting inspection",
         "nearest applicable `AGENTS.md`": "project-setting exception lookup",
         "## Audit localization": "localization audit",
-        "Swift/Localization.md": "shared Localization guide reference",
+        "Guidelines/Localization.md": "shared Localization guide reference",
         "prepare_localizable_symbols.py": "generated-symbol preparation audit",
         "validate_string_catalogs.py": "String Catalog validation audit",
+        "check_xcstrings_inspection.py": "String Catalog editor evidence gate",
+        "Fail closed when a changed catalog lacks that recorded editor evidence": (
+            "missing String Catalog editor evidence stopping rule"
+        ),
+        "pull-request description": "durable pull-request evidence summary",
         "A local wrapper may": "consumer localization-wrapper boundary",
     }
     for value, description in required_skill_values.items():
@@ -528,6 +541,16 @@ def validate_audit_skill(errors: list[str]) -> None:
     elif not os.access(MARKDOWN_WRAPPING_SCRIPT, os.X_OK):
         errors.append(
             f"{MARKDOWN_WRAPPING_SCRIPT.relative_to(ROOT)}: checker is not executable"
+        )
+
+    if not STRING_CATALOG_INSPECTION_SCRIPT.is_file():
+        errors.append(
+            f"{STRING_CATALOG_INSPECTION_SCRIPT.relative_to(ROOT)}: "
+            "missing String Catalog inspection checker"
+        )
+    elif not os.access(STRING_CATALOG_INSPECTION_SCRIPT, os.X_OK):
+        errors.append(
+            f"{STRING_CATALOG_INSPECTION_SCRIPT.relative_to(ROOT)}: checker is not executable"
         )
 
     development = DEVELOPMENT_GUIDELINE.read_text(encoding="utf-8")
