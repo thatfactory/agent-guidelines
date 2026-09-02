@@ -2,6 +2,19 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.25] - 2026-09-02
+
+### Added
+
+- Added generic generated-symbol localization guidance plus reusable String Catalog preparation and validation scripts with consumer-configured paths and languages.
+- Added an Xcode project-settings baseline covering warnings-as-errors, strict and approachable concurrency, default MainActor isolation, the latest stable Swift language mode, and every upcoming feature that remains opt-in for that language mode.
+- Added documentation conventions for single-line Markdown prose and aligned ASCII diagrams, together with a deterministic wrapping checker.
+
+### Changed
+
+- Expanded the completion audit to verify localization workflows, project-level Xcode setting inheritance and documented exceptions, documentation formatting, and convention adoption across existing durable documentation.
+- Updated the consumer template and guideline catalog for the new Xcode project-settings and localization workflows.
+
 ## [0.0.24] - 2026-08-31
 
 ### Added

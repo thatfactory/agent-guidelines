@@ -132,6 +132,31 @@ class DocumentationGuidelineTests(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+class LocalizationGuidelineTests(unittest.TestCase):
+    """Verifies the shared generated-symbol localization workflow."""
+
+    def test_localization_guideline_and_scripts(self) -> None:
+        """Accepts generic guidance and reusable preparation and validation tools."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_localization_guideline(errors)
+        VALIDATOR.validate_localization_scripts(errors)
+
+        self.assertEqual(errors, [])
+
+
+class XcodeProjectSettingsGuidelineTests(unittest.TestCase):
+    """Verifies the project-level Xcode build-settings contract."""
+
+    def test_xcode_project_settings_guideline(self) -> None:
+        """Accepts warning, concurrency, language, upcoming-feature, and exception rules."""
+        errors: list[str] = []
+
+        VALIDATOR.validate_xcode_project_settings_guideline(errors)
+
+        self.assertEqual(errors, [])
+
+
 class ExternalDependencyPolicyTests(unittest.TestCase):
     """Verifies the native-first external dependency policy contract."""
 

@@ -7,6 +7,7 @@
 - Use current `swift-collections` documentation when working with its collection types.
 - Import the module that owns an API. For example, APIs specific to `OrderedCollections` require `import OrderedCollections`.
 - Maintain a zero-warning policy for warnings introduced by the change.
+- For Xcode projects, apply the shared [project-settings baseline](../Xcode/ProjectSettings.md) at project level so every application and test target inherits it.
 
 ## Implementation
 
