@@ -22,6 +22,12 @@ Tooling dependencies explicitly required by these shared guidelines, such as doc
 
 Before changing a project, verify that it uses the latest released version of `agent-guidelines`. Check the project's `AgentGuidelines/VERSION` against the latest release, update the subtree or equivalent when it is behind, and read the updated applicable guides before starting implementation. This check is manual and must be performed at the beginning of each project task.
 
+## Repository automation
+
+Use Swift for new repository-owned executable scripts in Swift-focused applications, games, and packages. Prefer the Swift standard library and Foundation so the automation uses the same native toolchain and dependency policy as the codebase. Do not introduce Python, Ruby, JavaScript, or another scripting-language runtime for new validation, transformation, migration, or maintenance logic.
+
+An existing non-Swift script may remain only as a narrow, documented exception; its existence does not authorize new non-Swift automation. The central `Scripts/swift_format.sh` command wrapper is the retained exception for invoking Xcode's `swift-format` modes.
+
 ## Guidelines changes in pull requests
 
 Keep `AgentGuidelines/` tracked so consumers retain a reproducible, versioned copy for agents and CI. Do not add the subtree to `.gitignore`. Instead, add this rule to the consumer's tracked `.gitattributes` so GitHub collapses synchronized guideline files in pull-request diffs by default while reviewers can still expand them:
@@ -39,7 +45,7 @@ Before claiming implementation is complete, handing work to the user, preparing,
 
 If the skill is not discoverable in a subtree consumer, read and follow its [SKILL.md](../.agents/skills/agent-guidelines-audit/SKILL.md) directly. The audit is a final verification gate, not a substitute for reading and applying the relevant guidelines during implementation. Resolve in-scope findings and rerun affected checks before handoff. Do not broaden the requested scope merely to satisfy the audit.
 
-For subtree consumers, the audit runs `python3 AgentGuidelines/Scripts/validate_consumer_setup.py` to detect drift in the root Code Review and Documentation Maintenance contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and repository skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, the validator also requires the shared configuration symlinks and strict non-mutating CI adoption. User-level global Codex instructions are outside this repository audit.
+For subtree consumers, the audit runs `AgentGuidelines/Scripts/validate_consumer_setup.swift` to detect drift in the root Code Review and Documentation Maintenance contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and repository skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, the validator also requires the shared configuration symlinks and strict non-mutating CI adoption. User-level global Codex instructions are outside this repository audit.
 
 ## Logging
 

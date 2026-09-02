@@ -61,11 +61,11 @@ Follow Apple's [Localizing your app using agents](https://developer.apple.com/do
 Supply project-specific paths and supported languages at the consumer boundary:
 
 ```sh
-python3 AgentGuidelines/Scripts/prepare_localizable_symbols.py \
+AgentGuidelines/Scripts/prepare_localizable_symbols.swift \
   <path-to-Localizable.xcstrings> \
   --check
 
-python3 AgentGuidelines/Scripts/validate_string_catalogs.py \
+AgentGuidelines/Scripts/validate_string_catalogs.swift \
   --catalog-directory <catalog-directory> \
   --source-directory <swift-source-directory> \
   --required-language <language-identifier>
@@ -76,7 +76,7 @@ Repeat directory, catalog, or language options when the project has several. A c
 The completion audit discovers changed String Catalogs relative to an explicit Git base and fails closed until every catalog has a recorded Xcode editor inspection. After opening each changed catalog and confirming zero editor errors and warnings, run the audit helper from the consumer root and keep its JSON outside the repository:
 
 ```sh
-python3 AgentGuidelines/.agents/skills/agent-guidelines-audit/scripts/check_xcstrings_inspection.py \
+AgentGuidelines/.agents/skills/agent-guidelines-audit/scripts/check_xcstrings_inspection.swift \
   --base-ref <pull-request-base-ref> \
   --inspected-catalog <repository-relative-catalog-path> \
   --evidence-output <temporary-evidence-path>

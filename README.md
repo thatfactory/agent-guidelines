@@ -89,8 +89,8 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.25 \
-    --squash
+  0.0.26 \
+  --squash
 ```
 
 Swift consumers that adopt the shared formatter expose its configuration at the repository root so Xcode and other tools discover it:
@@ -130,10 +130,10 @@ ln -s ../../AgentGuidelines/.agents/skills/agent-guidelines-audit \
 Validate the checked-in consumer integration directly or through the completion-audit skill:
 
 ```sh
-python3 AgentGuidelines/Scripts/validate_consumer_setup.py
+AgentGuidelines/Scripts/validate_consumer_setup.swift
 ```
 
-The validator checks the version-marked root Code Review, Documentation Maintenance, and External Dependency contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, it also requires both configuration symlinks and a non-mutating `lint-strict` CI invocation. Pass `--require-swift-format` only when auditing formatter adoption before adding that guide link.
+The native Swift validator checks the version-marked root Code Review, Documentation Maintenance, and External Dependency contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, it also requires both configuration symlinks and a non-mutating `lint-strict` CI invocation. Pass `--require-swift-format` only when auditing formatter adoption before adding that guide link.
 
 ## Update a consumer
 
@@ -143,11 +143,11 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-    0.0.25 \
-    --squash
+  0.0.26 \
+  --squash
 ```
 
-Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract, documentation-maintenance contract, and external-dependency contract when their versions change, run `python3 AgentGuidelines/Scripts/validate_consumer_setup.py`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
+Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract, documentation-maintenance contract, and external-dependency contract when their versions change, run `AgentGuidelines/Scripts/validate_consumer_setup.swift`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
 
 ## Maintain the source of truth
 
@@ -160,7 +160,7 @@ Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the mark
 2. Compare relevant guidance with this repository and official Apple documentation.
 3. Bring over durable policy, not the exported skill text or an SDK API catalog.
 4. Remove obsolete or conflicting rules instead of accumulating historical alternatives.
-5. Run `python3 Scripts/validate_guidelines.py`.
+5. Run `Scripts/validate_guidelines.swift`.
 6. Update `VERSION` and `CHANGELOG.md`, open a pull request, and wait for approval before merging.
 7. After the pull request has merged, create the matching tag and GitHub release.
 
