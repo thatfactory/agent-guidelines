@@ -24,38 +24,38 @@ Set the concurrency baseline:
 
 Set `SWIFT_VERSION` to the newest stable Swift language mode supported by the selected Xcode. The current language mode is Swift 6, serialized as `SWIFT_VERSION = 6.0`; move to 7, 8, 9, and later stable modes when their supporting Xcode releases are adopted. Do not confuse the compiler's minor release, such as Swift 6.4, with the Swift language mode.
 
-Enable every build setting exposed by the selected Xcode whose name begins with `SWIFT_UPCOMING_FEATURE_`. `SWIFT_APPROACHABLE_CONCURRENCY` enables a subset of concurrency features but does not replace the explicit upcoming-feature settings. Keep an exposed setting explicitly enabled even when the current language mode enables that behavior implicitly, so the project contract remains visible.
+Inspect every build setting exposed by the selected Xcode whose name begins with `SWIFT_UPCOMING_FEATURE_`. Enable each feature that remains opt-in under the selected Swift language mode. Do not set an upcoming-feature flag when that language mode already enables the feature unconditionally: Swift diagnoses some redundant flags, and warnings-as-errors can turn that diagnostic into a build failure. `SWIFT_APPROACHABLE_CONCURRENCY` enables a subset of concurrency features but does not replace the applicable explicit upcoming-feature settings.
 
-The Xcode 27 baseline is:
+The Xcode 27 inventory to evaluate is:
 
-- `SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE = YES`
-- `SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN = YES`
-- `SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION = YES`
-- `SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION = YES`
-- `SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES`
-- `SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES = YES`
-- `SWIFT_UPCOMING_FEATURE_GLOBAL_ACTOR_ISOLATED_TYPES_USABILITY = YES`
-- `SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY = YES`
-- `SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS = YES`
-- `SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS = YES`
-- `SWIFT_UPCOMING_FEATURE_INFER_ISOLATED_CONFORMANCES = YES`
-- `SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES = YES`
-- `SWIFT_UPCOMING_FEATURE_INTERNAL_IMPORTS_BY_DEFAULT = YES`
-- `SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES = YES`
-- `SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES`
-- `SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY = YES`
-- `SWIFT_UPCOMING_FEATURE_NONISOLATED_NONSENDING_BY_DEFAULT = YES`
-- `SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION = YES`
+- `SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE`
+- `SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN`
+- `SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION`
+- `SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION`
+- `SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY`
+- `SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES`
+- `SWIFT_UPCOMING_FEATURE_GLOBAL_ACTOR_ISOLATED_TYPES_USABILITY`
+- `SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY`
+- `SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS`
+- `SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS`
+- `SWIFT_UPCOMING_FEATURE_INFER_ISOLATED_CONFORMANCES`
+- `SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES`
+- `SWIFT_UPCOMING_FEATURE_INTERNAL_IMPORTS_BY_DEFAULT`
+- `SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES`
+- `SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY`
+- `SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY`
+- `SWIFT_UPCOMING_FEATURE_NONISOLATED_NONSENDING_BY_DEFAULT`
+- `SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION`
 
-Treat this list as a minimum for Xcode 27, not a permanent exhaustive list. When adopting a newer Xcode, compare its build settings with this prefix and add any newly exposed setting to every project configuration.
+Treat this list as discovery input for Xcode 27, not as a set of flags that must all be present and not as a permanent exhaustive list. When adopting a newer Xcode, compare its build settings with this prefix and evaluate newly exposed settings against the selected Swift language mode. Require each still-upcoming feature at project level; omit each feature already incorporated into the language mode.
 
 ## Audit procedure
 
 1. Identify the selected Xcode version and its newest stable Swift language mode.
 2. Inspect the `PBXProject` build configurations and any project-level `.xcconfig` files. Confirm every Debug, Release, and custom configuration defines the complete baseline.
-3. Compare the active Xcode's build settings with the `SWIFT_UPCOMING_FEATURE_` prefix so newly introduced settings are not missed.
+3. Compare the active Xcode's build settings with the `SWIFT_UPCOMING_FEATURE_` prefix so newly introduced settings are not missed. Use the setting documentation and compiler diagnostics for the selected language mode to distinguish still-upcoming features from features that are already unconditional.
 4. Enumerate every target, including unit-test and UI-test targets, and every supported configuration. Use Xcode project-aware tooling or `xcodebuild -showBuildSettings` to verify the effective values.
-5. Inspect target build configurations for redundant copies, disabling values, or overrides. Remove redundant copies and resolve undocumented overrides.
+5. Inspect target build configurations for redundant copies, disabling values, overrides, or upcoming-feature flags that are redundant in the selected language mode. Remove redundant copies and resolve undocumented overrides.
 6. Build the relevant configurations and treat every warning as a failure unless an applicable documented exception explicitly covers the setting that would otherwise promote it.
 
 ## Exceptions

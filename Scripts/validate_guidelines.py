@@ -398,6 +398,11 @@ def validate_xcode_project_settings_guideline(errors: list[str]) -> None:
         "SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor": "default actor isolation baseline",
         "SWIFT_STRICT_CONCURRENCY = complete": "strict concurrency baseline",
         "newest stable Swift language mode": "future-facing Swift language policy",
+        "Enable each feature that remains opt-in": "language-mode-aware upcoming-feature policy",
+        "warnings-as-errors can turn that diagnostic into a build failure": (
+            "redundant upcoming-feature safety rule"
+        ),
+        "Xcode 27 inventory to evaluate": "Xcode 27 upcoming-feature inventory",
         "project-level `.xcconfig`": "project-level configuration ownership",
         "unit-test and UI-test targets": "test-target effective-value audit",
         "nearest applicable `AGENTS.md`": "local exception source",
@@ -414,7 +419,7 @@ def validate_xcode_project_settings_guideline(errors: list[str]) -> None:
         if setting not in contents:
             errors.append(
                 f"{XCODE_PROJECT_SETTINGS_GUIDELINE.relative_to(ROOT)}: "
-                f"missing Xcode 27 upcoming-feature baseline: {setting!r}"
+                f"missing Xcode 27 upcoming-feature inventory entry: {setting!r}"
             )
 
 

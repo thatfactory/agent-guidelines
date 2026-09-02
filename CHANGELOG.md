@@ -7,7 +7,7 @@ All notable changes to this project are documented in this file.
 ### Added
 
 - Added generic generated-symbol localization guidance plus reusable String Catalog preparation and validation scripts with consumer-configured paths and languages.
-- Added an Xcode project-settings baseline covering warnings-as-errors, strict and approachable concurrency, default MainActor isolation, the latest stable Swift language mode, and every upcoming-feature setting exposed by the selected Xcode.
+- Added an Xcode project-settings baseline covering warnings-as-errors, strict and approachable concurrency, default MainActor isolation, the latest stable Swift language mode, and every upcoming feature that remains opt-in for that language mode.
 - Added documentation conventions for single-line Markdown prose and aligned ASCII diagrams, together with a deterministic wrapping checker.
 
 ### Changed
