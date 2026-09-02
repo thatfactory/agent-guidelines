@@ -34,7 +34,7 @@ Diagrams are published verbatim, so a diagram that is misaligned in the repo wil
 - **A box's interior width must match its border width.** `┌──────────┐` (10 dashes) needs exactly 10 characters between the `│` on the rows below it.
 - **Put arrowheads beside the target rule, not on top of it** — `│─────>│`, so the lifeline stays unbroken. An arrow that spans intermediate participants simply passes through their columns.
 - **When a label is too long for its cell, wrap it onto a second row** rather than letting it push the rules out of alignment.
-- **Count characters, not bytes.** Box-drawing glyphs are 3-byte UTF-8, so `wc -c` and `awk '{print length}'` report well above the visual width — around 2× for a typical row, up to 3× for one that is mostly box-drawing. Measure with `python3 -c "import sys; print(max(len(l) for l in sys.stdin.read().splitlines()))" < FILE` or an editor's column indicator.
+- **Count characters, not bytes.** Box-drawing glyphs are 3-byte UTF-8, so `wc -c` and `awk '{print length}'` report well above the visual width — around 2× for a typical row, up to 3× for one that is mostly box-drawing. Measure with `swift -e 'import Foundation; let value = String(data: FileHandle.standardInput.readDataToEndOfFile(), encoding: .utf8) ?? ""; print(value.split(separator: "\n", omittingEmptySubsequences: false).map(\.count).max() ?? 0)' < FILE` or an editor's column indicator.
 
 Check the result in a monospace view before committing: scan down each vertical rule and confirm it never jogs left or right. For a large or heavily edited diagram, it is quicker and safer to generate the block from a list of column positions in a throwaway script than to count spaces by hand.
 

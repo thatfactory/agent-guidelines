@@ -11,13 +11,15 @@ permissions:
 jobs:
   release:
     name: Create GitHub release
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
       - name: Validate guidelines
-        run: python3 Scripts/validate_guidelines.py
+        run: |
+          Tests/run_tests.swift
+          Scripts/validate_guidelines.swift
 
       - name: Validate tag
         run: |

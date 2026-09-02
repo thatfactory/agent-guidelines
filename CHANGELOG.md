@@ -2,15 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
-## Unreleased
+## [0.0.26] - 2026-09-02
 
 ### Added
 
 - Added a fail-closed completion-audit helper that requires structured Xcode String Catalog editor evidence for every changed `.xcstrings` file.
+- Added native Swift tests for guideline, consumer-integration, Markdown, and String Catalog automation.
 
 ### Changed
 
 - Moved the shared localization guide from `Guidelines/Swift/` to `Guidelines/` and updated repository and consumer-template links.
+- Replaced Python validation, localization, and audit-helper scripts with native Swift executables, and moved CI and release validation to macOS runners.
+- Required new repository-owned executable scripts in Swift-focused repositories to use Swift, with the existing `swift_format.sh` wrapper retained as a narrow exception.
 
 ## [0.0.25] - 2026-09-02
 

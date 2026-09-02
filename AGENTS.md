@@ -37,6 +37,12 @@ This public repository is the versioned source of truth for reusable ThatFactory
     --squash
   ```
 
+## Repository scripts
+
+- Write new repository-owned executable scripts in Swift using the standard library and Foundation.
+- `Scripts/swift_format.sh` is the sole retained shell-script exception because it is the existing command wrapper around Xcode's `swift-format`; do not use it as precedent for new shell automation.
+- Do not add Python, Ruby, JavaScript, or other scripting-language runtimes for repository automation.
+
 <!-- BEGIN THATFACTORY CODE REVIEW CONTRACT v2 -->
 ## Code Review Rules
 
@@ -60,7 +66,7 @@ Automatic Codex review is the initial Codex review. Do not request a manual Code
 Run:
 
 ```sh
-python3 Scripts/validate_guidelines.py
+Scripts/validate_guidelines.swift
 ```
 
 Fix every validation failure before releasing a version.
