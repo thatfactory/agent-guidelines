@@ -66,7 +66,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Documentation](Guidelines/Documentation.md)
 - [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
 - [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
-- [Localization](Guidelines/Swift/Localization.md)
+- [Localization](Guidelines/Localization.md)
 - [Logging](Guidelines/Logging.md)
 - [Redux architecture and physical folder organization](Guidelines/Architecture/Redux.md)
 - [Swift](Guidelines/Swift/Swift.md)

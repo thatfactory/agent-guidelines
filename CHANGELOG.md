@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## Unreleased
+
+### Added
+
+- Added a fail-closed completion-audit helper that requires structured Xcode String Catalog editor evidence for every changed `.xcstrings` file.
+
+### Changed
+
+- Moved the shared localization guide from `Guidelines/Swift/` to `Guidelines/` and updated repository and consumer-template links.
+
 ## [0.0.25] - 2026-09-02
 
 ### Added

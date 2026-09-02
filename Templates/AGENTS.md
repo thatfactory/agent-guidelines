@@ -13,7 +13,7 @@ Read only the guides relevant to the task:
 - [Swift style](AgentGuidelines/Guidelines/Swift/SwiftStyle.md)
 - [SwiftUI](AgentGuidelines/Guidelines/Swift/SwiftUI.md)
 - [Swift format](AgentGuidelines/Guidelines/Swift/SwiftFormat.md)
-- [Localization](AgentGuidelines/Guidelines/Swift/Localization.md)
+- [Localization](AgentGuidelines/Guidelines/Localization.md)
 - [Unit and integration testing](AgentGuidelines/Guidelines/Testing/UnitTesting.md)
 - [Documentation](AgentGuidelines/Guidelines/Documentation.md)
 - [Logging](AgentGuidelines/Guidelines/Logging.md)

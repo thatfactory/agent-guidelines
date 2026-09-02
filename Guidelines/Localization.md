@@ -52,7 +52,7 @@ Follow Apple's [Localizing your app using agents](https://developer.apple.com/do
 6. Use Xcode's localization coordinator and String Catalog tools to add or update only the languages in scope. Do not replace contextual translation decisions with ad hoc JSON-rewriting scripts.
 7. Resolve every stale extracted entry and every active translated value marked `new` or `needs_review`. Keep agent output machine-translated until a fluent reviewer approves it.
 8. Run the shared catalog validator after every catalog or localization-source change. It checks generated-symbol readiness, stale entries, required languages, translation states, format signatures, and Swift literals that bypass generated symbols.
-9. Open each changed catalog in Xcode and require zero catalog-editor errors or warnings; these diagnostics do not necessarily become compiler warnings.
+9. Open each changed catalog in Xcode and require zero catalog-editor errors or warnings; these diagnostics do not necessarily become compiler warnings. Record the inspected catalog paths, selected Xcode version and build, and explicit zero-error and zero-warning result. Automated catalog validation, a warning-clean build, or an unrecorded visual check does not satisfy this editor-evidence gate.
 10. Build and test source and translated languages. Exercise long strings, every plural branch, and right-to-left layout even when no right-to-left locale ships.
 11. Have a fluent reviewer inspect machine translations before recording them as reviewed.
 
@@ -72,6 +72,17 @@ python3 AgentGuidelines/Scripts/validate_string_catalogs.py \
 ```
 
 Repeat directory, catalog, or language options when the project has several. A consumer may keep a small repository-owned wrapper so existing developer and CI commands supply its paths and languages consistently; the wrapper must delegate to the synchronized shared script rather than copy its validation or migration logic.
+
+The completion audit discovers changed String Catalogs relative to an explicit Git base and fails closed until every catalog has a recorded Xcode editor inspection. After opening each changed catalog and confirming zero editor errors and warnings, run the audit helper from the consumer root and keep its JSON outside the repository:
+
+```sh
+python3 AgentGuidelines/.agents/skills/agent-guidelines-audit/scripts/check_xcstrings_inspection.py \
+  --base-ref <pull-request-base-ref> \
+  --inspected-catalog <repository-relative-catalog-path> \
+  --evidence-output <temporary-evidence-path>
+```
+
+Repeat `--inspected-catalog` for every changed catalog. The helper records the selected Xcode version and build together with the zero-diagnostic result. Summarize that record in the completion handoff and pull-request description; do not commit the temporary JSON evidence.
 
 Do not invent translations from an unrelated project's conventions. Product vocabulary and tone remain consumer-specific.
 

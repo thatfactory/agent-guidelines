@@ -60,4 +60,4 @@ With SDKs where `@State` is a macro, do not give a state property a declaration 
 
 ## Localization
 
-Follow [Localization](Localization.md) for user-facing text, layout direction, formatting, and package bundles.
+Follow [Localization](../Localization.md) for user-facing text, layout direction, formatting, and package bundles.
