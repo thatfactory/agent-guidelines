@@ -77,7 +77,7 @@ Apply the conventions in the applicable [Documentation guide](../../../Guideline
 
 1. Audit every added or changed Markdown file outside a synchronized, provenance-verified `AgentGuidelines/` subtree.
 2. When the completed change adds or changes a documentation convention, or updates a consumer to a guideline release that does so, also audit the consumer's existing root Markdown files and declared durable documentation folders. This adoption pass is required even when those files did not otherwise change.
-3. From the repository root, run `.agents/skills/agent-guidelines-audit/scripts/check_markdown_wrapping.swift <paths...>` against those files or folders. The checker is read-only and reports prose paragraphs, list items, and blockquotes that span multiple physical lines while excluding fenced code and other common verbatim Markdown constructs.
+3. From the repository root, run `.agents/skills/agent-guidelines-audit/scripts/check_markdown_wrapping.swift <paths...>` against those files or folders. The checker is read-only and reports prose paragraphs, list items, ordinary blockquotes, and GitHub alert body paragraphs that span multiple physical lines while excluding alert marker lines, fenced code, and other common verbatim Markdown constructs.
 4. Inspect each reported span in context. Join confirmed hard-wrapped prose so each paragraph, list item, or blockquote occupies one physical line. Preserve intentional structure such as headings, separate list items, tables, fenced code, and ASCII diagrams.
 5. When implementation is authorized, fix confirmed violations and rerun the checker. For review-only work, report them without editing. Do not claim the audit passes while a confirmed line-wrapping violation remains in scope.
 

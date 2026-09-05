@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.27] - 2026-09-05
+
+### Fixed
+
+- Preserved valid GitHub alert syntax in the Markdown wrapping audit while continuing to reject hard-wrapped alert bodies, ordinary blockquotes, malformed alert markers, and nested alerts.
+
 ## [0.0.26] - 2026-09-02
 
 ### Added
