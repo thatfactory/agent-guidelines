@@ -111,6 +111,7 @@ func findings(for path: String) throws -> [Finding] {
     var fenceMarker: Character?
     var inComment = false
     var inFrontmatter = lines.first?.trimmingCharacters(in: .whitespacesAndNewlines) == "---"
+    var previousQuoteDepth = 0
 
     func finishBlock() {
         if let block, block.end > block.start {
@@ -122,6 +123,17 @@ func findings(for path: String) throws -> [Finding] {
     for (offset, line) in lines.enumerated() {
         let lineNumber = offset + 1
         let stripped = line.trimmingCharacters(in: .whitespacesAndNewlines)
+        var quoteDepth = 0
+        var quoteContent = line
+        while let match = firstMatch(quotePattern, in: quoteContent),
+            let range = Range(match.range, in: quoteContent)
+        {
+            quoteContent.removeSubrange(range)
+            quoteDepth += 1
+        }
+        defer {
+            previousQuoteDepth = quoteDepth
+        }
 
         if inFrontmatter {
             if lineNumber > 1, stripped == "---" {
@@ -157,17 +169,11 @@ func findings(for path: String) throws -> [Finding] {
             continue
         }
 
-        var quoteDepth = 0
-        var quoteContent = line
-        while let match = firstMatch(quotePattern, in: quoteContent),
-            let range = Range(match.range, in: quoteContent)
-        {
-            quoteContent.removeSubrange(range)
-            quoteDepth += 1
-        }
         if quoteDepth > 0 {
             let trimmedQuoteContent = quoteContent.trimmingCharacters(in: .whitespacesAndNewlines)
-            if quoteDepth == 1, firstMatch(alertMarkerPattern, in: trimmedQuoteContent) != nil {
+            if quoteDepth == 1, previousQuoteDepth == 0,
+                firstMatch(alertMarkerPattern, in: trimmedQuoteContent) != nil
+            {
                 finishBlock()
                 continue
             }

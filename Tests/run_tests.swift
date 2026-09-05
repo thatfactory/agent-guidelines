@@ -192,6 +192,10 @@ let tests: [(String, () throws -> Void)] = [
 
                     > > [!TIP]
                     > > Nested alert body.
+
+                    > Ordinary quote begins.
+                    > [!NOTE]
+                    > Ordinary quote continues.
                     """ + "\n",
                     to: markdown
                 )
@@ -204,6 +208,7 @@ let tests: [(String, () throws -> Void)] = [
                     ":4: block quote (depth 1) spans physical lines 4-5",
                     ":7: block quote (depth 1) spans physical lines 7-8",
                     ":10: block quote (depth 2) spans physical lines 10-11",
+                    ":13: block quote (depth 1) spans physical lines 13-15",
                 ] {
                     try require(result.output.contains(expected), "missing diagnostic: \(expected)\n\(result.output)")
                 }
