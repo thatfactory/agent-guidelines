@@ -12,7 +12,7 @@ Documentation is part of implementation. For every codebase change, evaluate whe
 
 **Write each paragraph as a single physical line — do not hard-wrap prose at a fixed column width.** A paragraph hand-wrapped at ~100 columns shows up with breaks mid-sentence, which looks broken. Let your editor **soft-wrap** instead of inserting newlines.
 
-The same rule applies to multi-sentence **list items** and **blockquotes** — keep each item/quote on one line. This concerns **prose only**: fenced code blocks and ASCII diagrams are published verbatim, so wrap those exactly as they should appear (one line per row).
+The same rule applies to multi-sentence **list items** and **blockquotes** — keep each item/quote on one line. GitHub alerts are the exception: keep the alert marker on its required quoted line and keep each following body paragraph on one physical quoted line. Do not nest alerts. This concerns **prose only**: fenced code blocks and ASCII diagrams are published verbatim, so wrap those exactly as they should appear (one line per row).
 
 ### Diagrams
 

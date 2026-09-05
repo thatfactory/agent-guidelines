@@ -30,6 +30,7 @@ let thematicBreakPattern = #"^\s{0,3}(?:(?:\*\s*){3,}|(?:-\s*){3,}|(?:_\s*){3,})
 let setextUnderlinePattern = #"^\s{0,3}(?:=+|-+)\s*$"#
 let tableDelimiterPattern = #"^\s*\|?(?:\s*:?-+:?\s*\|)+\s*:?-+:?\s*\|?\s*$"#
 let quotePattern = #"^\s{0,3}>\s?"#
+let alertMarkerPattern = #"^\[!(?:NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]$"#
 
 /// Returns the first regular-expression match in a string.
 func firstMatch(_ pattern: String, in value: String) -> NSTextCheckingResult? {
@@ -165,6 +166,11 @@ func findings(for path: String) throws -> [Finding] {
             quoteDepth += 1
         }
         if quoteDepth > 0 {
+            let trimmedQuoteContent = quoteContent.trimmingCharacters(in: .whitespacesAndNewlines)
+            if quoteDepth == 1, firstMatch(alertMarkerPattern, in: trimmedQuoteContent) != nil {
+                finishBlock()
+                continue
+            }
             if isVerbatimOrStructure(quoteContent) {
                 finishBlock()
                 continue

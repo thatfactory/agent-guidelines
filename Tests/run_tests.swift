@@ -141,6 +141,76 @@ let tests: [(String, () throws -> Void)] = [
         }
     ),
     (
+        "Markdown checker accepts GitHub alerts",
+        {
+            try withTemporaryDirectory { root in
+                let markdown = root.appendingPathComponent("Alerts.md")
+                try write(
+                    """
+                    # Alerts
+
+                    > [!NOTE]
+                    > Note body.
+
+                    > [!TIP]
+                    > Tip body.
+
+                    > [!IMPORTANT]
+                    > Important body.
+
+                    > [!WARNING]
+                    > Warning body.
+
+                    > [!CAUTION]
+                    > Caution body.
+                    """ + "\n",
+                    to: markdown
+                )
+                let result = try run([
+                    script(".agents/skills/agent-guidelines-audit/scripts/check_markdown_wrapping.swift"),
+                    markdown.path,
+                ])
+                try require(result.succeeded, result.output)
+            }
+        }
+    ),
+    (
+        "Markdown checker rejects wrapped or malformed GitHub alerts",
+        {
+            try withTemporaryDirectory { root in
+                let markdown = root.appendingPathComponent("Alerts.md")
+                try write(
+                    """
+                    # Alerts
+
+                    > [!NOTE]
+                    > This alert body was split
+                    > across physical lines.
+
+                    > [!UNKNOWN]
+                    > Unknown alert body.
+
+                    > > [!TIP]
+                    > > Nested alert body.
+                    """ + "\n",
+                    to: markdown
+                )
+                let result = try run([
+                    script(".agents/skills/agent-guidelines-audit/scripts/check_markdown_wrapping.swift"),
+                    markdown.path,
+                ])
+                try require(!result.succeeded, "invalid alerts unexpectedly passed")
+                for expected in [
+                    ":4: block quote (depth 1) spans physical lines 4-5",
+                    ":7: block quote (depth 1) spans physical lines 7-8",
+                    ":10: block quote (depth 2) spans physical lines 10-11",
+                ] {
+                    try require(result.output.contains(expected), "missing diagnostic: \(expected)\n\(result.output)")
+                }
+            }
+        }
+    ),
+    (
         "Markdown checker accepts verbatim structures",
         {
             try withTemporaryDirectory { root in
