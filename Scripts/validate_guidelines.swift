@@ -16,6 +16,7 @@ let editorConfiguration = root.appendingPathComponent("Configurations/Swift/.edi
 let swiftFormatScript = root.appendingPathComponent("Scripts/swift_format.sh")
 let swiftFormatGuideline = root.appendingPathComponent("Guidelines/Swift/SwiftFormat.md")
 let localizationGuideline = root.appendingPathComponent("Guidelines/Localization.md")
+let appStoreGuideline = root.appendingPathComponent("Guidelines/AppStore.md")
 let xcodeProjectSettingsGuideline = root.appendingPathComponent("Guidelines/Xcode/ProjectSettings.md")
 let localizationPreparationScript = root.appendingPathComponent("Scripts/prepare_localizable_symbols.swift")
 let localizationValidationScript = root.appendingPathComponent("Scripts/validate_string_catalogs.swift")
@@ -508,6 +509,10 @@ func validateXcodeProjectSettingsGuideline(_ errors: inout [String]) {
         "SWIFT_APPROACHABLE_CONCURRENCY = YES": "approachable concurrency baseline",
         "SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor": "default actor isolation baseline",
         "SWIFT_STRICT_CONCURRENCY = complete": "strict concurrency baseline",
+        "INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO": "export-compliance build-setting baseline",
+        "ITSAppUsesNonExemptEncryption`](https://developer.apple.com/": "official export-compliance key reference",
+        "built `Info.plist`": "built export-compliance verification",
+        "INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = YES": "documented non-exempt encryption exception",
         "newest stable Swift language mode": "future-facing Swift language policy",
         "Enable each feature that remains opt-in": "language-mode-aware upcoming-feature policy",
         "warnings-as-errors can turn that diagnostic into a build failure": "redundant upcoming-feature safety rule",
@@ -526,6 +531,28 @@ func validateXcodeProjectSettingsGuideline(_ errors: inout [String]) {
     }
 }
 
+/// Validates the shared App Store metadata workflow.
+func validateAppStoreGuideline(_ errors: inout [String]) {
+    guard let contents = readText(appStoreGuideline, errors: &errors) else {
+        return
+    }
+    let required = [
+        "app-store-connect-mcp": "MCP source",
+        "AppStore/": "repository metadata root",
+        "validate_repository": "repository validation",
+        "plan_metadata_changes": "metadata planning",
+        "plan_screenshot_changes": "screenshot planning",
+        "apply_plan": "immutable plan application",
+        "get_operation_status": "uncertain-outcome recovery",
+        "noOp: true": "remote reconciliation",
+        ".appstore-connect-mcp/": "ignored operational state",
+        "does not authorize submitting": "submission boundary",
+    ]
+    for (value, description) in required where !contents.contains(value) {
+        errors.append("Guidelines/AppStore.md: missing \(description): '\(value)'")
+    }
+}
+
 /// Validates the native-first dependency policy.
 func validateExternalDependencyPolicy(_ errors: inout [String]) {
     if let contents = readText(developmentGuideline, errors: &errors) {
@@ -535,6 +562,10 @@ func validateExternalDependencyPolicy(_ errors: inout [String]) {
             "explicit approval from the repository owner": "repository-owner approval gate",
             "durable repository documentation": "durable exception record",
             "Tooling dependencies explicitly required by these shared guidelines": "tooling-only exception",
+            "## Post-merge cleanup": "post-merge cleanup section",
+            "fast-forward-only pull": "safe primary-branch update",
+            "delete the merged local feature branch": "merged local branch removal",
+            "Confirm the remote feature branch is absent": "remote branch cleanup verification",
         ]
         for (value, description) in required where !contents.contains(value) {
             errors.append("Guidelines/Development.md: missing \(description): '\(value)'")
@@ -586,6 +617,9 @@ func validateAuditSkill(_ errors: inout [String]) {
         "SWIFT_UPCOMING_FEATURE_": "future-facing upcoming-feature audit",
         "SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor": "actor-isolation project audit",
         "SWIFT_VERSION": "Swift language-version project audit",
+        "INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO": "export-compliance project audit",
+        "## Audit App Store metadata": "App Store metadata audit",
+        "noOp: true": "App Store remote reconciliation audit",
         "xcodebuild -showBuildSettings": "effective target build-setting inspection",
         "nearest applicable `AGENTS.md`": "project-setting exception lookup",
         "## Audit localization": "localization audit",
@@ -638,6 +672,7 @@ func main() -> Int32 {
     validateSwiftFormatGuideline(&errors)
     validateDocumentationGuideline(&errors)
     validateLocalizationGuideline(&errors)
+    validateAppStoreGuideline(&errors)
     validateLocalizationScripts(&errors)
     validateXcodeProjectSettingsGuideline(&errors)
     validateExternalDependencyPolicy(&errors)

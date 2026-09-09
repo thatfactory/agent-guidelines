@@ -2,6 +2,8 @@
 
 Follow Apple's [Localizing your app using agents](https://developer.apple.com/documentation/xcode/localizing-your-app-using-agents) workflow and current Xcode localization tools. Consumer repositories declare their supported languages, catalog and source locations, product voice, terminology, and narrow exceptions locally.
 
+Storefront metadata uses separate App Store locale identifiers and files. Follow [App Store metadata](AppStore.md) for the repository structure and App Store Connect synchronization workflow; apply the consumer's local voice and product terminology to both application and storefront copy.
+
 ## Source artifacts
 
 - Use the consumer's existing String Catalogs (`.xcstrings`) as the source of truth.

@@ -61,6 +61,7 @@ The subtree does not automatically import every guide into an agent's context. A
 ## Guideline catalog
 
 - [Agent workflow and tool execution](Guidelines/AgentWorkflow.md)
+- [App Store metadata](Guidelines/AppStore.md)
 - [CI/CD](Guidelines/CICD.md)
 - [Development and reusability](Guidelines/Development.md)
 - [Documentation](Guidelines/Documentation.md)
@@ -89,7 +90,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.27 \
+  0.0.28 \
   --squash
 ```
 
@@ -143,7 +144,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.27 \
+  0.0.28 \
   --squash
 ```
 
