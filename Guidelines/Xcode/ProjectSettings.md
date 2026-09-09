@@ -22,6 +22,8 @@ Set the concurrency baseline:
 - `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`
 - `SWIFT_STRICT_CONCURRENCY = complete`
 
+For application targets, set `INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO` at project level so every configuration generates Apple's [`ITSAppUsesNonExemptEncryption`](https://developer.apple.com/documentation/bundleresources/information-property-list/itsappusesnonexemptencryption) Boolean with the value `NO`. This declares that the shipped app does not use non-exempt encryption and avoids App Store Connect's recurring missing-compliance questionnaire. Verify the generated Boolean in the built app before upload and reassess it whenever the app or a linked dependency introduces cryptography.
+
 Set `SWIFT_VERSION` to the newest stable Swift language mode supported by the selected Xcode. The current language mode is Swift 6, serialized as `SWIFT_VERSION = 6.0`; move to 7, 8, 9, and later stable modes when their supporting Xcode releases are adopted. Do not confuse the compiler's minor release, such as Swift 6.4, with the Swift language mode.
 
 Inspect every build setting exposed by the selected Xcode whose name begins with `SWIFT_UPCOMING_FEATURE_`. Enable each feature that remains opt-in under the selected Swift language mode. Do not set an upcoming-feature flag when that language mode already enables the feature unconditionally: Swift diagnoses some redundant flags, and warnings-as-errors can turn that diagnostic into a build failure. `SWIFT_APPROACHABLE_CONCURRENCY` enables a subset of concurrency features but does not replace the applicable explicit upcoming-feature settings.
@@ -54,7 +56,7 @@ Treat this list as discovery input for Xcode 27, not as a set of flags that must
 1. Identify the selected Xcode version and its newest stable Swift language mode.
 2. Inspect the `PBXProject` build configurations and any project-level `.xcconfig` files. Confirm every Debug, Release, and custom configuration defines the complete baseline.
 3. Compare the active Xcode's build settings with the `SWIFT_UPCOMING_FEATURE_` prefix so newly introduced settings are not missed. Use the setting documentation and compiler diagnostics for the selected language mode to distinguish still-upcoming features from features that are already unconditional.
-4. Enumerate every target, including unit-test and UI-test targets, and every supported configuration. Use Xcode project-aware tooling or `xcodebuild -showBuildSettings` to verify the effective values.
+4. Enumerate every target, including application targets and unit-test and UI-test targets, and every supported configuration. Use Xcode project-aware tooling or `xcodebuild -showBuildSettings` to verify the effective values. For each application target, also inspect the built `Info.plist` and require the `ITSAppUsesNonExemptEncryption` Boolean to be `NO`.
 5. Inspect target build configurations for redundant copies, disabling values, overrides, or upcoming-feature flags that are redundant in the selected language mode. Remove redundant copies and resolve undocumented overrides.
 6. Build the relevant configurations and treat every warning as a failure unless an applicable documented exception explicitly covers the setting that would otherwise promote it.
 
@@ -70,3 +72,5 @@ An incompatible project or target requirement may specialize one or more setting
 - the condition for removing or revisiting the exception.
 
 The audit accepts an applicable documented exception and reports the deviation without failing the project for that setting. A transient discussion, generic statement that a project uses different settings, or the existing target configuration by itself is not an exception.
+
+An application that uses non-exempt encryption must set `INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = YES` and document that exact setting as an exception, including the cryptography that requires the declaration and the resulting export-compliance workflow. The audit accepts a generated `ITSAppUsesNonExemptEncryption = YES` under that documented exception instead of reporting a false positive.

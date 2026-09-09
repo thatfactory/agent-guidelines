@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.28] - 2026-09-09
+
+### Added
+
+- Added a shared version-controlled App Store metadata and app-store-connect-mcp synchronization workflow, including scoped planning, immutable application, reconciliation, screenshot, credential, and submission boundaries.
+- Added `ITSAppUsesNonExemptEncryption = NO` to the Xcode application baseline and completion audit, with a documented-exception path for apps that ship non-exempt encryption.
+- Added mandatory post-merge cleanup of merged local feature branches after returning to an updated primary branch.
+
+### Changed
+
+- Linked localization guidance to the shared App Store metadata workflow while keeping product voice, locales, and concrete storefront content in consumer repositories.
+
 ## [0.0.27] - 2026-09-05
 
 ### Fixed

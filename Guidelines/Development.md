@@ -47,6 +47,12 @@ If the skill is not discoverable in a subtree consumer, read and follow its [SKI
 
 For subtree consumers, the audit runs `AgentGuidelines/Scripts/validate_consumer_setup.swift` to detect drift in the root Code Review and Documentation Maintenance contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and repository skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, the validator also requires the shared configuration symlinks and strict non-mutating CI adoption. User-level global Codex instructions are outside this repository audit.
 
+## Post-merge cleanup
+
+After an in-scope feature pull request merges, switch the original checkout back to the repository's primary branch, update it from its upstream with a fast-forward-only pull, and delete the merged local feature branch. Confirm the remote feature branch is absent when the repository deletes merged branches automatically. Do this before declaring the feature workflow complete so stale branches do not accumulate.
+
+Never discard unrelated changes to perform cleanup. If the original checkout is dirty, another worktree still uses the feature branch, the merge did not complete, or the primary branch cannot fast-forward, leave the branch intact and report the exact blocker. Do not use force deletion merely to hide an unmerged branch.
+
 ## Logging
 
 Applications own their orchestration, lifecycle, and product-domain diagnostics. Follow the shared [logging guide](Logging.md) and rely on each dependency to log its own implementation. Do not duplicate or reformat package-internal operations in the application log.
