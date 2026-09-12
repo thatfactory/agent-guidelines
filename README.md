@@ -65,6 +65,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [CI/CD](Guidelines/CICD.md)
 - [Development and reusability](Guidelines/Development.md)
 - [Documentation](Guidelines/Documentation.md)
+- [Git ignore files](Guidelines/Git/IgnoreFiles.md)
 - [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
 - [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
 - [Localization](Guidelines/Localization.md)
@@ -90,7 +91,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.28 \
+  0.0.29 \
   --squash
 ```
 
@@ -109,6 +110,8 @@ AgentGuidelines/** linguist-generated
 ```
 
 Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions. Keep the version-marked code-review contract, documentation-maintenance contract, and external-dependency contract directly in the repository-root `AGENTS.md`; Markdown links to shared guides are navigation, not automatic instruction includes.
+
+Copy the shared [`.gitignore` template](Templates/.gitignore) into a new Xcode project or Swift package. Keep authored project files, workspaces, and package lockfiles eligible for version control, and follow the [Git ignore guidance](Guidelines/Git/IgnoreFiles.md) when an established consumer needs an additional project-specific rule.
 
 ### Configure global Codex instructions
 
@@ -144,7 +147,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.28 \
+  0.0.29 \
   --squash
 ```
 

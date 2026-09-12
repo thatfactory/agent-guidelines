@@ -12,6 +12,14 @@
 - Do not place secrets in workflow files, logs, fixtures, or command arguments that may be echoed.
 - Keep release workflows separate from pull-request validation when their permissions differ.
 
+## Tooling and automation
+
+Fastlane is forbidden in every ThatFactory project and has no exception path. Build repository-owned CI/CD and delivery automation with focused ThatFactory tooling such as `xcode-cloud-mcp` and `app-store-connect-mcp`, plus Swift scripts where repository-specific orchestration is needed.
+
+Use Swift for new repository-owned executable scripts in Swift-focused applications, games, and packages. Prefer the Swift standard library and Foundation so automation uses the same native toolchain and dependency policy as the codebase. Convenience, familiarity, shorter code, or an existing interpreter is not a reason to choose another language.
+
+Fall back to Python or a POSIX shell script only when the required behavior cannot be implemented with the repository's supported Swift toolchain and Foundation APIs. Document the exception in durable repository documentation in the same change, including the missing Swift capability, exact script and task scope, runtime and dependency requirements, security and maintenance impact, validation method, and condition for revisiting or removing the exception. Keep the fallback narrow; an existing non-Swift script does not authorize another one. The central `Scripts/swift_format.sh` command wrapper is the retained documented exception for invoking Xcode's `swift-format` modes.
+
 ## `ci-pr.yml`
 
 Projects using GitHub Actions should keep pull-request validation in `.github/workflows/ci-pr.yml`, triggered by `pull_request` events for `opened`, `synchronize`, and `reopened`.
