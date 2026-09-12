@@ -106,6 +106,44 @@ let tests: [(String, () throws -> Void)] = [
         }
     ),
     (
+        "repository validator rejects gitignore template drift",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let template = fixture.appendingPathComponent("Templates/.gitignore")
+                var contents = try String(contentsOf: template, encoding: .utf8)
+                contents = contents.replacingOccurrences(of: "node_modules/\n", with: "")
+                try write(contents, to: template)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "gitignore template drift unexpectedly passed")
+                try require(
+                    result.output.contains("Templates/.gitignore: missing required pattern 'node_modules/'"),
+                    result.output
+                )
+            }
+        }
+    ),
+    (
+        "repository validator rejects forbidden tooling in gitignore template",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let template = fixture.appendingPathComponent("Templates/.gitignore")
+                var contents = try String(contentsOf: template, encoding: .utf8)
+                contents += "fastlane/test_output/\n"
+                try write(contents, to: template)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "forbidden tooling pattern unexpectedly passed")
+                try require(
+                    result.output.contains("must not include forbidden tooling pattern 'fastlane/'"),
+                    result.output
+                )
+            }
+        }
+    ),
+    (
         "Markdown checker reports governed wrapping",
         {
             try withTemporaryDirectory { root in

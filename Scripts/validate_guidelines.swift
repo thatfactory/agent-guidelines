@@ -30,9 +30,12 @@ let stringCatalogInspectionScript = root.appendingPathComponent(
     ".agents/skills/agent-guidelines-audit/scripts/check_xcstrings_inspection.swift"
 )
 let developmentGuideline = root.appendingPathComponent("Guidelines/Development.md")
+let cicdGuideline = root.appendingPathComponent("Guidelines/CICD.md")
 let documentationGuideline = root.appendingPathComponent("Guidelines/Documentation.md")
 let packagesGuideline = root.appendingPathComponent("Guidelines/Packages.md")
 let agentsTemplate = root.appendingPathComponent("Templates/AGENTS.md")
+let gitignoreTemplate = root.appendingPathComponent("Templates/.gitignore")
+let gitignoreGuideline = root.appendingPathComponent("Guidelines/Git/IgnoreFiles.md")
 
 let expectedSwiftFormatRules: [String: Bool] = [
     "AllPublicDeclarationsHaveDocumentation": false,
@@ -562,6 +565,8 @@ func validateExternalDependencyPolicy(_ errors: inout [String]) {
             "explicit approval from the repository owner": "repository-owner approval gate",
             "durable repository documentation": "durable exception record",
             "Tooling dependencies explicitly required by these shared guidelines": "tooling-only exception",
+            "CocoaPods and Carthage are forbidden": "forbidden package managers",
+            "Use Swift Package Manager for package dependencies": "Swift Package Manager requirement",
             "## Post-merge cleanup": "post-merge cleanup section",
             "fast-forward-only pull": "safe primary-branch update",
             "delete the merged local feature branch": "merged local branch removal",
@@ -569,6 +574,19 @@ func validateExternalDependencyPolicy(_ errors: inout [String]) {
         ]
         for (value, description) in required where !contents.contains(value) {
             errors.append("Guidelines/Development.md: missing \(description): '\(value)'")
+        }
+    }
+    if let contents = readText(cicdGuideline, errors: &errors) {
+        let required = [
+            "## Tooling and automation": "CI/CD tooling policy section",
+            "Fastlane is forbidden": "forbidden delivery tooling",
+            "xcode-cloud-mcp": "first-party Xcode Cloud tooling",
+            "app-store-connect-mcp": "first-party App Store tooling",
+            "required behavior cannot be implemented": "non-Swift capability-gap threshold",
+            "missing Swift capability": "documented non-Swift exception",
+        ]
+        for (value, description) in required where !contents.contains(value) {
+            errors.append("Guidelines/CICD.md: missing \(description): '\(value)'")
         }
     }
     if let contents = readText(packagesGuideline, errors: &errors) {
@@ -632,6 +650,14 @@ func validateAuditSkill(_ errors: inout [String]) {
         "pull-request description": "durable pull-request evidence summary",
         "A local wrapper may": "consumer localization-wrapper boundary",
         "new repository-owned executable scripts": "native Swift script audit",
+        "Templates/.gitignore": "shared gitignore template comparison",
+        "# Project-specific: <rationale>": "project-specific gitignore exception marker",
+        "git check-ignore -v": "gitignore behavior verification",
+        "git ls-files": "tracked-file safety check",
+        "CocoaPods or Carthage": "forbidden package-manager audit",
+        "Guidelines/CICD.md": "shared CI/CD guide reference",
+        "fastlane adoption": "forbidden delivery-tooling audit",
+        "missing Swift capability": "non-Swift script exception audit",
     ]
     for (value, description) in required where !contents.contains(value) {
         errors.append(".agents/skills/agent-guidelines-audit/SKILL.md: missing \(description): '\(value)'")
@@ -657,6 +683,36 @@ func validateAuditSkill(_ errors: inout [String]) {
     }
 }
 
+/// Validates the reusable ignore template and its shared reconciliation policy.
+func validateGitignoreGuidance(_ errors: inout [String]) {
+    guard let template = readText(gitignoreTemplate, errors: &errors) else { return }
+    let activePatterns = template.split(separator: "\n").map(String.init)
+    let requiredPatterns = [
+        ".DS_Store", "xcuserdata/", "/build/", "/DerivedData/", "/.build/", "/Packages/",
+        ".swiftpm/configuration/registries.json", "node_modules/", "dist/", "coverage/", "__pycache__/",
+        ".venv/", ".env", "!.env.example", ".netrc", ".appstore-connect-mcp/", ".devspace/",
+        "/public-check/",
+    ]
+    for pattern in requiredPatterns where !activePatterns.contains(pattern) {
+        errors.append("Templates/.gitignore: missing required pattern '\(pattern)'")
+    }
+    for forbidden in ["Package.resolved", "*.xcodeproj", "*.xcworkspace", ".swiftpm/"]
+    where activePatterns.contains(forbidden) {
+        errors.append("Templates/.gitignore: must not ignore authored or lockfile path '\(forbidden)'")
+    }
+    for forbiddenPrefix in ["Carthage/", "fastlane/", "Pods/"]
+    where activePatterns.contains(where: { $0.hasPrefix(forbiddenPrefix) }) {
+        errors.append("Templates/.gitignore: must not include forbidden tooling pattern '\(forbiddenPrefix)'")
+    }
+    guard let guideline = readText(gitignoreGuideline, errors: &errors) else { return }
+    for required in [
+        "active `.gitignore` patterns", "# Project-specific: <rationale>", "git check-ignore -v", "git ls-files",
+        "Do not remove it or silently accept it",
+    ] where !guideline.contains(required) {
+        errors.append("Guidelines/Git/IgnoreFiles.md: missing ignore reconciliation policy '\(required)'")
+    }
+}
+
 /// Runs every repository guideline validation.
 func main() -> Int32 {
     var errors: [String] = []
@@ -676,6 +732,7 @@ func main() -> Int32 {
     validateLocalizationScripts(&errors)
     validateXcodeProjectSettingsGuideline(&errors)
     validateExternalDependencyPolicy(&errors)
+    validateGitignoreGuidance(&errors)
     validateExecutable(consumerSetupScript, description: "consumer setup validator", errors: &errors)
     validateAuditSkill(&errors)
     if !errors.isEmpty {

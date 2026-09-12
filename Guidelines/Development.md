@@ -18,15 +18,11 @@ For this policy, a third-party dependency is externally maintained source or bin
 
 Tooling dependencies explicitly required by these shared guidelines, such as documentation or build plugins used only by tooling, are pre-approved for that documented role. They must not be linked into or shipped with product runtime targets unless the repository owner separately approves and documents that use.
 
+CocoaPods and Carthage are forbidden in every ThatFactory project and are not eligible for the exception process above. Use Swift Package Manager for package dependencies.
+
 ## Guidelines version
 
 Before changing a project, verify that it uses the latest released version of `agent-guidelines`. Check the project's `AgentGuidelines/VERSION` against the latest release, update the subtree or equivalent when it is behind, and read the updated applicable guides before starting implementation. This check is manual and must be performed at the beginning of each project task.
-
-## Repository automation
-
-Use Swift for new repository-owned executable scripts in Swift-focused applications, games, and packages. Prefer the Swift standard library and Foundation so the automation uses the same native toolchain and dependency policy as the codebase. Do not introduce Python, Ruby, JavaScript, or another scripting-language runtime for new validation, transformation, migration, or maintenance logic.
-
-An existing non-Swift script may remain only as a narrow, documented exception; its existence does not authorize new non-Swift automation. The central `Scripts/swift_format.sh` command wrapper is the retained exception for invoking Xcode's `swift-format` modes.
 
 ## Guidelines changes in pull requests
 
