@@ -513,7 +513,10 @@ let tests: [(String, () throws -> Void)] = [
     (
         "consumer validator rejects package README License headings",
         {
-            for readme in ["# Package\n\n## License\n", "# Package\n\n#### lIcEnSe ####\n"] {
+            for readme in [
+                "# Package\n\n## License\n", "# Package\n\n#### lIcEnSe ####\n",
+                "# Package\n\nLicense\n-------\n", "# Package\n\nLICENSE\n=======\n",
+            ] {
                 try withTemporaryDirectory { root in
                     try createConsumerFixture(at: root, isPackage: true, readme: readme)
                     let result = try run([
@@ -559,11 +562,17 @@ let tests: [(String, () throws -> Void)] = [
 
                         See [LICENSE](LICENSE) when verifying redistribution terms.
 
+                        ````markdown
                         ```markdown
-                        ## License
+                        ## License section example
 
                         Example is available under the MIT license. See [LICENSE](LICENSE).
                         ```
+                        ````
+
+                        ~~~text
+                        # License
+                        ~~~
                         """ + "\n"
                 )
                 let result = try run([
