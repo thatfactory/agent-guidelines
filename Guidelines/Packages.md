@@ -53,7 +53,8 @@ The common package baseline is Swift, Xcode, Platforms, License, and CI. Add opt
 - Use descriptive `alt` text. Preserve a repository's established Xcode badge convention when the label intentionally records the last verified Xcode version.
 - Prefer dynamic Updated and Revision badges backed by repository history or releases so maintainers do not edit dates and versions by hand.
 - Do not advertise a platform, integration, package manager, or agent that the repository does not support.
-- Keep the repository's license in a root `LICENSE` file when reuse or redistribution is permitted. A README license heading is optional; the badge is a summary, not the license grant.
+- Keep the repository's license in a root `LICENSE` file when reuse or redistribution is permitted.
+- Retain the README license badge when the standard badge set applies, but do not add a dedicated License heading or license-description section to a package README. GitHub already presents the repository license beside the README, and the badge provides the summary without duplicating license prose.
 - Do not add a license to an existing repository without the owner's explicit choice of terms.
 
 ## Package boundaries

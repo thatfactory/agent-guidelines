@@ -74,6 +74,47 @@ func initializeRepository(at root: URL) throws {
     try git("config", "user.name", "Agent", in: root)
 }
 
+func createConsumerFixture(at root: URL, isPackage: Bool, readme: String? = nil) throws {
+    try fileManager.createSymbolicLink(
+        at: root.appendingPathComponent("AgentGuidelines"), withDestinationURL: repositoryRoot)
+    try fileManager.copyItem(
+        at: repositoryRoot.appendingPathComponent("Templates/AGENTS.md"),
+        to: root.appendingPathComponent("AGENTS.md"))
+    try write("AgentGuidelines/** linguist-generated\n", to: root.appendingPathComponent(".gitattributes"))
+    let skillParent = root.appendingPathComponent(".agents/skills")
+    try fileManager.createDirectory(at: skillParent, withIntermediateDirectories: true)
+    try fileManager.createSymbolicLink(
+        at: skillParent.appendingPathComponent("agent-guidelines-audit"),
+        withDestinationURL: repositoryRoot.appendingPathComponent(".agents/skills/agent-guidelines-audit")
+    )
+    try fileManager.createSymbolicLink(
+        at: root.appendingPathComponent(".swift-format"),
+        withDestinationURL: repositoryRoot.appendingPathComponent("Configurations/Swift/.swift-format"))
+    try fileManager.createSymbolicLink(
+        at: root.appendingPathComponent(".editorconfig"),
+        withDestinationURL: repositoryRoot.appendingPathComponent("Configurations/Swift/.editorconfig"))
+    try write(
+        """
+        name: CI
+        on:
+          pull_request:
+          push:
+            branches: [main]
+        jobs:
+          swift-format:
+            steps:
+              - run: AgentGuidelines/Scripts/swift_format.sh lint-strict Package.swift Sources Tests
+        """ + "\n",
+        to: root.appendingPathComponent(".github/workflows/ci.yml")
+    )
+    if isPackage {
+        try write("// swift-tools-version: 6.0\n", to: root.appendingPathComponent("Package.swift"))
+    }
+    if let readme {
+        try write(readme, to: root.appendingPathComponent("README.md"))
+    }
+}
+
 func localization(_ value: String, state: String = "translated") -> String {
     #"{"stringUnit":{"state":"\#(state)","value":"\#(value)"}}"#
 }
@@ -466,6 +507,101 @@ let tests: [(String, () throws -> Void)] = [
                 ] {
                     try require(result.output.contains(expected), "missing diagnostic \(expected): \(result.output)")
                 }
+            }
+        }
+    ),
+    (
+        "consumer validator rejects package README License headings",
+        {
+            for readme in [
+                "# Package\n\n## License\n", "# Package\n\n#### lIcEnSe ####\n",
+                "# Package\n\nLicense\n-------\n", "# Package\n\nLICENSE\n=======\n",
+            ] {
+                try withTemporaryDirectory { root in
+                    try createConsumerFixture(at: root, isPackage: true, readme: readme)
+                    let result = try run([
+                        script("Scripts/validate_consumer_setup.swift"), "--consumer-root", root.path,
+                    ])
+                    try require(!result.succeeded, "package License heading unexpectedly passed")
+                    try require(result.output.contains("must not contain a dedicated License heading"), result.output)
+                }
+            }
+        }
+    ),
+    (
+        "consumer validator rejects standalone package README license prose",
+        {
+            try withTemporaryDirectory { root in
+                try createConsumerFixture(
+                    at: root,
+                    isPackage: true,
+                    readme: "# Example\n\nExample is available under the MIT license. See [LICENSE](LICENSE).\n"
+                )
+                let result = try run([
+                    script("Scripts/validate_consumer_setup.swift"), "--consumer-root", root.path,
+                ])
+                try require(!result.succeeded, "standalone package license prose unexpectedly passed")
+                try require(
+                    result.output.contains("must not contain a standalone license-description paragraph"),
+                    result.output
+                )
+            }
+        }
+    ),
+    (
+        "consumer validator accepts package license badge and absent README",
+        {
+            try withTemporaryDirectory { root in
+                try createConsumerFixture(
+                    at: root,
+                    isPackage: true,
+                    readme: """
+                        # Example
+
+                        ![License](https://img.shields.io/badge/License-MIT-green.svg)
+
+                        See [LICENSE](LICENSE) when verifying redistribution terms.
+
+                        ````markdown
+                        ```markdown
+                        ## License section example
+
+                        Example is available under the MIT license. See [LICENSE](LICENSE).
+                        ```
+                        ````
+
+                        ~~~text
+                        # License
+                        ~~~
+                        """ + "\n"
+                )
+                let result = try run([
+                    script("Scripts/validate_consumer_setup.swift"), "--consumer-root", root.path,
+                ])
+                try require(result.succeeded, result.output)
+            }
+            try withTemporaryDirectory { root in
+                try createConsumerFixture(at: root, isPackage: true)
+                let result = try run([
+                    script("Scripts/validate_consumer_setup.swift"), "--consumer-root", root.path,
+                ])
+                try require(result.succeeded, result.output)
+            }
+        }
+    ),
+    (
+        "consumer validator limits README license policy to package roots",
+        {
+            try withTemporaryDirectory { root in
+                try createConsumerFixture(at: root, isPackage: false, readme: "# App\n\n## License\n")
+                try write(
+                    "# License\n\nStandalone documentation may discuss licensing.\n",
+                    to: root.appendingPathComponent("Documentation/README.md")
+                )
+                let result = try run([
+                    script("Scripts/validate_consumer_setup.swift"), "--consumer-root", root.path,
+                ])
+                try require(result.succeeded, result.output)
             }
         }
     ),

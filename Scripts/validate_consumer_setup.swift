@@ -21,6 +21,10 @@ let strictFormatCommandPattern =
 let mutatingFormatCommandPattern =
     #"(?m)^[ \t]*(?:-\s+)?(?:run:\s*)?(?:\./)?AgentGuidelines/Scripts/swift_format\.sh\s+format(?:-and-lint)?(?=\s|\\|$)"#
 let generatedAttributePattern = #"(?m)^\s*AgentGuidelines/\*\*\s+linguist-generated\s*$"#
+let readmeLicenseHeadingPattern = #"(?im)^[ \t]{0,3}#{1,6}[ \t]+license[ \t]*#*[ \t]*$"#
+let readmeSetextUnderlinePattern = #"^[ \t]{0,3}(?:=+|-+)[ \t]*$"#
+let readmeLicenseParagraphPattern =
+    #"(?i)^.+?\s+is\s+available\s+under\s+the\s+.+?\s+license\.\s+See\s+\[LICENSE\]\((?:\./)?LICENSE\)\.$"#
 
 /// Parsed consumer-validation command-line values.
 struct Arguments {
@@ -167,6 +171,75 @@ func files(in directory: URL, extensions: Set<String>) -> [URL] {
     return values.filter { extensions.contains($0.pathExtension.lowercased()) }.sorted { $0.path < $1.path }
 }
 
+/// Returns a Markdown fence marker and run length when a line can open or close a fenced code block.
+func markdownFence(in line: String) -> (character: Character, length: Int, suffix: Substring)? {
+    let indentation = line.prefix(while: { $0 == " " }).count
+    let content = line.dropFirst(indentation)
+    guard indentation <= 3, let character = content.first, character == "`" || character == "~"
+    else {
+        return nil
+    }
+    let length = content.prefix(while: { $0 == character }).count
+    guard length >= 3 else { return nil }
+    return (character, length, content.dropFirst(length))
+}
+
+/// Returns whether a line is eligible to be the title of a Setext License heading.
+func isSetextLicenseTitle(_ line: String) -> Bool {
+    let indentation = line.prefix(while: { $0 == " " }).count
+    guard indentation <= 3 else { return false }
+    return line.dropFirst(indentation).trimmingCharacters(in: .whitespaces)
+        .localizedCaseInsensitiveCompare("License") == .orderedSame
+}
+
+/// Validates package README license content without inspecting vendored or non-package documentation.
+func validatePackageReadme(consumerRoot: URL, errors: inout [String]) {
+    guard FileManager.default.fileExists(atPath: consumerRoot.appendingPathComponent("Package.swift").path) else {
+        return
+    }
+    let readmeURL = consumerRoot.appendingPathComponent("README.md")
+    guard FileManager.default.fileExists(atPath: readmeURL.path),
+        let contents = readText(readmeURL, errors: &errors, label: "consumer package README")
+    else {
+        return
+    }
+    var outsideFences: [String] = []
+    var activeFence: (character: Character, length: Int)?
+    for line in contents.components(separatedBy: .newlines) {
+        if let currentFence = activeFence {
+            if let marker = markdownFence(in: line), marker.character == currentFence.character,
+                marker.length >= currentFence.length,
+                marker.suffix.trimmingCharacters(in: .whitespaces).isEmpty
+            {
+                activeFence = nil
+            }
+            outsideFences.append("")
+        } else if let marker = markdownFence(in: line),
+            marker.character == "~" || !marker.suffix.contains("`")
+        {
+            activeFence = (marker.character, marker.length)
+            outsideFences.append("")
+        } else {
+            outsideFences.append(line)
+        }
+    }
+    let governedContents = outsideFences.joined(separator: "\n")
+    let lines = governedContents.components(separatedBy: .newlines)
+    let hasSetextLicenseHeading = lines.indices.dropLast().contains { index in
+        isSetextLicenseTitle(lines[index]) && !matches(readmeSetextUnderlinePattern, in: lines[index + 1]).isEmpty
+    }
+    if !matches(readmeLicenseHeadingPattern, in: governedContents).isEmpty || hasSetextLicenseHeading {
+        errors.append("consumer package README: README.md must not contain a dedicated License heading")
+    }
+    let paragraphs = governedContents.components(separatedBy: "\n\n").map {
+        $0.split(whereSeparator: \.isNewline).joined(separator: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    if paragraphs.contains(where: { !matches(readmeLicenseParagraphPattern, in: $0).isEmpty }) {
+        errors.append("consumer package README: README.md must not contain a standalone license-description paragraph")
+    }
+}
+
 /// Validates non-mutating Swift-format CI integration.
 func validateSwiftFormatCI(consumerRoot: URL, errors: inout [String]) {
     let workflowsRoot = consumerRoot.appendingPathComponent(".github/workflows")
@@ -304,6 +377,7 @@ func validateConsumerSetup(
     if swiftFormatAdopted {
         validateSwiftFormatCI(consumerRoot: consumerRoot, errors: &errors)
     }
+    validatePackageReadme(consumerRoot: consumerRoot, errors: &errors)
 }
 
 /// Parses command-line arguments.

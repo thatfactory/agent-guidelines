@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.30] - 2026-09-12
+
+### Changed
+
+- Prohibited dedicated License headings and conventional standalone license-description paragraphs in Swift package READMEs while retaining root license files and standard license badges.
+
 ## [0.0.29] - 2026-09-12
 
 ### Added
