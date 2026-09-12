@@ -12,6 +12,7 @@ All notable changes to this project are documented in this file.
 
 - Extended the completion audit to reconcile consumer `.gitignore` files with the shared template and escalate undocumented extra patterns for a repository-owner decision.
 - Prohibited CocoaPods and Carthage under the external-dependency policy, and prohibited fastlane under CI/CD guidance while requiring first-party Swift or ThatFactory delivery tooling and narrowing Python or shell automation to documented Swift capability gaps.
+- Prohibited dedicated License headings and conventional standalone license-description paragraphs in Swift package READMEs while retaining root license files and standard license badges.
 
 ## [0.0.28] - 2026-09-09
 

@@ -21,6 +21,9 @@ let strictFormatCommandPattern =
 let mutatingFormatCommandPattern =
     #"(?m)^[ \t]*(?:-\s+)?(?:run:\s*)?(?:\./)?AgentGuidelines/Scripts/swift_format\.sh\s+format(?:-and-lint)?(?=\s|\\|$)"#
 let generatedAttributePattern = #"(?m)^\s*AgentGuidelines/\*\*\s+linguist-generated\s*$"#
+let readmeLicenseHeadingPattern = #"(?im)^[ \t]{0,3}#{1,6}[ \t]+license[ \t]*#*[ \t]*$"#
+let readmeLicenseParagraphPattern =
+    #"(?i)^.+?\s+is\s+available\s+under\s+the\s+.+?\s+license\.\s+See\s+\[LICENSE\]\((?:\./)?LICENSE\)\.$"#
 
 /// Parsed consumer-validation command-line values.
 struct Arguments {
@@ -167,6 +170,43 @@ func files(in directory: URL, extensions: Set<String>) -> [URL] {
     return values.filter { extensions.contains($0.pathExtension.lowercased()) }.sorted { $0.path < $1.path }
 }
 
+/// Validates package README license content without inspecting vendored or non-package documentation.
+func validatePackageReadme(consumerRoot: URL, errors: inout [String]) {
+    guard FileManager.default.fileExists(atPath: consumerRoot.appendingPathComponent("Package.swift").path) else {
+        return
+    }
+    let readmeURL = consumerRoot.appendingPathComponent("README.md")
+    guard FileManager.default.fileExists(atPath: readmeURL.path),
+        let contents = readText(readmeURL, errors: &errors, label: "consumer package README")
+    else {
+        return
+    }
+    var outsideFences: [String] = []
+    var inFence = false
+    for line in contents.components(separatedBy: .newlines) {
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        if trimmed.hasPrefix("```") || trimmed.hasPrefix("~~~") {
+            inFence.toggle()
+            outsideFences.append("")
+        } else if inFence {
+            outsideFences.append("")
+        } else {
+            outsideFences.append(line)
+        }
+    }
+    let governedContents = outsideFences.joined(separator: "\n")
+    if !matches(readmeLicenseHeadingPattern, in: governedContents).isEmpty {
+        errors.append("consumer package README: README.md must not contain a dedicated License heading")
+    }
+    let paragraphs = governedContents.components(separatedBy: "\n\n").map {
+        $0.split(whereSeparator: \.isNewline).joined(separator: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    if paragraphs.contains(where: { !matches(readmeLicenseParagraphPattern, in: $0).isEmpty }) {
+        errors.append("consumer package README: README.md must not contain a standalone license-description paragraph")
+    }
+}
+
 /// Validates non-mutating Swift-format CI integration.
 func validateSwiftFormatCI(consumerRoot: URL, errors: inout [String]) {
     let workflowsRoot = consumerRoot.appendingPathComponent(".github/workflows")
@@ -304,6 +344,7 @@ func validateConsumerSetup(
     if swiftFormatAdopted {
         validateSwiftFormatCI(consumerRoot: consumerRoot, errors: &errors)
     }
+    validatePackageReadme(consumerRoot: consumerRoot, errors: &errors)
 }
 
 /// Parses command-line arguments.

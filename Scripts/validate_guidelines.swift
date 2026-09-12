@@ -594,6 +594,10 @@ func validateExternalDependencyPolicy(_ errors: inout [String]) {
             "[external dependency policy](Development.md#external-dependencies)": "package dependency policy pointer",
             "must not introduce or conceal a third-party runtime dependency": "first-party package boundary",
             "guideline-mandated tooling dependency": "DocC tooling exception",
+            "root `LICENSE` file": "root license-file retention",
+            "Retain the README license badge": "README license-badge retention",
+            "do not add a dedicated License heading or license-description section":
+                "README license-section prohibition",
         ]
         for (value, description) in required where !contents.contains(value) {
             errors.append("Guidelines/Packages.md: missing \(description): '\(value)'")
