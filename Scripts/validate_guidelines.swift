@@ -270,6 +270,7 @@ func validateReadmeContract(_ errors: inout [String]) {
         "--require-swift-format": "explicit Swift-format adoption validation",
         "documentation-maintenance contract": "documentation contract synchronization",
         "external-dependency contract": "external dependency contract synchronization",
+        "runtime-observability contract": "runtime observability contract synchronization",
     ]
     for (value, description) in required where !contents.contains(value) {
         errors.append("README.md: missing \(description): '\(value)'")
