@@ -91,7 +91,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.31 \
+  0.0.32 \
   --squash
 ```
 
@@ -109,7 +109,7 @@ Keep the subtree tracked, but add this to the consumer's tracked `.gitattributes
 AgentGuidelines/** linguist-generated
 ```
 
-Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions. Keep the version-marked code-review contract, documentation-maintenance contract, and external-dependency contract directly in the repository-root `AGENTS.md`; Markdown links to shared guides are navigation, not automatic instruction includes.
+Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions. Keep the version-marked code-review contract, documentation-maintenance contract, external-dependency contract, and runtime-observability contract directly in the repository-root `AGENTS.md`; Markdown links to shared guides are navigation, not automatic instruction includes.
 
 Copy the shared [`.gitignore` template](Templates/.gitignore) into a new Xcode project or Swift package. Keep authored project files, workspaces, and package lockfiles eligible for version control, and follow the [Git ignore guidance](Guidelines/Git/IgnoreFiles.md) when an established consumer needs an additional project-specific rule.
 
@@ -137,7 +137,7 @@ Validate the checked-in consumer integration directly or through the completion-
 AgentGuidelines/Scripts/validate_consumer_setup.swift
 ```
 
-The native Swift validator checks the version-marked root Code Review, Documentation Maintenance, and External Dependency contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, it also requires both configuration symlinks and a non-mutating `lint-strict` CI invocation. Pass `--require-swift-format` only when auditing formatter adoption before adding that guide link.
+The native Swift validator checks the version-marked root Code Review, Documentation Maintenance, External Dependency, and Runtime Observability contracts, Codex subtree-review scope, `.gitattributes`, local guide links, and the audit-skill symlink. When the root `AGENTS.md` links the shared Swift-format guide, it also requires both configuration symlinks and a non-mutating `lint-strict` CI invocation. Pass `--require-swift-format` only when auditing formatter adoption before adding that guide link.
 
 ## Update a consumer
 
@@ -147,11 +147,11 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.31 \
+  0.0.32 \
   --squash
 ```
 
-Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract, documentation-maintenance contract, and external-dependency contract when their versions change, run `AgentGuidelines/Scripts/validate_consumer_setup.swift`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
+Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract, documentation-maintenance contract, external-dependency contract, and runtime-observability contract when their versions change, run `AgentGuidelines/Scripts/validate_consumer_setup.swift`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
 
 ## Maintain the source of truth
 

@@ -8,6 +8,7 @@ Use this guide for Apple-platform applications and Swift packages that emit runt
 - A consuming application logs its own orchestration and lifecycle events. It must not reproduce or reformat a dependency's internal steps or outcomes.
 - A reusable package describes events using its own domain language. Do not introduce concepts from one current client into package categories or messages.
 - Ownership does not require every API or package to emit logs. Pure utilities and operations without a meaningful diagnostic event may emit nothing.
+- New or changed stateful, asynchronous, fallible, or lifecycle-oriented behavior must identify its meaningful diagnostic boundaries during implementation. Emit a privacy-safe outcome for success and each operationally distinct failure, cancellation, recovery, or state transition that a developer needs to distinguish. If an artifact is limited to pure values or utilities and has no such boundary, keep it silent and state that decision in the implementation handoff instead of adding initializer or property-access noise.
 - Logging is a side effect. It must not affect returned values, state transitions, error handling, or control flow.
 - Architectures that isolate side effects must call a logging package from an allowed side-effect boundary, such as middleware or a service, rather than from a pure reducer.
 
@@ -56,6 +57,7 @@ Use this guide for Apple-platform applications and Swift packages that emit runt
 - Verify that every package message starts with its canonical emoji.
 - Verify the stable category, meaningful fields, privacy choice, log level, and single-emission behavior for each logged operation.
 - Do not make tests depend on querying the operating system's persisted log store.
+- For every changed lifecycle covered by the observability requirement, test the event formatter or sink for its successful and operationally distinct unsuccessful outcomes. Dependency declaration and target linkage alone do not establish logging coverage.
 
 ## Filtering
 

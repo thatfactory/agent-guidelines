@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.32] - 2026-09-13
+
+### Changed
+
+- Made runtime observability an explicit consumer contract for changed stateful, asynchronous, fallible, and lifecycle behavior, while preserving silence for pure values and utilities without meaningful diagnostic boundaries.
+- Extended the completion audit to require useful privacy-safe AppLogger outcome coverage instead of accepting dependency declaration and target linkage alone.
+
 ## [0.0.31] - 2026-09-13
 
 ### Added
