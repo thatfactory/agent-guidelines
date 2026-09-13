@@ -155,13 +155,13 @@ let tests: [(String, () throws -> Void)] = [
                 let guideline = fixture.appendingPathComponent("Guidelines/CICD.md")
                 var contents = try String(contentsOf: guideline, encoding: .utf8)
                 contents = contents.replacingOccurrences(
-                    of: "actions/create-github-app-token@v3",
-                    with: "actions/create-github-app-token")
+                    of: "isolated disposable or ephemeral self-hosted runner",
+                    with: "self-hosted runner")
                 try write(contents, to: guideline)
                 let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
                 try require(!result.succeeded, "private dependency authentication drift unexpectedly passed")
                 try require(
-                    result.output.contains("missing short-lived GitHub App token workflow"),
+                    result.output.contains("missing untrusted-code runner isolation"),
                     result.output
                 )
             }
