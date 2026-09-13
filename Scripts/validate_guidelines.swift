@@ -634,6 +634,7 @@ func validateAuditSkill(_ errors: inout [String]) {
         "lint-strict": "strict Swift-format CI audit",
         "AppLogger": "AppLogger integration audit",
         "Logging.md": "shared Logging guide reference",
+        "Dependency declaration and target linkage alone": "lifecycle observability coverage audit",
         "## Audit documentation consistency": "documentation drift audit",
         "Known stale documentation blocks completion": "stale documentation stopping rule",
         "## Audit documentation formatting": "documentation formatting audit",
@@ -688,6 +689,7 @@ func validateAuditSkill(_ errors: inout [String]) {
             "AgentGuidelines/Guidelines/Development.md": "Development.md pointer",
             "BEGIN THATFACTORY DOCUMENTATION MAINTENANCE CONTRACT v1": "documentation-maintenance contract",
             "BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1": "external-dependency contract",
+            "BEGIN THATFACTORY RUNTIME OBSERVABILITY CONTRACT v1": "runtime-observability contract",
             "AgentGuidelines/Guidelines/Documentation.md": "Documentation.md pointer",
             "## Stack": "Stack section",
         ]

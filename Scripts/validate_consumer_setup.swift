@@ -14,6 +14,8 @@ let documentationContractBegin = "<!-- BEGIN THATFACTORY DOCUMENTATION MAINTENAN
 let documentationContractEnd = "<!-- END THATFACTORY DOCUMENTATION MAINTENANCE CONTRACT v1 -->"
 let externalDependencyContractBegin = "<!-- BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1 -->"
 let externalDependencyContractEnd = "<!-- END THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1 -->"
+let observabilityContractBegin = "<!-- BEGIN THATFACTORY RUNTIME OBSERVABILITY CONTRACT v1 -->"
+let observabilityContractEnd = "<!-- END THATFACTORY RUNTIME OBSERVABILITY CONTRACT v1 -->"
 let markdownLinkPattern = #"\[[^\]]+\]\(([^)]+)\)"#
 let swiftFormatGuide = "AgentGuidelines/Guidelines/Swift/SwiftFormat.md"
 let strictFormatCommandPattern =
@@ -335,6 +337,7 @@ func validateConsumerSetup(
             (contractBegin, contractEnd, "code-review"),
             (documentationContractBegin, documentationContractEnd, "documentation-maintenance"),
             (externalDependencyContractBegin, externalDependencyContractEnd, "external-dependency"),
+            (observabilityContractBegin, observabilityContractEnd, "runtime-observability"),
         ]
         for (begin, end, name) in contracts {
             let expected = extractMarkedBlock(

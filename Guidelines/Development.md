@@ -52,3 +52,5 @@ Never discard unrelated changes to perform cleanup. If the original checkout is 
 ## Logging
 
 Applications own their orchestration, lifecycle, and product-domain diagnostics. Follow the shared [logging guide](Logging.md) and rely on each dependency to log its own implementation. Do not duplicate or reformat package-internal operations in the application log.
+
+Treat observability as part of implementing or changing stateful, asynchronous, fallible, or lifecycle-oriented behavior. Before handoff, trace those boundaries and verify that privacy-safe AppLogger events distinguish the outcomes needed to diagnose the behavior in context. Merely adding the dependency or linking its product is not sufficient. Keep pure value and utility code silent when it has no meaningful event boundary, and record that deliberate decision in the handoff rather than manufacturing noisy logs.
