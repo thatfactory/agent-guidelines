@@ -579,11 +579,16 @@ func validateExternalDependencyPolicy(_ errors: inout [String]) {
     if let contents = readText(cicdGuideline, errors: &errors) {
         let required = [
             "## Tooling and automation": "CI/CD tooling policy section",
+            "## Private repository dependencies": "private repository dependency authentication section",
             "Fastlane is forbidden": "forbidden delivery tooling",
             "xcode-cloud-mcp": "first-party Xcode Cloud tooling",
             "app-store-connect-mcp": "first-party App Store tooling",
             "required behavior cannot be implemented": "non-Swift capability-gap threshold",
             "missing Swift capability": "documented non-Swift exception",
+            "actions/create-github-app-token@v3": "short-lived GitHub App token workflow",
+            "permission-contents: read": "read-only private dependency permission",
+            "GIT_CONFIG_KEY_0": "process-level Git authentication",
+            "pull_request_target": "untrusted pull-request credential boundary",
         ]
         for (value, description) in required where !contents.contains(value) {
             errors.append("Guidelines/CICD.md: missing \(description): '\(value)'")

@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.31] - 2026-09-13
+
+### Added
+
+- Added a least-privilege GitHub App authentication pattern for workflows that resolve private sibling repositories, including short-lived read-only tokens, process-scoped Git configuration, exact repository selection, and fork pull-request and self-hosted-runner security boundaries.
+
 ## [0.0.30] - 2026-09-12
 
 ### Changed
