@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.33] - 2026-09-19
+
+### Added
+
+- Added a Swift Package compiler-settings baseline aligned with the applicable Xcode project warning, Swift language-mode, concurrency, and upcoming-feature policies.
+- Added completion-audit enforcement for compiler settings in checked-in Swift packages.
+
+### Changed
+
+- Required future Xcode compiler-policy changes to evaluate and update Swift Package Manager parity when an equivalent package setting is applicable.
+
 ## [0.0.32] - 2026-09-13
 
 ### Changed

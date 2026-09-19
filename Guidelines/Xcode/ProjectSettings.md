@@ -51,6 +51,10 @@ The Xcode 27 inventory to evaluate is:
 
 Treat this list as discovery input for Xcode 27, not as a set of flags that must all be present and not as a permanent exhaustive list. When adopting a newer Xcode, compare its build settings with this prefix and evaluate newly exposed settings against the selected Swift language mode. Require each still-upcoming feature at project level; omit each feature already incorporated into the language mode.
 
+## Swift package parity
+
+Whenever this Xcode project baseline adds, removes, or changes a Swift or Clang compiler policy, evaluate whether Swift Package Manager exposes a semantically equivalent setting and whether that policy is appropriate for reusable packages. When it is, update the [Swift package compiler-settings baseline](../Packages.md#compiler-settings-baseline), the Swift-package completion audit, and their structural validation in the same change. Do not mechanically copy application-only policy such as `Info.plist` declarations, Metal settings without a SwiftPM equivalent, or default MainActor isolation into the package baseline.
+
 ## Audit procedure
 
 1. Identify the selected Xcode version and its newest stable Swift language mode.
