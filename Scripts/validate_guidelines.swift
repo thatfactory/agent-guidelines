@@ -112,6 +112,13 @@ let upcomingFeatureSettings = [
     "SWIFT_UPCOMING_FEATURE_NONISOLATED_NONSENDING_BY_DEFAULT",
     "SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION",
 ]
+let packageUpcomingFeatures = [
+    "ExistentialAny",
+    "InferIsolatedConformances",
+    "InternalImportsByDefault",
+    "MemberImportVisibility",
+    "NonisolatedNonsendingByDefault",
+]
 
 /// Returns all regular-expression matches in a string.
 func matches(_ pattern: String, in value: String) -> [NSTextCheckingResult] {
@@ -525,6 +532,10 @@ func validateXcodeProjectSettingsGuideline(_ errors: inout [String]) {
         "unit-test and UI-test targets": "test-target effective-value audit",
         "nearest applicable `AGENTS.md`": "local exception source",
         "condition for removing or revisiting the exception": "exception lifecycle",
+        "## Swift package parity": "Swift package parity section",
+        "../Packages.md#compiler-settings-baseline": "Swift package baseline cross-reference",
+        "Whenever this Xcode project baseline adds, removes, or changes a Swift or Clang compiler policy":
+            "package applicability maintenance rule",
     ]
     for (value, description) in required where !contents.contains(value) {
         errors.append("Guidelines/Xcode/ProjectSettings.md: missing \(description): '\(value)'")
@@ -532,6 +543,31 @@ func validateXcodeProjectSettingsGuideline(_ errors: inout [String]) {
     for setting in upcomingFeatureSettings where !contents.contains(setting) {
         errors.append(
             "Guidelines/Xcode/ProjectSettings.md: missing Xcode 27 upcoming-feature inventory entry: '\(setting)'")
+    }
+}
+
+/// Validates the Swift package compiler-settings contract.
+func validatePackageCompilerSettingsGuideline(_ errors: inout [String]) {
+    guard let contents = readText(packagesGuideline, errors: &errors) else {
+        return
+    }
+    let required = [
+        "## Compiler settings baseline": "compiler-settings baseline section",
+        "Xcode/ProjectSettings.md": "Xcode baseline cross-reference",
+        "swiftLanguageModes": "package-level Swift language mode",
+        ".treatAllWarnings(as: .error)": "typed warnings-as-errors policy",
+        "Swift 6 language mode enables complete concurrency checking unconditionally":
+            "Swift 6 strict-concurrency explanation",
+        "`.defaultIsolation(MainActor.self)` is intentionally not part":
+            "default MainActor isolation exclusion",
+        "Retain no redundant upcoming features": "redundant upcoming-feature prohibition",
+        "condition for revisiting or removing the exception": "package-setting exception lifecycle",
+    ]
+    for (value, description) in required where !contents.contains(value) {
+        errors.append("Guidelines/Packages.md: missing package compiler policy \(description): '\(value)'")
+    }
+    for feature in packageUpcomingFeatures where !contents.contains(".enableUpcomingFeature(\"\(feature)\")") {
+        errors.append("Guidelines/Packages.md: missing required SwiftPM upcoming feature '\(feature)'")
     }
 }
 
@@ -674,9 +710,22 @@ func validateAuditSkill(_ errors: inout [String]) {
         "Guidelines/CICD.md": "shared CI/CD guide reference",
         "fastlane adoption": "forbidden delivery-tooling audit",
         "missing Swift capability": "non-Swift script exception audit",
+        "## Audit Swift package settings": "Swift package-settings audit",
+        "Guidelines/Packages.md#compiler-settings-baseline": "shared package compiler-settings guide reference",
+        "Package.swift": "package manifest discovery",
+        "swift package --package-path <package-root> dump-package": "evaluated manifest inspection",
+        "swiftLanguageModes": "package language-mode audit",
+        ".treatAllWarnings(as: .error)": "package warnings-as-errors audit",
+        ".enableUpcomingFeature(...)": "package upcoming-feature audit",
+        "complete strict concurrency as supplied by the language mode": "Swift 6 strict-concurrency handling",
+        ".defaultIsolation(MainActor.self)": "default MainActor isolation exclusion",
+        "package-setting failure": "package-setting exception lookup",
     ]
     for (value, description) in required where !contents.contains(value) {
         errors.append(".agents/skills/agent-guidelines-audit/SKILL.md: missing \(description): '\(value)'")
+    }
+    for feature in packageUpcomingFeatures where !contents.contains(feature) {
+        errors.append(".agents/skills/agent-guidelines-audit/SKILL.md: missing package feature audit '\(feature)'")
     }
     validateExecutable(markdownWrappingScript, description: "Markdown wrapping checker", errors: &errors)
     validateExecutable(stringCatalogInspectionScript, description: "String Catalog inspection checker", errors: &errors)
@@ -748,6 +797,7 @@ func main() -> Int32 {
     validateAppStoreGuideline(&errors)
     validateLocalizationScripts(&errors)
     validateXcodeProjectSettingsGuideline(&errors)
+    validatePackageCompilerSettingsGuideline(&errors)
     validateExternalDependencyPolicy(&errors)
     validateGitignoreGuidance(&errors)
     validateExecutable(consumerSetupScript, description: "consumer setup validator", errors: &errors)
