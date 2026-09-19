@@ -81,7 +81,7 @@ swiftLanguageModes: [.v6]
 
 Do not repeat `.swiftLanguageMode(.v6)` target by target when package-level ownership is sufficient. A target may specialize the language mode only under a documented package exception. An older manifest that cannot express this baseline must first modernize its tools version; `.treatAllWarnings(as:)` requires PackageDescription 6.2 or later.
 
-Every locally defined target that compiles Swift, including test targets and other supported Swift target kinds, must unconditionally use the typed PackageDescription API:
+Every locally defined target that compiles Swift and for which SwiftPM exposes `swiftSettings`, including test targets and other applicable Swift target kinds, must unconditionally use the typed PackageDescription API:
 
 ```swift
 swiftSettings: [
@@ -98,13 +98,13 @@ A setting restricted only to Debug, Release, a platform, or another build condit
 
 When a locally compiled target contains C or Objective-C, require `cSettings: [.treatAllWarnings(as: .error)]`. Where C++ settings apply, require `cxxSettings: [.treatAllWarnings(as: .error)]`. Pure-Swift packages do not need C or C++ settings, and packages must not introduce `-Werror` through `unsafeFlags` when the typed APIs are available.
 
-Swift 6 language mode enables complete concurrency checking unconditionally, so a Swift 6 package must not add `.enableUpcomingFeature("StrictConcurrency")`. For an older package, modernize to the required language mode instead of preserving the legacy mode with a compatibility flag.
+Swift 6 language mode enables complete concurrency checking unconditionally, so a Swift 6 package must not retain any explicit `StrictConcurrency` opt-in. Remove `.enableUpcomingFeature("StrictConcurrency")`, `.enableExperimentalFeature("StrictConcurrency")`, and `StrictConcurrency=complete` spellings instead of treating one representation as special. For an older package, modernize to the required language mode instead of preserving the legacy mode with a compatibility flag.
 
 Do not invent a direct SwiftPM equivalent for `SWIFT_APPROACHABLE_CONCURRENCY`. Its applicable opt-in language behavior is represented by the individual upcoming features above, including `InferIsolatedConformances` and `NonisolatedNonsendingByDefault`.
 
 `.defaultIsolation(MainActor.self)` is intentionally not part of this shared package baseline. Reusable packages must express actor isolation according to their public and internal API semantics rather than inherit an application's default isolation policy. A package may choose a default isolation as an intentional package-specific architectural decision, but the completion audit must not add or require it merely for Xcode-project parity.
 
-Require the listed upcoming features on every applicable locally defined Swift target, but not on binary or system-library targets that SwiftPM does not compile as Swift source. Reevaluate the list whenever the selected Xcode/Swift toolchain or language mode changes. When a feature becomes unconditional in the selected language mode, remove its `.enableUpcomingFeature(...)` declaration from packages, remove it from this baseline, and update the audit contract in the same change. Retain no redundant upcoming features merely for historical consistency because they can produce diagnostics under warnings-as-errors.
+Require the listed upcoming features on every applicable locally defined Swift target, but not on binary or system-library targets that SwiftPM does not compile as Swift source or package plug-in targets for which `Target.plugin(...)` does not expose `swiftSettings`. Reevaluate the list whenever the selected Xcode/Swift toolchain or language mode changes. When a feature becomes unconditional in the selected language mode, remove its `.enableUpcomingFeature(...)` declaration from packages, remove it from this baseline, and update the audit contract in the same change. Retain no redundant upcoming features merely for historical consistency because they can produce diagnostics under warnings-as-errors.
 
 Metal warnings-as-errors and application `Info.plist` export-compliance declarations have no package equivalent in this baseline. SwiftPM has no first-class Metal warning setting, and a reusable package does not own its consuming application's generated `Info.plist`.
 

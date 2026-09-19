@@ -187,6 +187,49 @@ let tests: [(String, () throws -> Void)] = [
         }
     ),
     (
+        "repository validator rejects missing package plug-in exclusion",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guideline = fixture.appendingPathComponent("Guidelines/Packages.md")
+                var contents = try String(contentsOf: guideline, encoding: .utf8)
+                contents = contents.replacingOccurrences(
+                    of: "package plug-in targets for which `Target.plugin(...)` does not expose `swiftSettings`",
+                    with: "other package targets"
+                )
+                try write(contents, to: guideline)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "missing package plug-in exclusion unexpectedly passed")
+                try require(
+                    result.output.contains("missing package compiler policy unsupported plug-in target exclusion"),
+                    result.output)
+            }
+        }
+    ),
+    (
+        "repository validator rejects missing experimental StrictConcurrency rule",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guideline = fixture.appendingPathComponent("Guidelines/Packages.md")
+                var contents = try String(contentsOf: guideline, encoding: .utf8)
+                contents = contents.replacingOccurrences(
+                    of: ".enableExperimentalFeature(\"StrictConcurrency\")",
+                    with: ".enableExperimentalFeature(\"ExampleFeature\")"
+                )
+                try write(contents, to: guideline)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "missing experimental StrictConcurrency rule unexpectedly passed")
+                try require(
+                    result.output.contains(
+                        "missing package compiler policy experimental StrictConcurrency redundancy rule"), result.output
+                )
+            }
+        }
+    ),
+    (
         "repository validator rejects missing Xcode package-parity maintenance",
         {
             try withTemporaryDirectory { temporary in

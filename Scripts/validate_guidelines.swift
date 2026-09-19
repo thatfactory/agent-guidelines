@@ -558,8 +558,13 @@ func validatePackageCompilerSettingsGuideline(_ errors: inout [String]) {
         ".treatAllWarnings(as: .error)": "typed warnings-as-errors policy",
         "Swift 6 language mode enables complete concurrency checking unconditionally":
             "Swift 6 strict-concurrency explanation",
+        ".enableExperimentalFeature(\"StrictConcurrency\")":
+            "experimental StrictConcurrency redundancy rule",
+        "StrictConcurrency=complete": "explicit StrictConcurrency redundancy rule",
         "`.defaultIsolation(MainActor.self)` is intentionally not part":
             "default MainActor isolation exclusion",
+        "package plug-in targets for which `Target.plugin(...)` does not expose `swiftSettings`":
+            "unsupported plug-in target exclusion",
         "Retain no redundant upcoming features": "redundant upcoming-feature prohibition",
         "condition for revisiting or removing the exception": "package-setting exception lifecycle",
     ]
@@ -718,7 +723,10 @@ func validateAuditSkill(_ errors: inout [String]) {
         ".treatAllWarnings(as: .error)": "package warnings-as-errors audit",
         ".enableUpcomingFeature(...)": "package upcoming-feature audit",
         "complete strict concurrency as supplied by the language mode": "Swift 6 strict-concurrency handling",
+        ".enableExperimentalFeature(\"StrictConcurrency\")": "experimental StrictConcurrency removal audit",
+        "StrictConcurrency=complete": "explicit StrictConcurrency removal audit",
         ".defaultIsolation(MainActor.self)": "default MainActor isolation exclusion",
+        "package plug-in targets": "unsupported plug-in target exclusion",
         "package-setting failure": "package-setting exception lookup",
     ]
     for (value, description) in required where !contents.contains(value) {
