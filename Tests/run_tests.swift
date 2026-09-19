@@ -230,6 +230,50 @@ let tests: [(String, () throws -> Void)] = [
         }
     ),
     (
+        "repository validator rejects missing upcoming StrictConcurrency rule",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guideline = fixture.appendingPathComponent("Guidelines/Packages.md")
+                var contents = try String(contentsOf: guideline, encoding: .utf8)
+                contents = contents.replacingOccurrences(
+                    of: ".enableUpcomingFeature(\"StrictConcurrency\")",
+                    with: ".enableUpcomingFeature(\"ExampleFeature\")"
+                )
+                try write(contents, to: guideline)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "missing upcoming StrictConcurrency rule unexpectedly passed")
+                try require(
+                    result.output.contains(
+                        "missing package compiler policy upcoming StrictConcurrency redundancy rule"), result.output
+                )
+            }
+        }
+    ),
+    (
+        "repository validator rejects missing explicit StrictConcurrency rule",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guideline = fixture.appendingPathComponent("Guidelines/Packages.md")
+                var contents = try String(contentsOf: guideline, encoding: .utf8)
+                contents = contents.replacingOccurrences(
+                    of: "StrictConcurrency=complete",
+                    with: "StrictConcurrency=minimal"
+                )
+                try write(contents, to: guideline)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "missing explicit StrictConcurrency rule unexpectedly passed")
+                try require(
+                    result.output.contains(
+                        "missing package compiler policy explicit StrictConcurrency redundancy rule"), result.output
+                )
+            }
+        }
+    ),
+    (
         "repository validator rejects missing Xcode package-parity maintenance",
         {
             try withTemporaryDirectory { temporary in

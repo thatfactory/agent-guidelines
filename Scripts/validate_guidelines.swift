@@ -558,6 +558,8 @@ func validatePackageCompilerSettingsGuideline(_ errors: inout [String]) {
         ".treatAllWarnings(as: .error)": "typed warnings-as-errors policy",
         "Swift 6 language mode enables complete concurrency checking unconditionally":
             "Swift 6 strict-concurrency explanation",
+        ".enableUpcomingFeature(\"StrictConcurrency\")":
+            "upcoming StrictConcurrency redundancy rule",
         ".enableExperimentalFeature(\"StrictConcurrency\")":
             "experimental StrictConcurrency redundancy rule",
         "StrictConcurrency=complete": "explicit StrictConcurrency redundancy rule",
@@ -723,6 +725,7 @@ func validateAuditSkill(_ errors: inout [String]) {
         ".treatAllWarnings(as: .error)": "package warnings-as-errors audit",
         ".enableUpcomingFeature(...)": "package upcoming-feature audit",
         "complete strict concurrency as supplied by the language mode": "Swift 6 strict-concurrency handling",
+        ".enableUpcomingFeature(\"StrictConcurrency\")": "upcoming StrictConcurrency removal audit",
         ".enableExperimentalFeature(\"StrictConcurrency\")": "experimental StrictConcurrency removal audit",
         "StrictConcurrency=complete": "explicit StrictConcurrency removal audit",
         ".defaultIsolation(MainActor.self)": "default MainActor isolation exclusion",
