@@ -114,6 +114,10 @@ Accept a deviation only when the nearest applicable `AGENTS.md`, or durable docu
 
 Packages own any diagnostics emitted by their implementation. Follow the shared [logging guide](Logging.md) for AppLogger usage, subsystem identity, package emoji prefixes, domain-owned categories, concise messages, privacy, and test coverage. A consuming application must not reproduce package-internal logs.
 
+Before assigning or changing a package's canonical emoji, inspect the package list on the current `main` branch of the [ThatFactory Swift Package Collection](https://github.com/thatfactory/swift-package-collection) and confirm that no other package uses it. Each package emoji must be unique across ThatFactory so a log prefix identifies one package unambiguously. Treat visually identical emoji spellings that differ only by presentation selectors as the same emoji; do not use an encoding variation to create an apparent distinction.
+
+Declare the selected emoji in the package's local instructions or documentation, use that exact emoji in its package-local logging gateway, and add or update the matching Swift Package Collection entry as part of the package's publication work. An existing collision, a missing registry entry for a published package, or disagreement among the registry, documentation, and emitted prefix blocks release readiness until reconciled.
+
 ## Development workflow
 
 1. Read the package's local `AGENTS.md`, README, DocC, and public API before changing behavior.
