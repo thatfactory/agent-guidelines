@@ -291,6 +291,25 @@ let tests: [(String, () throws -> Void)] = [
         }
     ),
     (
+        "repository validator rejects missing package emoji uniqueness policy",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guideline = fixture.appendingPathComponent("Guidelines/Packages.md")
+                var contents = try String(contentsOf: guideline, encoding: .utf8)
+                contents = contents.replacingOccurrences(
+                    of: "Each package emoji must be unique across ThatFactory",
+                    with: "Package emojis should be recognizable"
+                )
+                try write(contents, to: guideline)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "missing package emoji uniqueness policy unexpectedly passed")
+                try require(result.output.contains("missing package emoji uniqueness policy"), result.output)
+            }
+        }
+    ),
+    (
         "repository validator rejects missing package audit section",
         {
             try withTemporaryDirectory { temporary in
@@ -323,6 +342,25 @@ let tests: [(String, () throws -> Void)] = [
                 let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
                 try require(!result.succeeded, "package audit behavior drift unexpectedly passed")
                 try require(result.output.contains("missing evaluated manifest inspection"), result.output)
+            }
+        }
+    ),
+    (
+        "repository validator rejects package emoji audit drift",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let skill = fixture.appendingPathComponent(".agents/skills/agent-guidelines-audit/SKILL.md")
+                var contents = try String(contentsOf: skill, encoding: .utf8)
+                contents = contents.replacingOccurrences(
+                    of: "Enumerate the registered package entries",
+                    with: "Inspect the package registry"
+                )
+                try write(contents, to: skill)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "package emoji audit drift unexpectedly passed")
+                try require(result.output.contains("missing package emoji registry enumeration"), result.output)
             }
         }
     ),

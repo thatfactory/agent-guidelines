@@ -576,6 +576,14 @@ func validatePackageCompilerSettingsGuideline(_ errors: inout [String]) {
     for feature in packageUpcomingFeatures where !contents.contains(".enableUpcomingFeature(\"\(feature)\")") {
         errors.append("Guidelines/Packages.md: missing required SwiftPM upcoming feature '\(feature)'")
     }
+    let emojiRequired = [
+        "Each package emoji must be unique across ThatFactory": "uniqueness policy",
+        "visually identical emoji spellings": "presentation-selector collision policy",
+        "matching Swift Package Collection entry": "registry synchronization",
+    ]
+    for (value, description) in emojiRequired where !contents.contains(value) {
+        errors.append("Guidelines/Packages.md: missing package emoji \(description): '\(value)'")
+    }
 }
 
 /// Validates the shared App Store metadata workflow.
@@ -679,6 +687,10 @@ func validateAuditSkill(_ errors: inout [String]) {
         "AppLogger": "AppLogger integration audit",
         "Logging.md": "shared Logging guide reference",
         "Dependency declaration and target linkage alone": "lifecycle observability coverage audit",
+        "Enumerate the registered package entries": "package emoji registry enumeration",
+        "visually identical presentation-selector variants as a collision":
+            "package emoji presentation-selector collision audit",
+        "blocks audit completion and release readiness": "package emoji audit stopping rule",
         "## Audit documentation consistency": "documentation drift audit",
         "Known stale documentation blocks completion": "stale documentation stopping rule",
         "## Audit documentation formatting": "documentation formatting audit",

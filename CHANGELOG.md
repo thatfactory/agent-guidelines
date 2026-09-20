@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.34] - 2026-09-20
+
+### Changed
+
+- Required every ThatFactory package emoji to be unique in the Swift Package Collection and synchronized across package documentation, the logging gateway, and the collection registry.
+- Extended the completion audit to block package publication when emoji uniqueness cannot be verified or the registered and emitted identities disagree.
+
 ## [0.0.33] - 2026-09-19
 
 ### Added
