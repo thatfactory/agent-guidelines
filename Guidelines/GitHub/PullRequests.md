@@ -116,11 +116,11 @@ Stop the review loop when no unresolved P0/P1 finding remains, every thread has 
 
 ### Codex review monitoring
 
-Monitor an expected automatic-review **start signal** for at most five minutes total from entry into `scheduled`. Take an initial snapshot, then at most one each around 30, 90, 180, and 300 seconds; equivalent non-accelerating schedules are allowed if they stop by five minutes. Do not create an indefinite recurring automation. If a processing or completion signal appears, move to the normal review-completion workflow. This start-signal ceiling does not imply that a review finishes within five minutes.
+Monitor an automatic review for at most five minutes total from entry into `scheduled`, including time spent in `processing`. Take an initial snapshot, then at most one each around 30, 90, 180, and 300 seconds; equivalent non-accelerating schedules are allowed if they stop by five minutes. Do not create an indefinite recurring automation. A processing signal changes the execution state but does not reset the deadline or poll budget. A completion signal ends monitoring. Review completion is not assumed to occur within five minutes.
 
 A temporary monitor owns `started_at`, `deadline`, `poll_count`, `last_state_fingerprint`, and `last_observed_state`; discard them when it ends. Fingerprint at least repository, PR number, base SHA, head SHA, configuration, execution, signal state, review commit SHA, review-thread state, required checks, and mergeability. An identical fingerprint causes no substantive re-analysis or user notification. Continue only within the deadline.
 
-At the deadline, stop and terminate the monitor, report the observed facts once, and never infer approval. Keep `scheduled` only if positive current-head scheduling evidence remains; otherwise use the strongest evidence-supported state. Do not continue polling or block unrelated work. If a positively established review remains a required merge gate, surface that unresolved gate to the user.
+At the deadline, stop and terminate the monitor, report the observed facts once, and never infer approval. Keep `scheduled` only if positive current-head scheduling evidence remains; retain `processing` only while its current-head signal remains valid. Otherwise use the strongest evidence-supported state. Do not continue polling or block unrelated work. If a positively established review remains a required merge gate, surface that unresolved gate to the user.
 
 Any generated monitor prompt must preserve repository, PR number, expected head SHA, configuration and its authoritative evidence, current execution state, monitor start, and deadline. Without configuration evidence, do not create a monitor for an absent review. A later heartbeat must not reconstruct `enabled` from its own prompt.
 
@@ -193,7 +193,7 @@ gh api graphql --paginate \
   -F thread=<review-thread-id>
 ```
 
-Poll for the automatic start signal only under the five-minute ceiling above. After a verified processing signal, inspect every returned page for reactions, review threads, and thread comments when checking completion. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion, and do not submit a duplicate request merely because polling has not completed.
+Poll for automatic start or completion only under the five-minute ceiling above. After a verified processing signal, inspect every returned page for reactions, review threads, and thread comments when checking completion. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion, and do not submit a duplicate request merely because polling has not completed.
 
 ## Merge method
 
