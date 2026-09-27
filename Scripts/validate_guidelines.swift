@@ -34,6 +34,7 @@ let cicdGuideline = root.appendingPathComponent("Guidelines/CICD.md")
 let documentationGuideline = root.appendingPathComponent("Guidelines/Documentation.md")
 let packagesGuideline = root.appendingPathComponent("Guidelines/Packages.md")
 let agentsTemplate = root.appendingPathComponent("Templates/AGENTS.md")
+let pullRequestsGuideline = root.appendingPathComponent("Guidelines/GitHub/PullRequests.md")
 let gitignoreTemplate = root.appendingPathComponent("Templates/.gitignore")
 let gitignoreGuideline = root.appendingPathComponent("Guidelines/Git/IgnoreFiles.md")
 
@@ -772,6 +773,36 @@ func validateAuditSkill(_ errors: inout [String]) {
     }
 }
 
+/// Validates positive evidence and bounded monitoring for automatic Codex reviews.
+func validateCodexReviewEvidence(_ errors: inout [String]) {
+    guard let guide = readText(pullRequestsGuideline, errors: &errors) else { return }
+    let required = [
+        "codex_review_configuration = enabled | disabled | unknown",
+        "codex_review_execution = not_started | scheduled | processing | completed",
+        "codex_review_expected_sha = <current PR head SHA>",
+        "Only positive repository-specific evidence",
+        "unknown` plus no signal remains `not_started`",
+        "Discovering `enabled` alone does not schedule a review",
+        "reviewed SHA equals the expected SHA",
+        "at most five minutes total",
+        "An identical fingerprint causes no substantive re-analysis or user notification",
+        "Without configuration evidence, do not create a monitor",
+        "do not transfer `scheduled`, `processing`, or `completed`",
+    ]
+    for concept in required where !guide.contains(concept) {
+        errors.append("Guidelines/GitHub/PullRequests.md: missing Codex review evidence rule: \(concept)")
+    }
+    for forbidden in ["No review yet means pending", "Wait for the configured Codex review to finish"]
+    where guide.contains(forbidden) {
+        errors.append("Guidelines/GitHub/PullRequests.md: unconditional Codex review gate: \(forbidden)")
+    }
+    if let template = readText(agentsTemplate, errors: &errors),
+        !template.contains("this template does not establish that automatic review is configured")
+    {
+        errors.append("Templates/AGENTS.md: missing unknown-configuration safeguard")
+    }
+}
+
 /// Validates the reusable ignore template and its shared reconciliation policy.
 func validateGitignoreGuidance(_ errors: inout [String]) {
     guard let template = readText(gitignoreTemplate, errors: &errors) else { return }
@@ -822,6 +853,7 @@ func main() -> Int32 {
     validateXcodeProjectSettingsGuideline(&errors)
     validatePackageCompilerSettingsGuideline(&errors)
     validateExternalDependencyPolicy(&errors)
+    validateCodexReviewEvidence(&errors)
     validateGitignoreGuidance(&errors)
     validateExecutable(consumerSetupScript, description: "consumer setup validator", errors: &errors)
     validateAuditSkill(&errors)

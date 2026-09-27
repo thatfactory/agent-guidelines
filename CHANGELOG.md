@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.35] - 2026-09-27
+
+### Changed
+
+- Require positive repository-specific evidence before automatic Codex review becomes a merge gate. Track configuration separately from current-head execution, default undiscoverable settings to `unknown`, and bound deduplicated start-signal monitoring to five minutes.
+
 ## [0.0.34] - 2026-09-20
 
 ### Changed

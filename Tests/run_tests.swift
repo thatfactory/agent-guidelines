@@ -121,6 +121,38 @@ func localization(_ value: String, state: String = "translated") -> String {
 
 let tests: [(String, () throws -> Void)] = [
     (
+        "review evidence validator rejects an unconditional pending gate",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guide = fixture.appendingPathComponent("Guidelines/GitHub/PullRequests.md")
+                let contents = try String(contentsOf: guide, encoding: .utf8)
+                try write(contents + "\nNo review yet means pending.\n", to: guide)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "unconditional Codex gate unexpectedly passed")
+                try require(result.output.contains("unconditional Codex review gate"), result.output)
+            }
+        }
+    ),
+    (
+        "review evidence validator requires unknown state",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guide = fixture.appendingPathComponent("Guidelines/GitHub/PullRequests.md")
+                let contents = try String(contentsOf: guide, encoding: .utf8)
+                try write(
+                    contents.replacingOccurrences(of: "enabled | disabled | unknown", with: "enabled | disabled"),
+                    to: guide)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "missing unknown state unexpectedly passed")
+                try require(result.output.contains("missing Codex review evidence rule"), result.output)
+            }
+        }
+    ),
+    (
         "repository validator accepts the source tree",
         {
             let result = try run([script("Scripts/validate_guidelines.swift")])

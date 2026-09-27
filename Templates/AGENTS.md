@@ -28,6 +28,8 @@ Read only the guides relevant to the task:
 
 For an application that uses Redux, also read [Redux architecture](AgentGuidelines/Guidelines/Architecture/Redux.md).
 
+For Codex pull-request review, use the linked review evidence rules. If authoritative repository-specific evidence establishes that automatic review is enabled, apply its current-head gate. If the executing agent cannot establish the setting, record it as `unknown`; this template does not establish that automatic review is configured.
+
 Keep the following observability contract in the consumer repository's root `AGENTS.md` so implementation agents treat runtime diagnostics as part of lifecycle work. Copy it unchanged and update it when the marker version changes in this template.
 
 ```md
@@ -90,7 +92,7 @@ In an initial review, report substantiated blockers together. A follow-up review
 
 The review-round budget below applies only to Codex GitHub reviews: the configured automatic Codex review and any manual `@codex review` request. It does not apply to ChatGPT review or reasoning delegated through Reasoning Relay. An otherwise-authorized Reasoning Relay workflow may request as many Relay review or follow-up delegations as its own governing workflow requires; those requests neither consume the Codex budget nor require repository-owner authorization under it.
 
-Automatic Codex review is the initial Codex review. Do not request a manual Codex review unless the repository owner explicitly asks. Never request another Codex review after each remediation commit. Within the normal Codex review budget, at most one owner-authorized, delta-scoped Codex verification review may be requested under [the pull-request review workflow](AgentGuidelines/Guidelines/GitHub/PullRequests.md).
+When repository-specific evidence establishes that automatic Codex review is enabled and applies to the current pull request/head, it is the initial Codex review. Otherwise, an absent review does not establish a pending gate. Do not request a manual Codex review unless the repository owner explicitly asks. Never request another Codex review after each remediation commit. Within the normal Codex review budget, at most one owner-authorized, delta-scoped Codex verification review may be requested under [the pull-request review workflow](AgentGuidelines/Guidelines/GitHub/PullRequests.md).
 <!-- END THATFACTORY CODE REVIEW CONTRACT v2 -->
 
 ## Codex review scope
