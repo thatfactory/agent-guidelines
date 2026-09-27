@@ -11,7 +11,7 @@ Use this guide whenever creating, reviewing, updating, or merging a GitHub pull 
 - Follow the repository's pull-request template and local contribution instructions.
 - Run the relevant local validation and document anything that could not be run.
 - Open the pull request without auto-merge and keep it unmerged while automated or agent review is pending. Use draft state only when configured reviewers also run on drafts.
-- When automatic Codex review is enabled, opening the pull request schedules the review. Do not also post `@codex review` or make another manual request; duplicate reviews waste review capacity and tokens. Do not request a Codex review manually unless the user explicitly asks for one.
+- When repository-specific evidence establishes that automatic Codex review is enabled and the current pull request/head meets its trigger, track that review round. Do not also post `@codex review` or make another manual request; duplicate reviews waste review capacity and tokens. Do not request a Codex review manually unless the user explicitly asks for one.
 
 ## Consumer subtree review scope
 
@@ -34,7 +34,7 @@ Only unresolved P0 and P1 findings block merge. A finding may be technically cor
 
 Opening a pull request starts review; it does not authorize merging it.
 
-1. Wait for the configured Codex review to finish. No review yet means pending, not approved.
+1. Establish the Codex review state from the evidence rules below. An absent review is pending only for a positively established current-head review round. Unknown or disabled configuration and no Codex activity do not block merge by themselves.
 2. Record the reviewed head SHA and inspect all review summaries, inline threads, checks, and requested changes.
 3. Assess each comment for technical correctness, severity, supported reachability, and root cause.
 4. Give every thread one explicit disposition: `BLOCKER-P0`, `BLOCKER-P1`, `DEFER-P2`, `DEFER-P3`, `DECLINE`, or `DUPLICATE`.
@@ -49,6 +49,40 @@ When replying with a commit reference, write the commit hash as raw text without
 A thumbs-up or clean Codex review satisfies the agent-review step, but it does not replace any human approval required by the repository. Do not enable auto-merge before all review gates are satisfied.
 
 ### Codex review state and round budget
+
+#### Codex review evidence and state
+
+Track configuration and execution separately in the active task; these are not checked-in runtime files:
+
+```text
+codex_review_configuration = enabled | disabled | unknown
+codex_review_configuration_evidence = <authoritative source + observed_at> | unset
+codex_review_execution = not_started | scheduled | processing | completed
+codex_review_execution_evidence = <source + observed_at> | unset
+codex_review_expected_sha = <current PR head SHA>
+codex_review_completed_sha = <reviewed commit SHA> | unset
+```
+
+Start at `unknown`, `not_started`, the current head SHA, and an unset completed SHA. The executing agent is not assumed to have access to OpenAI's automatic-review configuration. Only positive repository-specific evidence may change configuration to `enabled` or `disabled`: a durable declaration in the consumer's root `AGENTS.md` or other tracked repository policy, explicit repository-owner confirmation in the active task, an authoritative repository or organization setting observed through an available interface, or another source whose semantics explicitly establish this repository's configuration. A repository may declare that automatic Codex pull-request review is enabled or disabled; no declaration is required. Generic AgentGuidelines or template wording, an automation prompt, another repository's setting, and a previous pull request's behavior are insufficient.
+
+Execution evidence must identify the active pull request and review round: a current-PR Codex processing reaction or equivalent event, a current review request/event with unambiguous round semantics, a submitted review covering the expected head, or another authoritative GitHub/OpenAI signal identifying the current PR/head. Absence of a review or reaction and elapsed time are not evidence. In particular, `unknown` plus no signal remains `not_started`, never `scheduled` or pending.
+
+Discovering `disabled` leaves execution `not_started` when no current activity exists. Discovering `enabled` alone does not schedule a review. Set `scheduled` only when positive evidence also establishes that the current PR/head meets the automatic trigger; start the bounded signal monitor then. A current-PR/current-head processing signal advances to `processing`. A completed review may advance `scheduled` or `processing` to `completed`; record its commit SHA when available. The gate is satisfied only when the reviewed SHA equals the expected SHA or another authoritative signal proves coverage of that head. A review for an earlier head is stale.
+
+When the head changes, set `codex_review_expected_sha` to the new head and clear `codex_review_completed_sha`. Terminate monitoring of the old head. Re-establish execution evidence for the new head; do not transfer `scheduled`, `processing`, or `completed`, or infer a new automatic round from the old one.
+
+Apply these outcomes to the current head:
+
+| Evidence | Execution | Merge gate | Start monitor |
+| --- | --- | --- | --- |
+| Enabled with a current-head processing signal | `processing` | Pending | No; processing already began |
+| Enabled with a completed review covering the expected head and dispositioned findings | `completed` | Satisfied | No |
+| Unknown with no signal or configuration evidence | `not_started` | Not blocked by absent Codex review | No |
+| Disabled with no review | `not_started` | Not blocked by absent Codex review | No |
+| Review completed for an old head | Re-establish for new head | Old review does not satisfy the gate | No inherited monitor |
+| Enabled and positively eligible, with no start signal | `scheduled` | Pending while required | Yes, at most five minutes |
+
+For repeated identical snapshots, retain the fingerprint and poll count without re-analysis or notification. A signal inside the budget advances to `processing` while preserving configuration evidence and expected SHA. If the head changes during monitoring, terminate the old monitor and re-establish the new head's review state. If no signal appears by the deadline, terminate monitoring and report the unresolved verified state once; timeout never satisfies the gate.
 
 This round budget applies only to Codex GitHub reviews: the configured automatic Codex review and any manual `@codex review` request. It does not apply to ChatGPT review or reasoning delegated through Reasoning Relay. An otherwise-authorized Reasoning Relay workflow may request as many Relay review or follow-up delegations as its own governing workflow requires; those requests neither consume this Codex budget nor require repository-owner authorization under it. Do not block an agentic goal waiting for a Codex-budget exception before issuing an otherwise-authorized Reasoning Relay request.
 
@@ -81,6 +115,14 @@ Do not request a third Codex review or restart a full Codex review without separ
 Stop the review loop when no unresolved P0/P1 finding remains, every thread has an explicit disposition, required checks pass, and required human authorization is present. Zero comments, zero possible improvements, and zero technical debt are not completion criteria.
 
 ### Codex review monitoring
+
+Monitor an automatic review for at most five minutes total from entry into `scheduled`, including time spent in `processing`. Take an initial snapshot, then at most one each around 30, 90, 180, and 300 seconds; equivalent non-accelerating schedules are allowed if they stop by five minutes. Do not create an indefinite recurring automation. A processing signal changes the execution state but does not reset the deadline or poll budget. A completion signal ends monitoring. Review completion is not assumed to occur within five minutes.
+
+A temporary monitor owns `started_at`, `deadline`, `poll_count`, `last_state_fingerprint`, and `last_observed_state`; discard them when it ends. Fingerprint at least repository, PR number, base SHA, head SHA, configuration, execution, signal state, review commit SHA, review-thread state, required checks, and mergeability. An identical fingerprint causes no substantive re-analysis or user notification. Continue only within the deadline.
+
+At the deadline, stop and terminate the monitor, report the observed facts once, and never infer approval. Keep `scheduled` only if positive current-head scheduling evidence remains; retain `processing` only while its current-head signal remains valid. Otherwise use the strongest evidence-supported state. Do not continue polling or block unrelated work. If a positively established review remains a required merge gate, surface that unresolved gate to the user.
+
+Any generated monitor prompt must preserve repository, PR number, expected head SHA, configuration and its authoritative evidence, current execution state, monitor start, and deadline. Without configuration evidence, do not create a monitor for an absent review. A later heartbeat must not reconstruct `enabled` from its own prompt.
 
 Use GitHub review data, reactions, and checks together. An eyes reaction means Codex is processing the pull request; it is not an approval. A thumbs-up means the review completed without suggestions. A submitted review means its inline threads must be assessed individually.
 
@@ -151,7 +193,7 @@ gh api graphql --paginate \
   -F thread=<review-thread-id>
 ```
 
-Continue polling only while an allowed review round is pending. Inspect every returned page for reactions, review threads, and thread comments. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion, and do not submit a duplicate request merely because polling has not completed.
+Poll for automatic start or completion only under the five-minute ceiling above. After a verified processing signal, inspect every returned page for reactions, review threads, and thread comments when checking completion. Do not treat missing comments, a pending reaction, truncated results, or elapsed time as review completion, and do not submit a duplicate request merely because polling has not completed.
 
 ## Merge method
 
@@ -161,7 +203,7 @@ ThatFactory repositories use squash merges by default. Do not attempt a merge co
 
 Do not merge while any of the following is true:
 
-- Codex review is still pending;
+- a positively established current-head Codex review round is `scheduled` or `processing` and remains a required gate;
 - an unresolved P0/P1 finding remains;
 - a review thread lacks an explicit disposition or remains unresolved;
 - a required check is pending or failing;
