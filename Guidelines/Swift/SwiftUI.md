@@ -50,6 +50,13 @@ With SDKs where `@State` is a macro, do not give a state property a declaration 
 - For SDK-sensitive features, search current Apple documentation through Xcode rather than relying on remembered signatures.
 - Apply the current Xcode SwiftUI skill when a new SDK changes source behavior, builder resolution, state initialization, or modifier availability.
 
+## Animation
+
+- Use native SwiftUI animation to make apps fluid rather than static. Apply it purposefully to buttons, transitions, interactions, selection, colors, and other visible state changes that benefit from feedback; do not animate every update or add motion for its own sake.
+- Prefer the default SwiftUI animation, using `withAnimation { ... }` or `.animation(.default, value: ...)`, unless the task prompt explicitly requests a specific animation. Prefer system-provided transitions and SF Symbol effects when they fit the interaction instead of recreating them with custom timing, curves, or rendering.
+- Scope animation to the relevant state change or view. Preserve responsive controls, stable layout, and uninterrupted user interaction; avoid blanket animations that also animate unrelated state changes.
+- Do not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them. This includes reading `accessibilityReduceMotion` to replace animation with `nil`, remove symbol effects, or otherwise suppress app-authored animation. Preserve any accessibility behavior provided automatically by native system components; this policy governs additional app-level overrides.
+
 ## Previews
 
 - Put previews at the end of the file under `// MARK: - Preview`.
