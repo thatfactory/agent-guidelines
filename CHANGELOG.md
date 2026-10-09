@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.36] - 2026-10-09
+
+### Added
+
+- Added SwiftUI animation guidance favoring purposeful native feedback, default SwiftUI animation, system transitions, and SF Symbol effects while keeping animations scoped and interactions responsive.
+- Required an explicit task-prompt request before adding app-level Reduce Motion guards, while preserving accessibility behavior supplied automatically by native system components.
+
 ## [0.0.35] - 2026-09-27
 
 ### Changed
