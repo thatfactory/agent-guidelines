@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.37] - 2026-10-14
+
+### Added
+
+- Made native SwiftUI and platform components the default for supported interactions, with approved durable exceptions required for verified native capability gaps.
+- Defined presentation hierarchy, independent child dismissal, parent draft retention, cancellation, dismissal-completion cleanup, and required runtime interaction evidence.
+- Added a mandatory completion-audit decision check for custom component and presentation lifecycle replacements, with validator and regression coverage.
+
 ## [0.0.36] - 2026-10-09
 
 ### Added

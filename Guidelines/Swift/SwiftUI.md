@@ -50,6 +50,40 @@ With SDKs where `@State` is a macro, do not give a state property a declaration 
 - For SDK-sensitive features, search current Apple documentation through Xcode rather than relying on remembered signatures.
 - Apply the current Xcode SwiftUI skill when a new SDK changes source behavior, builder resolution, state initialization, or modifier availability.
 
+## Native components and presentation
+
+- Prefer native SwiftUI or platform controls and presentation APIs whenever they express the supported interaction. Evaluate sheets, alerts, confirmation dialogs, navigation, menus, pickers, popovers, and similar components before implementing an equivalent. Consult official Apple/Xcode documentation for behavior and availability on the current deployment target, following [documentation lookup](../Xcode/MCP.md#documentation-lookup).
+- Keep branded content and styling inside native components. Custom fonts, button styles, and content inside a native sheet are compatible with this policy when the system retains presentation and dismissal ownership.
+- Do not substitute a sheet-shaped `ZStack`, offset animation, or custom scrim for a suitable native sheet API. The same rule applies to other simulated system components, including custom discard dialogs. Pixel fidelity to a static design and preserving mounted state are insufficient reasons to replace native presentation behavior; a mockup is not approval for an exception.
+- Use a custom equivalent only for an actual native capability gap verified against the supported platform and deployment target. Before implementation, obtain explicit repository-owner approval and record a durable exception in consumer documentation: the required interaction, evaluated native alternatives, concrete missing capability and documentation or reproducible evidence, approved scope, lifecycle ownership, compensating validation, and revisit condition. Do not invent a capability gap or infer approval from existing custom code. An unapproved or undocumented replacement blocks completion.
+
+### Presentation ownership
+
+- Present from the active hierarchy. When a child presentation launches a system picker or editor, attach that presentation to the active child hierarchy rather than an obscured ancestor or unrelated host.
+- Give each child independent dismissal. Read the dismissal action in the child's presentation environment or use its own presentation binding; do not route a child close button or downward dismissal gesture to the parent editor. Keep parent-owned draft state alive across child presentation and dismissal without committing or discarding it implicitly.
+- Make cancellation idempotent across explicit cancel, interactive dismissal, parent dismissal, and asynchronous callbacks. Cancel owned work and reject stale completions after dismissal or replacement so an old result cannot mutate a retained draft or a later presentation.
+- Perform cleanup that depends on completed dismissal through the presentation's dismissal-completion callback, such as `onDismiss`, rather than treating a dismiss request, animation delay, or arbitrary disappearance as proof of completion. Coordinate cleanup with cancellation so repeated callbacks cannot clear parent state or a newer child session.
+
+### Required interaction evidence
+
+For changed native presentations and approved custom equivalents, exercise the supported lifecycle on a simulator or device using [runtime interaction and reporting](../Xcode/MCP.md#build-run-and-interaction). Record the platform, scenario, action, observed outcome, and relevant hierarchy or visual evidence:
+
+- Verify presentation and dismissal animation/dimming, supported interactive dismissal and gesture routing, and parent survival with draft retention. If interactive dismissal is intentionally disabled, verify the restriction and the explicit exit path. Exercise reopening and repeated cancellation.
+- Launch and dismiss any nested system picker or editor from the active child; confirm the expected presentation remains active after each exit.
+- Inspect safe areas, controls and shadow clipping, keyboard/focus restoration, and relevant Dynamic Type and localization layouts during the flow.
+- Exercise asynchronous cancellation and stale completion after dismissal or replacement when work can outlive the presentation; use deterministic tests where they improve coverage of these races alongside runtime interaction.
+
+A static screenshot or a no-op automation call is not evidence that gestures work. Require an actual gesture and its observed result, or recorded manual verification when automation cannot exercise it. Missing relevant runtime evidence blocks completion; report the exact unverified behavior instead of claiming the lifecycle passed.
+
+Use these decisions when auditing an implementation:
+
+| Decision | Audit outcome |
+| --- | --- |
+| Simulated sheet with a suitable native API and no approved durable exception | Blocked |
+| Native nested sheet with branded content, correct ownership, and required interaction evidence | Accepted |
+| Custom equivalent for a verified capability gap with owner approval, durable exception, and compensating evidence | Accepted within the approved scope |
+| Presentation with missing relevant runtime evidence | Blocked |
+
 ## Animation
 
 - Use native SwiftUI animation to make apps fluid rather than static. Apply it purposefully to buttons, transitions, interactions, selection, colors, and other visible state changes that benefit from feedback; do not animate every update or add motion for its own sake.
