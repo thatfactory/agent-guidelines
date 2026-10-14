@@ -121,6 +121,75 @@ func localization(_ value: String, state: String = "translated") -> String {
 
 let tests: [(String, () throws -> Void)] = [
     (
+        "native-component validator rejects policy and decision drift",
+        {
+            let mutations = [
+                "Do not substitute a sheet-shaped `ZStack`, offset animation, or custom scrim",
+                "sheets, alerts, confirmation dialogs, navigation, menus, pickers, popovers",
+                "Before implementation, obtain explicit repository-owner approval and record a durable exception",
+                "Pixel fidelity to a static design and preserving mounted state are insufficient",
+                "Give each child independent dismissal",
+                "Keep parent-owned draft state alive",
+                "attach that presentation to the active child hierarchy",
+                "Make cancellation idempotent",
+                "reject stale completions after dismissal or replacement",
+                "presentation's dismissal-completion callback",
+                "Require an actual gesture and its observed result, or recorded manual verification",
+                "safe areas, controls and shadow clipping, keyboard/focus restoration",
+                "Dynamic Type and localization",
+                "Simulated sheet with a suitable native API and no approved durable exception | Blocked",
+                "Native nested sheet with branded content, correct ownership, and required interaction evidence | Accepted",
+                "Custom equivalent for a verified capability gap with owner approval, durable exception, and compensating evidence | Accepted within the approved scope",
+                "Presentation with missing relevant runtime evidence | Blocked",
+            ]
+            for original in mutations {
+                try withTemporaryDirectory { temporary in
+                    let fixture = temporary.appendingPathComponent("repository")
+                    try copyRepositoryFixture(to: fixture)
+                    let guide = fixture.appendingPathComponent("Guidelines/Swift/SwiftUI.md")
+                    let contents = try String(contentsOf: guide, encoding: .utf8)
+                    try require(contents.contains(original), "missing test fixture text: \(original)")
+                    try write(contents.replacingOccurrences(of: original, with: "REMOVED"), to: guide)
+                    let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                    try require(!result.succeeded, "native-component policy mutation unexpectedly passed: \(original)")
+                    try require(result.output.contains("missing native-component policy"), result.output)
+                }
+            }
+        }
+    ),
+    (
+        "native-component validator rejects audit gate drift",
+        {
+            let mutations = [
+                "Perform the mandatory [native-component and presentation decision check]",
+                "Guidelines/Swift/SwiftUI.md#native-components-and-presentation",
+                "custom modal hosts, overlay/scrim/offset code, and gesture routing",
+                "native alternative, deployment-target availability",
+                "explicit repository-owner approval, durable consumer exception",
+                "required approved and documented exception blocks audit completion",
+                "child dismissal, parent draft ownership, nested picker/editor presenters",
+                "cancellation, and dismissal-completion cleanup",
+                "native nested sheet with branded content is accepted",
+                "Guidelines/Swift/SwiftUI.md#required-interaction-evidence",
+                "static screenshots and no-op automation do not establish gesture behavior",
+                "Missing relevant runtime evidence blocks audit completion",
+            ]
+            for original in mutations {
+                try withTemporaryDirectory { temporary in
+                    let fixture = temporary.appendingPathComponent("repository")
+                    try copyRepositoryFixture(to: fixture)
+                    let skill = fixture.appendingPathComponent(".agents/skills/agent-guidelines-audit/SKILL.md")
+                    let contents = try String(contentsOf: skill, encoding: .utf8)
+                    try require(contents.contains(original), "missing test fixture text: \(original)")
+                    try write(contents.replacingOccurrences(of: original, with: "REMOVED"), to: skill)
+                    let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                    try require(!result.succeeded, "native-component audit mutation unexpectedly passed: \(original)")
+                    try require(result.output.contains("SKILL.md: missing"), result.output)
+                }
+            }
+        }
+    ),
+    (
         "review evidence validator rejects an unconditional pending gate",
         {
             try withTemporaryDirectory { temporary in
