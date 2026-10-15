@@ -43,6 +43,13 @@ With SDKs where `@State` is a macro, do not give a state property a declaration 
 - Avoid unstable environment defaults and freshly created closures that invalidate large subtrees.
 - Do not hide unstable values behind fake `Equatable` implementations.
 
+## Scrolling
+
+- Apply `.scrollBounceBehavior(.basedOnSize)` to new or changed `ScrollView` instances on supported deployment targets, especially inside modally presented sheets. Content that fits should stay still; content that exceeds the viewport can still scroll and bounce.
+- Match the modifier's `axes` to the scroll view. The default affects only the vertical axis, so specify `.horizontal` for horizontal scrolling and both axes when needed.
+- Keep the modifier on the intended scroll view or its narrowest suitable container. The setting propagates through the environment to descendant scrollable views, so check nested scrolling before applying it to a broader hierarchy.
+- Preserve a different bounce behavior only when the supported interaction requires it, and record that reason in consumer guidance. Check Apple API availability for the consumer's deployment targets before applying the modifier.
+
 ## Modern APIs and scope
 
 - Do not introduce APIs that current Xcode documentation identifies as deprecated or soft-deprecated.

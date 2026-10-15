@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.38] - 2026-10-15
+
+### Added
+
+- Made size-based scroll bounce the SwiftUI `ScrollView` default on supported deployment targets, with axis and environment-scope guidance for nested scrolling and modal sheets.
+- Added a completion-audit check for new or changed `ScrollView` bounce behavior and documented exceptions.
+
 ## [0.0.37] - 2026-10-14
 
 ### Added
