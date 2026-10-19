@@ -37,6 +37,8 @@ Keep each subtree update in its own commit. In the pull-request description, sta
 
 ## Completion audit
 
+For runtime UI verification, follow [Device Hub, physical devices, and simulators](Xcode/DeviceInteraction.md) together with the consumer's local environment constraints. Plan the observable outcome and cleanup before starting a session.
+
 Before claiming implementation is complete, handing work to the user, preparing, opening, or updating a pull request, declaring merge readiness, or preparing a release, invoke `$agent-guidelines-audit`.
 
 If the skill is not discoverable in a subtree consumer, read and follow its [SKILL.md](../.agents/skills/agent-guidelines-audit/SKILL.md) directly. The audit is a final verification gate, not a substitute for reading and applying the relevant guidelines during implementation. Resolve in-scope findings and rerun affected checks before handoff. Do not broaden the requested scope merely to satisfy the audit.

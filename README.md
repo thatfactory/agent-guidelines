@@ -64,6 +64,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [App Store metadata](Guidelines/AppStore.md)
 - [CI/CD](Guidelines/CICD.md)
 - [Development and reusability](Guidelines/Development.md)
+- [Device Hub, physical devices, and simulators](Guidelines/Xcode/DeviceInteraction.md)
 - [Documentation](Guidelines/Documentation.md)
 - [Git ignore files](Guidelines/Git/IgnoreFiles.md)
 - [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
@@ -91,7 +92,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.38 \
+  0.0.39 \
   --squash
 ```
 
@@ -147,7 +148,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.38 \
+  0.0.39 \
   --squash
 ```
 
