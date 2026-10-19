@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.39] - 2026-10-19
+
+### Added
+
+- Added shared Device Hub, physical-device, and simulator guidance covering tool and skill discovery, authorization, signing, keyboard controls, resource coordination, runtime evidence, controlled comparisons, and cleanup.
+- Linked the workflow from Xcode MCP, Development, the guideline catalog, and the consumer instructions template while keeping product-specific environment constraints in consumers.
+
 ## [0.0.38] - 2026-10-15
 
 ### Added

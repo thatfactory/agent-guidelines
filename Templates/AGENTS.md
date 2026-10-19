@@ -23,6 +23,7 @@ Read only the guides relevant to the task:
 - [Git repositories and SSH-first cloning](AgentGuidelines/Guidelines/Git/Repositories.md)
 - [GitHub pull requests](AgentGuidelines/Guidelines/GitHub/PullRequests.md)
 - [Xcode MCP and visual verification](AgentGuidelines/Guidelines/Xcode/MCP.md)
+- [Device Hub, physical devices, and simulators](AgentGuidelines/Guidelines/Xcode/DeviceInteraction.md)
 - [Xcode project settings](AgentGuidelines/Guidelines/Xcode/ProjectSettings.md)
 - [Xcode security audits](AgentGuidelines/Guidelines/Xcode/Security.md)
 
