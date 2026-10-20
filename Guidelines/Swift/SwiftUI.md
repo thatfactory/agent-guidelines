@@ -105,8 +105,23 @@ Use these decisions when auditing an implementation:
 
 - Use native SwiftUI animation to make apps fluid rather than static. Apply it purposefully to buttons, transitions, interactions, selection, colors, and other visible state changes that benefit from feedback; do not animate every update or add motion for its own sake.
 - Prefer the default SwiftUI animation, using `withAnimation { ... }` or `.animation(.default, value: ...)`, unless the task prompt explicitly requests a specific animation. Prefer system-provided transitions and SF Symbol effects when they fit the interaction instead of recreating them with custom timing, curves, or rendering.
-- Scope animation to the relevant state change or view. Preserve responsive controls, stable layout, and uninterrupted user interaction; avoid blanket animations that also animate unrelated state changes.
+- Reusable custom-styled controls own their basic visual transitions. Animate enabled/disabled appearance smoothly by default in both directions, without screen-level opt-in. A native `Button` preserves interaction semantics, but does not define transitions for every custom foreground, background, or shadow. Preserve system-owned feedback instead of layering duplicate animation over it.
+- Change enabled state, hit-testing, accessibility state, and action availability immediately. Animate appearance; never delay functional state until an animation finishes. Immediate press, focus, or selection feedback remains appropriate when it improves responsiveness; record an intentional immediate transition and its reason.
+- Preserve stable view identity when only appearance changes. Prefer changing fill, opacity, or shadow values over replacing equivalent view branches.
+- Scope animation to the intended state and visual attributes. Preserve responsive controls, stable layout, and uninterrupted user interaction; animating surrounding layout must not accidentally animate every control inside it. The presence of `.animation` does not prove correct scope: value-triggered animation can affect other changes in the same transaction. Use narrower modifier or closure scope where necessary and supported by the deployment target.
 - Do not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them. This includes reading `accessibilityReduceMotion` to replace animation with `nil`, remove symbol effects, or otherwise suppress app-authored animation. Preserve any accessibility behavior provided automatically by native system components; this policy governs additional app-level overrides.
+
+Consult Apple's [Explore SwiftUI animation](https://developer.apple.com/videos/play/wwdc2023/10156/) for transaction propagation and scoped animation behavior. The reusable-control defaults above are repository policy.
+
+## Image rendering
+
+- Use retained, display-appropriate derivatives for large dynamic images in small, frequently updated views instead of repeatedly rendering the original bitmap. This applies to photos, downloaded images, generated images, and other bitmap sources; an expensive rendering path does not by itself establish a provider defect.
+- Account for display scale, aspect-fit/fill requirements, orientation, fidelity, and bounded intermediate/cache memory. Refresh derivatives when their source or relevant presentation requirements change.
+- Keep expensive loading, decoding, resizing, and conversion outside view construction and repeated interaction paths. Perform expensive preparation off the main actor when supported and concurrency-safe; do not prescribe detached tasks as a universal solution.
+- Reject stale asynchronous results after replacement, cancellation, or removal. Keep presentation derivatives separate from authoritative originals needed for editing, saving, or export.
+- Inspect the representation actually drawn. A small display frame does not establish a small decoded image, and caching a `UIImage` alone does not remove rendering cost. Choose preparation based on measured cost and required fidelity; do not impose blanket bans on `Image`, `UIImage(data:)`, or full-resolution presentation, or universal pixel sizes, color formats, cache architectures, or `drawingGroup()` requirements.
+
+Apple's [iOS Memory Deep Dive](https://developer.apple.com/videos/play/wwdc2018/416/) explains image memory costs and demonstrates ImageIO downsampling for thumbnails without first decoding the full image. Use the [animation and image-rendering audit](../../.agents/skills/agent-guidelines-audit/SKILL.md#audit-animation-and-image-rendering) to verify affected interactions and record performance evidence.
 
 ## Previews
 

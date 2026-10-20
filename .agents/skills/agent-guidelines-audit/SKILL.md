@@ -31,6 +31,7 @@ Review the actual change rather than only checking whether files exist:
 - For each new or changed SwiftUI `ScrollView`, apply the shared [scrolling guidance](../../../Guidelines/Swift/SwiftUI.md#scrolling): verify `.scrollBounceBehavior(.basedOnSize)` covers its scrolling axes on supported deployment targets, including scroll views in modal sheets. Check the modifier's environment scope around nested scrollables and require a documented interaction reason for a different bounce behavior.
 - Perform the mandatory [native-component and presentation decision check](#audit-native-components-and-presentation) for changed SwiftUI controls and presentation behavior.
 - Perform the mandatory [system-control placement check](#audit-system-control-placement) for changed navigation, toolbars, dismissal controls, and window chrome, including affected UIKit/AppKit wrappers.
+- Perform the mandatory [animation and image-rendering check](#audit-animation-and-image-rendering) for changed visual transitions, reusable control styles, and dynamic image paths, including directly affected consumers.
 - Check tests for the required framework, mirrored paths, shared tags, Given/When/Then structure, deterministic seams, and coverage of changed behavior and failure paths.
 - Trace every new or changed stateful, asynchronous, fallible, or lifecycle-oriented behavior and verify that its owning artifact emits privacy-safe AppLogger events for the meaningful success, failure, cancellation, recovery, and state-transition outcomes needed to diagnose it. Dependency declaration and target linkage alone do not establish logging coverage. Accept silence for pure values or utilities only when there is no meaningful event boundary and the implementation handoff records that deliberate decision.
 - Check logging ownership, subsystem, categories, emoji, privacy, severity, metadata stability, noise controls, and focused formatter or sink tests when logging changed.
@@ -62,6 +63,29 @@ Apply the authoritative [system control placement policy](../../../Guidelines/Sw
 3. Accept valid system-selected differences across platforms, OS versions, window sizes, and layout directions. Reject a universal left/right requirement, relocation of system-owned picker/editor controls, or replacement of native Back solely for visual consistency. Check affected design artifacts and durable documentation for conflicting placement mandates.
 4. For changed navigation or toolbar behavior, record supported target/OS and targeted runtime actions and outcomes: Back navigates, dismissal closes the intended presentation, and cancellation/confirmation retain their actual semantics. Check relevant layout direction, accessibility, keyboard/remote, and gesture behavior. When presentation lifecycle also changes, apply the existing [interaction evidence requirements](../../../Guidelines/Swift/SwiftUI.md#required-interaction-evidence) to that affected flow. Documentation-only policy changes do not require simulator evidence.
 5. An unjustified placement override or missing relevant interaction evidence blocks audit completion. Report the exact control, ownership, violated policy, and missing evidence; do not report an Apple-selected side as a defect.
+
+## Audit animation and image rendering
+
+Apply the authoritative [animation policy](../../../Guidelines/Swift/SwiftUI.md#animation) and [image-rendering policy](../../../Guidelines/Swift/SwiftUI.md#image-rendering) to changed components and directly affected consumers; do not expand the audit into unrelated screens.
+
+1. Identify each meaningful visual transition, its owner, and its intended animation or justified immediate feedback. Inspect stable view identity and transaction scope, including simultaneous changes and surrounding layout animations; an `.animation` modifier alone is not evidence of correct scope. Accept appropriate native feedback without additional animation.
+2. Verify reusable defaults without caller-added animation. Exercise enabled to disabled and disabled to enabled, ordinary presses, rapid reversals, and relevant show/hide behavior. Confirm enabled state, hit-testing, accessibility state, and action availability change immediately while appearance animates.
+3. Inspect affected image paths for repeated preparation, oversized drawable content, unstable identity, unbounded caches, and stale publication. Verify derivative refresh for changed source or presentation requirements, bounded intermediate memory, preservation of authoritative originals, and rejection of stale results after replacement, cancellation, or removal. Use applicable deterministic tests for asynchronous races alongside interaction evidence.
+4. Exercise representative large-image content when images participate in the interaction. For image-related regressions, compare with an image-free scenario and record the actual representation drawn; do not infer a provider defect from the source of one expensive image.
+5. Require recorded runtime actions and outcomes for meaningful motion changes: platform/OS, scenario, actions, and observed behavior. Compilation, static screenshots, and idle captures do not prove smooth interaction. Documentation-only policy changes require scenario walkthroughs rather than simulator evidence.
+6. For reported stutter, use Apple performance tools where available and authorized. Record the active interaction window, workload, observations, and limitations. Distinguish recorded manual verification from instrumented measurements; an idle capture reporting zero hitches is insufficient. Do not require profiling every cosmetic change or impose a universal frame-rate threshold.
+7. Unexplained abrupt transitions in affected reusable controls, demonstrated performance regressions, or missing applicable interaction evidence prevent audit completion. Record the exact component, violated policy, required correction or justified intentional exception, and unavailable evidence.
+
+Use these scenario walkthroughs when evaluating the check:
+
+| Scenario | Audit outcome |
+| --- | --- |
+| Custom main-button style changes colors abruptly | Blocked until shared behavior is corrected or an intentional immediate transition is justified |
+| Shared style animates both directions; actions remain immediate | Accepted with runtime evidence, including ordinary presses and rapid reversals |
+| Appropriate native control already supplies feedback | Accepted without additional animation |
+| Animated thumbnail repeatedly processes a large original | Requires correction and relevant verification |
+| Prepared derivative preserves originals and rejects stale results | Accepted with applicable tests and interaction evidence |
+| Zero hitches recorded without actual interaction | Insufficient performance evidence; applicable verification remains blocked |
 
 ## Audit Xcode project settings
 

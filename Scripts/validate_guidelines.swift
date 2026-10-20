@@ -714,6 +714,70 @@ func validateNativeComponentPolicy(_ errors: inout [String]) {
     }
 }
 
+/// Protects interaction policy and audit evidence requirements, not consumer runtime performance.
+func validateInteractionRenderingPolicy(_ errors: inout [String]) {
+    let requirements: [(URL, [String])] = [
+        (
+            swiftUIGuideline,
+            [
+                "## Animation",
+                "Reusable custom-styled controls own their basic visual transitions",
+                "both directions, without screen-level opt-in",
+                "Preserve system-owned feedback instead of layering duplicate animation",
+                "never delay functional state until an animation finishes",
+                "Preserve stable view identity when only appearance changes",
+                "value-triggered animation can affect other changes in the same transaction",
+                "Use narrower modifier or closure scope",
+                "Do not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them",
+                "## Image rendering",
+                "retained, display-appropriate derivatives",
+                "display scale, aspect-fit/fill requirements, orientation, fidelity, and bounded intermediate/cache memory",
+                "Refresh derivatives when their source or relevant presentation requirements change",
+                "outside view construction and repeated interaction paths",
+                "off the main actor when supported and concurrency-safe",
+                "Reject stale asynchronous results after replacement, cancellation, or removal",
+                "separate from authoritative originals needed for editing, saving, or export",
+                "Inspect the representation actually drawn",
+                "do not impose blanket bans",
+            ]
+        ),
+        (
+            auditSkill,
+            [
+                "Perform the mandatory [animation and image-rendering check](#audit-animation-and-image-rendering)",
+                "## Audit animation and image rendering",
+                "Guidelines/Swift/SwiftUI.md#animation",
+                "Guidelines/Swift/SwiftUI.md#image-rendering",
+                "do not expand the audit into unrelated screens",
+                "its owner, and its intended animation or justified immediate feedback",
+                "Verify reusable defaults without caller-added animation",
+                "enabled to disabled and disabled to enabled, ordinary presses, rapid reversals",
+                "hit-testing, accessibility state, and action availability change immediately",
+                "repeated preparation, oversized drawable content, unstable identity, unbounded caches, and stale publication",
+                "Exercise representative large-image content",
+                "compare with an image-free scenario",
+                "Require recorded runtime actions and outcomes for meaningful motion changes",
+                "Compilation, static screenshots, and idle captures do not prove smooth interaction",
+                "Documentation-only policy changes require scenario walkthroughs",
+                "use Apple performance tools where available and authorized",
+                "Record the active interaction window",
+                "Distinguish recorded manual verification from instrumented measurements",
+                "Do not require profiling every cosmetic change or impose a universal frame-rate threshold",
+                "missing applicable interaction evidence prevent audit completion",
+                "| Scenario | Audit outcome |",
+                "| Appropriate native control already supplies feedback | Accepted without additional animation |",
+                "| Zero hitches recorded without actual interaction | Insufficient performance evidence",
+            ]
+        ),
+    ]
+    for (file, required) in requirements {
+        guard let contents = readText(file, errors: &errors) else { continue }
+        for value in required where !contents.contains(value) {
+            errors.append("\(file.lastPathComponent): missing interaction/rendering requirement: '\(value)'")
+        }
+    }
+}
+
 /// Validates the completion-audit skill and native helper scripts.
 func validateAuditSkill(_ errors: inout [String]) {
     guard let contents = readText(auditSkill, errors: &errors) else {
@@ -924,6 +988,7 @@ func main() -> Int32 {
     validatePackageCompilerSettingsGuideline(&errors)
     validateExternalDependencyPolicy(&errors)
     validateNativeComponentPolicy(&errors)
+    validateInteractionRenderingPolicy(&errors)
     validateCodexReviewEvidence(&errors)
     validateGitignoreGuidance(&errors)
     validateExecutable(consumerSetupScript, description: "consumer setup validator", errors: &errors)
