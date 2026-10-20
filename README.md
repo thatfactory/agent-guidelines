@@ -92,7 +92,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.39 \
+  0.0.40 \
   --squash
 ```
 
@@ -148,13 +148,17 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.39 \
+  0.0.40 \
   --squash
 ```
 
 Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract, documentation-maintenance contract, external-dependency contract, and runtime-observability contract when their versions change, run `AgentGuidelines/Scripts/validate_consumer_setup.swift`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
 
 ## Maintain the source of truth
+
+Use the repository-local [`update-agent-guidelines` skill](.agents/skills/update-agent-guidelines/SKILL.md) with a request such as `$update-agent-guidelines include/update the rule that ...`. It chooses the guide, asks whether to add audit coverage when that choice is missing, and prepares the next version's metadata. Explicit invocation also authorizes the scoped PR, merge after required approval and green CI, and release; narrower instructions such as draft-only or no release take precedence. Consumer adoption remains separate.
+
+The skill is discoverable when working in this central checkout. For a consumer on an older release, open a chat in the central checkout or explicitly supply the path to its `.agents/skills/update-agent-guidelines/SKILL.md` with the request; updating the consumer subtree is not a prerequisite. For use across repositories, the user can install the skill independently with Codex's skill installer from `thatfactory/agent-guidelines`, path `.agents/skills/update-agent-guidelines`, at a published tag. Do not implicitly install it or alter global configuration as part of a guideline change.
 
 1. Export current Xcode skills to a temporary review location when a new Xcode release materially changes agent behavior:
 
