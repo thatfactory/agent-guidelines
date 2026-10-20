@@ -32,6 +32,7 @@ Review the actual change rather than only checking whether files exist:
 - Perform the mandatory [native-component and presentation decision check](#audit-native-components-and-presentation) for changed SwiftUI controls and presentation behavior.
 - Perform the mandatory [system-control placement check](#audit-system-control-placement) for changed navigation, toolbars, dismissal controls, and window chrome, including affected UIKit/AppKit wrappers.
 - Perform the mandatory [animation and image-rendering check](#audit-animation-and-image-rendering) for changed visual transitions, reusable control styles, and dynamic image paths, including directly affected consumers.
+- Perform the [Reduce Motion check](#audit-reduce-motion) for affected motion and for Reduced Motion support declarations.
 - Check tests for the required framework, mirrored paths, shared tags, Given/When/Then structure, deterministic seams, and coverage of changed behavior and failure paths.
 - Trace every new or changed stateful, asynchronous, fallible, or lifecycle-oriented behavior and verify that its owning artifact emits privacy-safe AppLogger events for the meaningful success, failure, cancellation, recovery, and state-transition outcomes needed to diagnose it. Dependency declaration and target linkage alone do not establish logging coverage. Accept silence for pure values or utilities only when there is no meaningful event boundary and the implementation handoff records that deliberate decision.
 - Check logging ownership, subsystem, categories, emoji, privacy, severity, metadata stability, noise controls, and focused formatter or sink tests when logging changed.
@@ -86,6 +87,25 @@ Use these scenario walkthroughs when evaluating the check:
 | Animated thumbnail repeatedly processes a large original | Requires correction and relevant verification |
 | Prepared derivative preserves originals and rejects stale results | Accepted with applicable tests and interaction evidence |
 | Zero hitches recorded without actual interaction | Insufficient performance evidence; applicable verification remains blocked |
+
+## Audit Reduce Motion
+
+Apply the canonical [Reduce Motion policy](../../../Guidelines/Swift/SwiftUI.md#reduce-motion) and its [support declaration requirements](../../../Guidelines/Swift/SwiftUI.md#declaring-support):
+
+1. For changed motion and directly affected components, identify each potential trigger, its owner, and its chosen adaptation or evidence that no adaptation is needed. Inspect custom styles and surrounding transactions as well as native controls. Do not require removal of harmless feedback or a separate task request for an applicable adaptation.
+2. Verify the source of the preference, response to changes during use, and preserved information, functional state, and native accessibility behavior. For an in-app alternative, inspect the consumer's rationale and criteria coverage. Reject blanket suppression that loses meaningful feedback and unresolved problematic motion.
+3. Require runtime actions and outcomes with Reduce Motion on and off, plus a preference change while running. Record platform/OS, app revision, scenarios, results, and verification limits. Static screenshots, compilation, an environment read, or the use of a native component alone do not prove support. Accept recorded manual verification when automation cannot exercise the setting; missing applicable evidence blocks completion of the affected work.
+4. For an app-wide support declaration, expand the evidence scope to all common tasks on the declared platform, following the linked Apple criteria for content and advertising. Check the consumer evidence and current release scope; withhold or correct unsupported claims. A local component check or guideline adoption is insufficient. Re-evaluate existing declarations during app updates; do not demand an unrelated whole-app audit for an isolated motion change when no declaration is in scope.
+5. Documentation-only policy work uses scenario walkthroughs rather than simulator testing. Report the exact trigger, missing evidence, or unsupported declaration that prevents audit completion; do not claim this central audit establishes any consumer app's support.
+
+| Scenario | Audit outcome |
+| --- | --- |
+| Decorative depth effect ignores the enabled preference | Blocked until adapted and exercised |
+| Informative movement becomes a fade and retains its meaning | Accepted with on/off and live preference-change evidence |
+| Native control already adapts correctly | Accepted with interaction evidence; no duplicate guard required |
+| Every animation is removed and a status change becomes imperceptible | Blocked until meaningful feedback is restored |
+| No problematic motion across evaluated common tasks | Support declaration may pass with platform-specific evidence |
+| One compliant component or guideline adoption used to claim app-wide support | Declaration blocked pending common-task evaluation |
 
 ## Audit Xcode project settings
 

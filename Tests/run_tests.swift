@@ -134,7 +134,21 @@ let tests: [(String, () throws -> Void)] = [
                         "Preserve stable view identity when only appearance changes",
                         "value-triggered animation can affect other changes in the same transaction",
                         "Use narrower modifier or closure scope",
-                        "Do not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them",
+                        "[Reduce Motion policy](#reduce-motion)",
+                        "### Reduce Motion",
+                        "https://developer.apple.com/help/app-store-connect/manage-app-accessibility/reduced-motion-evaluation-criteria/",
+                        "no separate task request is required",
+                        "do not disable all animation indiscriminately",
+                        "Follow preference changes during use",
+                        "document any equivalent or more granular in-app alternative",
+                        "Remove decorative triggers or replace them with lower-motion feedback",
+                        "stop it or provide a discoverable stop control",
+                        "replace meaningful motion with suitable alternatives",
+                        "Claim Reduced Motion support only after evaluating all common tasks for the platform being declared",
+                        "required third-party or user-generated content, and advertising",
+                        "An app with no problematic motion can qualify",
+                        "Re-evaluate support with each app update",
+                        "withhold or correct a claim",
                         "## Image rendering",
                         "retained, display-appropriate derivatives",
                         "display scale, aspect-fit/fill requirements, orientation, fidelity, and bounded intermediate/cache memory",
@@ -172,6 +186,25 @@ let tests: [(String, () throws -> Void)] = [
                         "missing applicable interaction evidence prevent audit completion",
                         "| Appropriate native control already supplies feedback | Accepted without additional animation |",
                         "| Zero hitches recorded without actual interaction | Insufficient performance evidence",
+                        "[Reduce Motion check](#audit-reduce-motion)",
+                        "## Audit Reduce Motion",
+                        "Guidelines/Swift/SwiftUI.md#reduce-motion",
+                        "Guidelines/Swift/SwiftUI.md#declaring-support",
+                        "Require runtime actions and outcomes with Reduce Motion on and off",
+                        "plus a preference change while running",
+                        "missing applicable evidence blocks completion of the affected work",
+                        "expand the evidence scope to all common tasks on the declared platform",
+                        "withhold or correct unsupported claims",
+                        "do not demand an unrelated whole-app audit for an isolated motion change",
+                        "Documentation-only policy work uses scenario walkthroughs",
+                    ]
+                ),
+                (
+                    "Guidelines/AppStore.md",
+                    [
+                        "## Accessibility support claims",
+                        "Swift/SwiftUI.md#declaring-support",
+                        "adopting these guidelines alone does not establish support",
                     ]
                 ),
             ]
@@ -193,6 +226,24 @@ let tests: [(String, () throws -> Void)] = [
                         try write(contents, to: file)
                     }
                 }
+            }
+        }
+    ),
+    (
+        "interaction validator rejects restored Reduce Motion opt-in restriction",
+        {
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let guide = fixture.appendingPathComponent("Guidelines/Swift/SwiftUI.md")
+                let contents = try String(contentsOf: guide, encoding: .utf8)
+                try write(
+                    contents
+                        + "\nDo not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them.\n",
+                    to: guide)
+                let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                try require(!result.succeeded, "obsolete Reduce Motion restriction unexpectedly passed")
+                try require(result.output.contains("obsolete Reduce Motion opt-in restriction"), result.output)
             }
         }
     ),
