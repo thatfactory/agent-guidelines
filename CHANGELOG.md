@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.40] - 2026-10-20
+
+### Added
+
+- Made Apple-owned placement authoritative for standard navigation, dismissal, confirmation, and window controls, with semantic toolbar intent and native Back behavior preserved across platforms.
+- Added a completion-audit check for control ownership, unjustified placement overrides, conflicting design mandates, and relevant interaction evidence.
+- Added the `update-agent-guidelines` skill to persist shared decisions, ask about audit coverage when unspecified, update release metadata, and deliver an authorized reviewed PR and release.
+
 ## [0.0.39] - 2026-10-19
 
 ### Added
