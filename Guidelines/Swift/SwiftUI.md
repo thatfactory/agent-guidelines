@@ -109,9 +109,23 @@ Use these decisions when auditing an implementation:
 - Change enabled state, hit-testing, accessibility state, and action availability immediately. Animate appearance; never delay functional state until an animation finishes. Immediate press, focus, or selection feedback remains appropriate when it improves responsiveness; record an intentional immediate transition and its reason.
 - Preserve stable view identity when only appearance changes. Prefer changing fill, opacity, or shadow values over replacing equivalent view branches.
 - Scope animation to the intended state and visual attributes. Preserve responsive controls, stable layout, and uninterrupted user interaction; animating surrounding layout must not accidentally animate every control inside it. The presence of `.animation` does not prove correct scope: value-triggered animation can affect other changes in the same transaction. Use narrower modifier or closure scope where necessary and supported by the deployment target.
-- Do not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them. This includes reading `accessibilityReduceMotion` to replace animation with `nil`, remove symbol effects, or otherwise suppress app-authored animation. Preserve any accessibility behavior provided automatically by native system components; this policy governs additional app-level overrides.
+- Apply the [Reduce Motion policy](#reduce-motion) alongside these animation defaults, including in reusable custom-styled controls.
 
 Consult Apple's [Explore SwiftUI animation](https://developer.apple.com/videos/play/wwdc2023/10156/) for transaction propagation and scoped animation behavior. The reusable-control defaults above are repository policy.
+
+### Reduce Motion
+
+Follow Apple's [Reduced Motion evaluation criteria](https://developer.apple.com/help/app-store-connect/manage-app-accessibility/reduced-motion-evaluation-criteria/) and [motion design guidance](https://developer.apple.com/design/human-interface-guidelines/motion). Evaluate individual animations; do not disable all animation indiscriminately.
+
+- Respect the user's reduced-motion preference as part of normal implementation; no separate task request is required. Preserve native accessibility adaptations and verify custom styling and surrounding animations do not defeat them.
+- Use SwiftUI's [accessibilityReduceMotion](https://developer.apple.com/documentation/swiftui/environmentvalues/accessibilityreducemotion) environment value when app-authored motion needs adaptation. Follow preference changes during use. System preference integration is the repository default; document any equivalent or more granular in-app alternative and verify it meets Apple's criteria rather than requiring a redundant setting.
+- Identify potentially problematic scaling, spinning, peripheral motion, depth simulation (including parallax or animated blur), and multi-axis or multi-speed movement. Remove decorative triggers or replace them with lower-motion feedback when reduced motion is requested. For ongoing motion such as an auto-advancing carousel, stop it or provide a discoverable stop control.
+- Preserve information and usability: replace meaningful motion with suitable alternatives such as a dissolve, highlight fade, or color change. Retain harmless feedback, immediate functional state, and system-owned behavior. A reduced-motion preference does not justify losing status, navigation context, or action availability.
+- Exercise affected flows with the preference on and off, including changing it while the app is running. Record the platform/OS, app revision, actions, outcomes, and limitations. Test custom and native behavior rather than assuming an environment read or native control proves support.
+
+#### Declaring support
+
+Claim Reduced Motion support only after evaluating all common tasks for the platform being declared against Apple's criteria. Follow Apple's [Accessibility Nutrition Labels guidance](https://developer.apple.com/help/app-store-connect/manage-app-accessibility/overview-of-accessibility-nutrition-labels) for task coverage, required third-party or user-generated content, and advertising. Record the evaluated tasks, evidence, remaining limitations, and declaration scope in consumer documentation. An app with no problematic motion can qualify; a guideline update or a single compliant component cannot establish app-wide support. Re-evaluate support with each app update, and withhold or correct a claim when relevant evidence is missing or a regression invalidates it. Updating App Store Connect remains a separately scoped metadata operation under [App Store metadata](../AppStore.md).
 
 ## Image rendering
 

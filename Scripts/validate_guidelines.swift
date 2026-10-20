@@ -728,7 +728,21 @@ func validateInteractionRenderingPolicy(_ errors: inout [String]) {
                 "Preserve stable view identity when only appearance changes",
                 "value-triggered animation can affect other changes in the same transaction",
                 "Use narrower modifier or closure scope",
-                "Do not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them",
+                "[Reduce Motion policy](#reduce-motion)",
+                "### Reduce Motion",
+                "https://developer.apple.com/help/app-store-connect/manage-app-accessibility/reduced-motion-evaluation-criteria/",
+                "no separate task request is required",
+                "do not disable all animation indiscriminately",
+                "Follow preference changes during use",
+                "document any equivalent or more granular in-app alternative",
+                "Remove decorative triggers or replace them with lower-motion feedback",
+                "stop it or provide a discoverable stop control",
+                "replace meaningful motion with suitable alternatives",
+                "Claim Reduced Motion support only after evaluating all common tasks for the platform being declared",
+                "required third-party or user-generated content, and advertising",
+                "An app with no problematic motion can qualify",
+                "Re-evaluate support with each app update",
+                "withhold or correct a claim",
                 "## Image rendering",
                 "retained, display-appropriate derivatives",
                 "display scale, aspect-fit/fill requirements, orientation, fidelity, and bounded intermediate/cache memory",
@@ -767,6 +781,25 @@ func validateInteractionRenderingPolicy(_ errors: inout [String]) {
                 "| Scenario | Audit outcome |",
                 "| Appropriate native control already supplies feedback | Accepted without additional animation |",
                 "| Zero hitches recorded without actual interaction | Insufficient performance evidence",
+                "[Reduce Motion check](#audit-reduce-motion)",
+                "## Audit Reduce Motion",
+                "Guidelines/Swift/SwiftUI.md#reduce-motion",
+                "Guidelines/Swift/SwiftUI.md#declaring-support",
+                "Require runtime actions and outcomes with Reduce Motion on and off",
+                "plus a preference change while running",
+                "missing applicable evidence blocks completion of the affected work",
+                "expand the evidence scope to all common tasks on the declared platform",
+                "withhold or correct unsupported claims",
+                "do not demand an unrelated whole-app audit for an isolated motion change",
+                "Documentation-only policy work uses scenario walkthroughs",
+            ]
+        ),
+        (
+            appStoreGuideline,
+            [
+                "## Accessibility support claims",
+                "Swift/SwiftUI.md#declaring-support",
+                "adopting these guidelines alone does not establish support",
             ]
         ),
     ]
@@ -774,6 +807,11 @@ func validateInteractionRenderingPolicy(_ errors: inout [String]) {
         guard let contents = readText(file, errors: &errors) else { continue }
         for value in required where !contents.contains(value) {
             errors.append("\(file.lastPathComponent): missing interaction/rendering requirement: '\(value)'")
+        }
+        if contents.contains(
+            "Do not introduce app-level Reduce Motion guards unless the task prompt explicitly requests them")
+        {
+            errors.append("\(file.lastPathComponent): obsolete Reduce Motion opt-in restriction")
         }
     }
 }

@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.42] - 2026-10-20
+
+### Changed
+
+- Replaced the explicit-request restriction on Reduce Motion adaptations with Apple-aligned evaluation of individual motion triggers, responsive preference handling, and preservation of useful feedback.
+- Required platform-specific common-task evidence before declaring Reduced Motion support, with re-evaluation on app updates and a link from App Store metadata guidance.
+- Added focused Reduce Motion audit checks, scenario walkthroughs, and validator regression coverage for policy, evidence, and support claims.
+
 ## [0.0.41] - 2026-10-20
 
 ### Added
