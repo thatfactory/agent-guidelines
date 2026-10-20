@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.41] - 2026-10-20
+
+### Added
+
+- Required reusable custom-styled controls to own smooth visual transitions while functional state changes immediately, preserving native feedback, stable identity, and narrow animation scope.
+- Added display-appropriate image preparation, bounded memory, derivative invalidation, original preservation, and stale-result rejection guidance.
+- Added an animation and image-rendering audit with targeted runtime evidence, honest performance measurements, scenario walkthroughs, and validator mutation coverage. Existing Reduce Motion policy is unchanged.
+
 ## [0.0.40] - 2026-10-20
 
 ### Added
