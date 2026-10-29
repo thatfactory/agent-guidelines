@@ -33,6 +33,7 @@ Review the actual change rather than only checking whether files exist:
 - Perform the mandatory [system-control placement check](#audit-system-control-placement) for changed navigation, toolbars, dismissal controls, and window chrome, including affected UIKit/AppKit wrappers.
 - Perform the mandatory [animation and image-rendering check](#audit-animation-and-image-rendering) for changed visual transitions, reusable control styles, and dynamic image paths, including directly affected consumers.
 - Perform the [Reduce Motion check](#audit-reduce-motion) for affected motion and for Reduced Motion support declarations.
+- Perform the [tvOS current-user identity check](#audit-tvos-current-user-identity) when changed behavior relies on selected-profile preferences, CloudKit accounts, or personal store binding.
 - Check tests for the required framework, mirrored paths, shared tags, Given/When/Then structure, deterministic seams, and coverage of changed behavior and failure paths.
 - Trace every new or changed stateful, asynchronous, fallible, or lifecycle-oriented behavior and verify that its owning artifact emits privacy-safe AppLogger events for the meaningful success, failure, cancellation, recovery, and state-transition outcomes needed to diagnose it. Dependency declaration and target linkage alone do not establish logging coverage. Accept silence for pure values or utilities only when there is no meaningful event boundary and the implementation handoff records that deliberate decision.
 - Check logging ownership, subsystem, categories, emoji, privacy, severity, metadata stability, noise controls, and focused formatter or sink tests when logging changed.
@@ -106,6 +107,21 @@ Apply the canonical [Reduce Motion policy](../../../Guidelines/Swift/SwiftUI.md#
 | Every animation is removed and a status change becomes imperceptible | Blocked until meaningful feedback is restored |
 | No problematic motion across evaluated common tasks | Support declaration may pass with platform-specific evidence |
 | One compliant component or guideline adoption used to claim app-wide support | Declaration blocked pending common-task evaluation |
+
+## Audit tvOS current-user identity
+
+Apply the [tvOS current-user and CloudKit guidance](../../../Guidelines/Xcode/DeviceInteraction.md#tvos-current-user-data-and-cloudkit) only when the change implements or materially affects selected-profile storage, CloudKit account routing, or personal-store transitions on tvOS. Documentation-only work and unrelated UI changes do not require a physical multi-user run.
+
+For applicable implementation, inspect the effective signed tvOS entitlement and provisioning privilege, then require privacy-safe real-device evidence from two distinct full Apple Accounts: native profile selection, fresh app process/build identity, the account verified by the CloudKit boundary, its bound store/checkpoint, and distinct A/B content across repeated A → B → A switches and a cold launch. A profile label, `shouldStorePreferencesForCurrentUser`, a new PID, unit tests, or an unsigned/simulator build does not establish account isolation. If CloudKit verifies one account while the store belongs to another, treat the host binding as a defect; if it verifies the default account under a selected secondary profile, preserve evidence and diagnose the device context before proposing app code. Do not retain raw account IDs, record IDs, credentials, or user-authored content in audit evidence.
+
+When the consumer's acceptance contract requires genuine two-account behavior and that evidence is absent or contradictory, report the gate as incomplete and withhold completion or merge readiness. Record an explicit consumer-approved deferral only when its product contract permits one; never silently substitute compilation for physical isolation.
+
+| Scenario | Audit outcome |
+| --- | --- |
+| A and B each verify distinct CloudKit accounts and stores through repeated native switches | Accept the isolation evidence for the tested build and path |
+| B is selected but CloudKit verifies A despite a fresh, correctly entitled process | Block isolation acceptance and diagnose device profile context without app-side account guessing |
+| CloudKit verifies B but the host opens A's store | Block as a host account-to-store binding defect |
+| Only build, simulator, or profile-label evidence exists | Record the real-device isolation gate as unverified when applicable |
 
 ## Audit Xcode project settings
 

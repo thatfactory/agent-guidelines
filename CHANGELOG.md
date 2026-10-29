@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.43] - 2026-10-29
+
+### Added
+
+- Documented a bounded physical Apple TV diagnostic for current-user CloudKit and local-store identity, including the observed secondary-profile account crossover, privacy-safe comparisons, profile re-addition, and limits on attributing a tvOS cause.
+- Added audit coverage for real two-account evidence when a consumer changes tvOS per-user storage or CloudKit account binding; unrelated changes and documentation-only work remain outside that gate.
+
 ## [0.0.42] - 2026-10-20
 
 ### Changed
