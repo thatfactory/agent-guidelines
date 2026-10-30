@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.44] - 2026-10-30
+
+### Added
+
+- Added the reusable `xcode-upgrade` skill for intentional Xcode, dependency, compiler-settings, and CI upgrades in applications and Swift packages, including requested project-format conversion and evidence-based validation.
+- Documented consumer discovery through a subtree skill symlink and explicit invocation with a target Xcode and additional instructions.
+
 ## [0.0.43] - 2026-10-29
 
 ### Added
