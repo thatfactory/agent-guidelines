@@ -92,7 +92,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.43 \
+  0.0.44 \
   --squash
 ```
 
@@ -148,11 +148,25 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.43 \
+  0.0.44 \
   --squash
 ```
 
 Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract, documentation-maintenance contract, external-dependency contract, and runtime-observability contract when their versions change, run `AgentGuidelines/Scripts/validate_consumer_setup.swift`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
+
+## Upgrade a consumer's Xcode
+
+Use the [`xcode-upgrade` skill](.agents/skills/xcode-upgrade/SKILL.md) to move an Apple-platform application or Swift package to a requested Xcode, update dependencies and compiler settings, align CI, and validate the result. In Codex, invoke `$xcode-upgrade to Xcode 27.2 and use the new JSON format` or select the skill. The skill also recognizes `/xcode-upgrade ...` as request text when the client passes it through; it does not register a client slash command. The skill follows the shared [project-settings guide](Guidelines/Xcode/ProjectSettings.md) and [package compiler-settings baseline](Guidelines/Packages.md#compiler-settings-baseline), preserving consumer-specific exceptions and the user's authorization boundaries.
+
+The skill is discoverable in this central checkout. To use it in a consumer that has adopted this release, expose it from the subtree:
+
+```sh
+mkdir -p .agents/skills
+ln -s ../../AgentGuidelines/.agents/skills/xcode-upgrade \
+  .agents/skills/xcode-upgrade
+```
+
+Alternatively, explicitly provide `AgentGuidelines/.agents/skills/xcode-upgrade/SKILL.md` with the request. Keep the skill beside its linked guides in the subtree; copying only `SKILL.md` loses those references. Subtree adoption and skill exposure do not upgrade a consumer's toolchain until requested.
 
 ## Maintain the source of truth
 
