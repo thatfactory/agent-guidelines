@@ -62,7 +62,7 @@ The common package baseline is Swift, Xcode, Platforms, License, and CI. Add opt
 - Keep a reusable package focused on one coherent capability.
 - Prefer UI-agnostic domain APIs unless UI is the package's explicit purpose.
 - Do not add application Redux, navigation, persistence, or product policy to a generic package.
-- A first-party package must not introduce or conceal a third-party runtime dependency. Follow the [external dependency policy](Development.md#external-dependencies) before changing the dependency graph.
+- A first-party package must not introduce or conceal a third-party runtime dependency outside an explicitly approved role. Follow the [external dependency policy](Development.md#external-dependencies) before changing the dependency graph and [Networking](Networking.md) for network implementation and its standing approval.
 - Keep public APIs minimal and stable. Prefer composing focused types over introducing umbrella abstractions before multiple consumers need them.
 - Declare platform and Swift toolchain requirements explicitly in `Package.swift`.
 - New Swift packages must start on the latest supported Swift language and toolchain version. Before adding a major package capability to an older package, plan and complete the required Swift/toolchain modernization first.

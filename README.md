@@ -71,6 +71,7 @@ The subtree does not automatically import every guide into an agent's context. A
 - [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
 - [Localization](Guidelines/Localization.md)
 - [Logging](Guidelines/Logging.md)
+- [Networking](Guidelines/Networking.md)
 - [Redux architecture and physical folder organization](Guidelines/Architecture/Redux.md)
 - [Swift](Guidelines/Swift/Swift.md)
 - [Swift format](Guidelines/Swift/SwiftFormat.md)
@@ -92,7 +93,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.44 \
+  0.0.45 \
   --squash
 ```
 
@@ -148,11 +149,13 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.44 \
+  0.0.45 \
   --squash
 ```
 
 Confirm `AgentGuidelines/VERSION`, review the subtree diff, synchronize the marked code-review contract, documentation-maintenance contract, external-dependency contract, and runtime-observability contract when their versions change, run `AgentGuidelines/Scripts/validate_consumer_setup.swift`, and run the consumer's relevant tests. Keep the subtree update in its own commit, and identify the old and new versions plus the central release or pull request in the consumer pull-request description. Updates are intentionally not automatic: one guideline release cannot silently change every project.
+
+When first adopting [Networking](Guidelines/Networking.md), synchronize external-dependency contract v2 and perform the [networking adoption audit](.agents/skills/agent-guidelines-audit/SKILL.md#audit-networking), including existing paths and any explicitly approved migration deferrals.
 
 ## Upgrade a consumer's Xcode
 

@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.45] - 2026-11-04
+
+### Added
+
+- Added the canonical Networking guide requiring Apple-native networking and typed HTTP through Apple's `swift-http-types` HTTPTypes and HTTPTypesFoundation products with URLSession transport, including native bridges and justified capability-gap exceptions.
+- Added networking audit coverage for actual typed implementation, target linkage, native transport, validation, and explicit adoption deferrals without a false full-compliance claim.
+
+### Changed
+
+- Centralized network transport ownership and validation guidance with links from architecture, package, testing, and security guides.
+- Updated the consumer external-dependency contract to v2 for the narrow standing approval of `swift-http-types`; consumers must synchronize the root contract on adoption. Other external runtime dependencies retain their approval requirements.
+
 ## [0.0.44] - 2026-10-30
 
 ### Added

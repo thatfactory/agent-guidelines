@@ -121,6 +121,65 @@ func localization(_ value: String, state: String = "translated") -> String {
 
 let tests: [(String, () throws -> Void)] = [
     (
+        "networking validator rejects missing policy and audit gates",
+        {
+            let mutations: [(String, String)] = [
+                ("Guidelines/Networking.md", "`HTTPTypes` and `HTTPTypesFoundation`"),
+                ("Guidelines/Networking.md", "## Capability-gap exceptions"),
+                ("Guidelines/Development.md", "Networking.md#standing-dependency-approval"),
+                (
+                    ".agents/skills/agent-guidelines-audit/SKILL.md",
+                    "Dependency presence or imports alone do not establish compliance"
+                ),
+                (
+                    ".agents/skills/agent-guidelines-audit/SKILL.md",
+                    "report it as deferred compliance, never full networking compliance"
+                ),
+            ]
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                let validator = fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path
+                let baseline = try run([validator])
+                try require(baseline.succeeded, baseline.output)
+                for (path, fragment) in mutations {
+                    let file = fixture.appendingPathComponent(path)
+                    let original = try String(contentsOf: file, encoding: .utf8)
+                    try require(original.contains(fragment), "missing test fixture text: \(fragment)")
+                    try write(original.replacingOccurrences(of: fragment, with: "REMOVED"), to: file)
+                    let result = try run([validator])
+                    try require(!result.succeeded, "networking drift unexpectedly passed: \(fragment)")
+                    try require(result.output.contains("missing networking requirement"), result.output)
+                    try write(original, to: file)
+                }
+            }
+        }
+    ),
+    (
+        "consumer validator requires dependency contract v2 and its standing approval",
+        {
+            try withTemporaryDirectory { root in
+                try createConsumerFixture(at: root, isPackage: true)
+                let agents = root.appendingPathComponent("AGENTS.md")
+                let original = try String(contentsOf: agents, encoding: .utf8)
+                let command = [script("Scripts/validate_consumer_setup.swift"), "--consumer-root", root.path]
+                let baseline = try run(command)
+                try require(baseline.succeeded, baseline.output)
+                try write(
+                    original.replacingOccurrences(
+                        of: "EXTERNAL DEPENDENCY CONTRACT v2", with: "EXTERNAL DEPENDENCY CONTRACT v1"),
+                    to: agents)
+                let stale = try run(command)
+                try require(!stale.succeeded, "stale dependency contract unexpectedly passed")
+                try require(stale.output.contains("EXTERNAL DEPENDENCY CONTRACT v2"), stale.output)
+                try write(original.replacingOccurrences(of: "narrow standing approval", with: "approval"), to: agents)
+                let drift = try run(command)
+                try require(!drift.succeeded, "changed standing approval unexpectedly passed")
+                try require(drift.output.contains("external-dependency contract does not match"), drift.output)
+            }
+        }
+    ),
+    (
         "interaction/rendering validator rejects guide and audit drift",
         {
             let mutations: [(String, [String])] = [

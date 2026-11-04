@@ -656,7 +656,8 @@ func validateExternalDependencyPolicy(_ errors: inout [String]) {
     if let contents = readText(packagesGuideline, errors: &errors) {
         let required = [
             "[external dependency policy](Development.md#external-dependencies)": "package dependency policy pointer",
-            "must not introduce or conceal a third-party runtime dependency": "first-party package boundary",
+            "must not introduce or conceal a third-party runtime dependency outside an explicitly approved role":
+                "first-party package boundary and approved roles",
             "guideline-mandated tooling dependency": "DocC tooling exception",
             "root `LICENSE` file": "root license-file retention",
             "Retain the README license badge": "README license-badge retention",
@@ -668,9 +669,54 @@ func validateExternalDependencyPolicy(_ errors: inout [String]) {
         }
     }
     if let contents = readText(agentsTemplate, errors: &errors),
-        !contents.contains("BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1")
+        !contents.contains("BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v2")
     {
         errors.append("Templates/AGENTS.md: missing external-dependency contract")
+    }
+}
+
+/// Protects the canonical networking policy and its completion-audit integration.
+func validateNetworkingPolicy(_ errors: inout [String]) {
+    let requirements: [(String, [String])] = [
+        (
+            "Guidelines/Networking.md",
+            [
+                "## Apple networking APIs", "`URLSession`", "`swift-http-types`",
+                "`HTTPTypes` and `HTTPTypesFoundation`", "`HTTPRequest`", "`HTTPResponse`",
+                "`HTTPRequest.Method`", "`HTTPFields` and `HTTPField.Name`", "`HTTPResponse.Status`",
+                "## Capability-gap exceptions", "explicit repository-owner approval",
+                "### Standing dependency approval", "does not extend to other Apple open-source packages",
+                "handle failed conversions", "## Adoption and audit", "owner-approved, scoped migration deferral",
+                "https://github.com/apple/swift-http-types/tree/1.8.0",
+            ]
+        ),
+        (
+            ".agents/skills/agent-guidelines-audit/SKILL.md",
+            [
+                "[networking check](#audit-networking)", "## Audit networking", "Guidelines/Networking.md",
+                "Dependency presence or imports alone do not establish compliance",
+                "report it as deferred compliance, never full networking compliance",
+                "A deferral does not authorize new noncompliant networking",
+                "missing applicable validation prevents audit completion",
+            ]
+        ),
+        (
+            "Guidelines/Development.md",
+            ["Networking.md#standing-dependency-approval", "Unless these guidelines explicitly pre-approve"]
+        ),
+        (
+            "Templates/AGENTS.md",
+            [
+                "AgentGuidelines/Guidelines/Networking.md", "narrow standing approval",
+                "does not approve other Apple open-source packages",
+            ]
+        ),
+    ]
+    for (path, fragments) in requirements {
+        guard let contents = readText(root.appendingPathComponent(path), errors: &errors) else { continue }
+        for fragment in fragments where !contents.contains(fragment) {
+            errors.append("\(path): missing networking requirement: '\(fragment)'")
+        }
     }
 }
 
@@ -918,7 +964,7 @@ func validateAuditSkill(_ errors: inout [String]) {
         let requiredTemplateValues = [
             "AgentGuidelines/Guidelines/Development.md": "Development.md pointer",
             "BEGIN THATFACTORY DOCUMENTATION MAINTENANCE CONTRACT v1": "documentation-maintenance contract",
-            "BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1": "external-dependency contract",
+            "BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v2": "external-dependency contract",
             "BEGIN THATFACTORY RUNTIME OBSERVABILITY CONTRACT v1": "runtime-observability contract",
             "AgentGuidelines/Guidelines/Documentation.md": "Documentation.md pointer",
             "## Stack": "Stack section",
@@ -1025,6 +1071,7 @@ func main() -> Int32 {
     validateXcodeProjectSettingsGuideline(&errors)
     validatePackageCompilerSettingsGuideline(&errors)
     validateExternalDependencyPolicy(&errors)
+    validateNetworkingPolicy(&errors)
     validateNativeComponentPolicy(&errors)
     validateInteractionRenderingPolicy(&errors)
     validateCodexReviewEvidence(&errors)
