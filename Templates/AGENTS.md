@@ -17,6 +17,7 @@ Read only the guides relevant to the task:
 - [Unit and integration testing](AgentGuidelines/Guidelines/Testing/UnitTesting.md)
 - [Documentation](AgentGuidelines/Guidelines/Documentation.md)
 - [Logging](AgentGuidelines/Guidelines/Logging.md)
+- [Networking](AgentGuidelines/Guidelines/Networking.md)
 - [Packages](AgentGuidelines/Guidelines/Packages.md)
 - [Development workflow](AgentGuidelines/Guidelines/Development.md)
 - [CI/CD](AgentGuidelines/Guidelines/CICD.md)
@@ -46,19 +47,21 @@ Every ThatFactory package log starts with its canonical emoji and uses its own s
 Keep the following marked external-dependency contract in the consumer repository's root `AGENTS.md` so implementation agents receive the rule directly before they make dependency choices. Copy it unchanged and update it when the marker version changes in this template.
 
 ```md
-<!-- BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1 -->
+<!-- BEGIN THATFACTORY EXTERNAL DEPENDENCY CONTRACT v2 -->
 ## External Dependency Policy
 
 Do not introduce third-party source or binary dependencies into ThatFactory applications, games, or reusable packages during normal development. Prefer Apple platform APIs, the Swift standard library, code owned by the current repository, or focused ThatFactory-owned packages. If reusable capability is missing, implement it natively at the appropriate boundary and consider extracting it into a first-party package instead of selecting an external library.
 
-A third-party dependency may be added, or expanded to a new target or runtime role, only with explicit repository-owner approval for that specific use before modifying the dependency graph. Convenience, reduced implementation effort, popularity, or an agent's preference for an existing library are not sufficient justification. Do not make an external library acceptable merely by hiding it behind a first-party wrapper.
+A third-party dependency may be added, or expanded to a new target or runtime role, only under an explicit standing approval in these guidelines or with explicit repository-owner approval for that specific use before modifying the dependency graph. Convenience, reduced implementation effort, popularity, or an agent's preference for an existing library are not sufficient justification. Do not make an external library acceptable merely by hiding it behind a first-party wrapper.
 
 Document every approved exception in durable repository documentation in the same change. Record the dependency and source, purpose and target scope, why a native or first-party implementation is not appropriate, relevant license, security, and maintenance considerations, and the approval context. Merely mentioning or using the dependency in an execution plan, pull-request description, or transient chat is not approval. Regardless of where explicit approval occurs, reflect the exception in durable repository documentation.
 
 Apple system frameworks and the Swift standard library are not third-party dependencies. ThatFactory-owned packages are first-party dependencies. Tooling explicitly required by the shared guidelines is allowed only for its documented tooling role and must not be linked into or shipped with product runtime targets unless separately approved and documented.
 
+Follow [Networking](AgentGuidelines/Guidelines/Networking.md) for Apple-native networking and typed HTTP. Its narrow standing approval for Apple's `swift-http-types` applies only to the documented HTTPTypes and HTTPTypesFoundation runtime role; it does not approve other Apple open-source packages or unrelated roles. Use the guide's normal dependency documentation for that role instead of requesting a separate consumer exception.
+
 Follow [Development workflow](AgentGuidelines/Guidelines/Development.md) for the detailed policy.
-<!-- END THATFACTORY EXTERNAL DEPENDENCY CONTRACT v1 -->
+<!-- END THATFACTORY EXTERNAL DEPENDENCY CONTRACT v2 -->
 ```
 
 Keep the following documentation-maintenance contract in the consumer repository's root `AGENTS.md` so implementation agents receive it directly rather than only through a linked guide. Copy it unchanged and update it when the marker version changes in this template.
