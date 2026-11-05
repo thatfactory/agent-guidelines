@@ -47,6 +47,28 @@ Review the actual change rather than only checking whether files exist:
 - Apply the shared [CI/CD guide](../../../Guidelines/CICD.md) to workflow and repository-automation changes. Search scripts, generated directories, workflow files, and documentation for fastlane adoption and treat it as forbidden without an exception path. Require focused ThatFactory tooling or repository-owned Swift scripts for CI/CD and delivery, and inspect new repository-owned executable scripts for compliance. For Swift-focused applications, games, and packages, accept Python or POSIX shell only when durable repository documentation identifies the missing Swift capability, exact script and task scope, runtime and dependency requirements, security and maintenance impact, validation method, and revisit or removal condition. Reject convenience, familiarity, shorter code, an existing interpreter, or another non-Swift script as justification. Treat every exception as narrow; the central `Scripts/swift_format.sh` wrapper is the retained documented exception for invoking Xcode's `swift-format` modes.
 - For pull-request or merge readiness, apply the root `## Code Review Rules`: confirm the Codex review covers the current head, no allowed Codex review round is pending, every Codex review thread has a disposition, and no unresolved P0/P1 blocker remains. Treat P2/P3 observations as non-blocking and never request another Codex review unless the repository owner explicitly authorizes it. This Codex review-round budget does not apply to otherwise-authorized Reasoning Relay/ChatGPT review delegations; do not block them waiting for a Codex-budget exception.
 
+## Audit runner toolchains
+
+Apply the [runner toolchain policy](../../../Guidelines/CICD.md#runner-toolchain) when reviewing or changing Apple build automation, adopting that policy, or performing an Xcode upgrade:
+
+1. Inspect every applicable workflow and its invoked scripts, setup actions, environment overrides, and runner labels. Search for Xcode/Swift version comparisons, build-number checks, allowlists, upper bounds, and versioned installation paths; inspecting workflow YAML alone is insufficient when a script performs the check.
+2. Verify ordinary CI uses and logs the runner's active toolchain. Distinguish version pins from minimum package tools versions, Swift language modes, SDK/deployment requirements, simulator destinations, and actual capability/readiness checks. A documented historical test version and a process-scoped selection for an explicit upgrade are not permanent CI constraints.
+3. For each retained pin, inspect the canonical guide's required repository exception and evidence. Do not invent a compatibility reason or treat the previous upgrade target as one. When implementation is authorized, remove unjustified pins and reconcile current setup documentation; in review-only work, report their locations and missing justification. An unjustified pin in scope prevents audit completion.
+4. Run affected toolchain reporting and the repository's build/test validation with the active installation. Record the selected Xcode/Swift versions, commands, outcomes, and any justified exception. Do not claim compatibility with untested future releases; removing a string check ensures those releases reach real validation.
+
+| Scenario | Audit outcome |
+| --- | --- |
+| New runner Xcode passes compilation and tests, but an old equality check fails | Remove the unjustified check and rerun affected validation |
+| Workflow accepts the runner, but its invoked script requires one build number | Treat the script as the same pin and require removal or a documented exception |
+| A supported package declares its minimum Swift tools version and language mode | Preserve the capability requirements |
+| An exact toolchain has a documented incompatibility or external requirement with evidence and a revisit condition | Accept only the scoped exception and report it |
+
+## Audit Swift package badges
+
+When creating or changing a Swift package README, adopting the badge policy, or auditing package documentation, inspect the actual README badge URLs and labels against [README badges](../../../Guidelines/Packages.md#readme-badges). Omit Updated/last-commit-date and Revision/latest-release-version badges unless the repository documents the guide's specific exception. Distinguish release-version endpoints from Release/publishing workflow-status badges; keep the latter when they describe the package's own workflow. A Release label alone does not identify which kind it is.
+
+For authorized implementation, remove unjustified date/version badges and correct affected documentation; for review-only work, report the badge and missing rationale. An undocumented date/version badge in scope prevents audit completion. Record the inspected README, retained workflow-status badges, and any accepted exception. Do not create badges or release workflows solely to fill an inapplicable slot.
+
 ## Audit networking
 
 Apply [Networking](../../../Guidelines/Networking.md) to Apple-platform applications, games, and Swift packages:
