@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.46] - 2026-11-05
+
+### Changed
+
+- Made the self-hosted runner's active Xcode/Swift toolchain the CI default, with environment logging and real build/test validation. Exact version or build pins require a documented, evidence-backed repository exception with a revisit condition.
+- Updated the Xcode-upgrade skill to remove unjustified CI pins instead of moving them to the newly validated version.
+- Clarified Swift package badges: omit Updated and Revision/latest-release-version badges unless a documented reader need justifies them; retain Release/publishing workflow-status badges for the package's own workflows.
+
+### Added
+
+- Added completion-audit checks for toolchain constraints in workflows and invoked scripts, documented exceptions, active-toolchain validation, and Swift package badge semantics.
+
 ## [0.0.45] - 2026-11-04
 
 ### Added
