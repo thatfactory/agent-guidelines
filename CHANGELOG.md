@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.47] - 2026-11-06
+
+### Added
+
+- Added independently versioned Codex review policy with full and review-only adoption profiles, exact managed root contracts, a Swift synchronizer, and a pinned shared CI action. Latest-policy checks reject stale or modified content and uncertain provenance.
+- Added regression coverage for synchronization, preservation of local instructions, profile boundaries, duplicate contracts, publication identities, and unavailable policy sources.
+
+### Changed
+
+- Restricted review output to substantiated P0/P1 defects, clarified one automatic opening/ready review with local verification of batched remediation, and retained bounded monitoring and explicit owner authorization for extra review.
+- Made reviewer rules and PR lifecycle available directly in every root instruction file without adopting unrelated guidance. Removed retired delegated-review exceptions and aligned audit, release, and global instruction templates.
+
 ## [0.0.46] - 2026-11-05
 
 ### Changed
@@ -222,7 +234,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- Clarified that the bounded review-round policy applies to Codex GitHub reviews, while otherwise-authorized ChatGPT and Reasoning Relay delegations use their own workflow limits.
+- Clarified that the bounded review-round policy applies to Codex GitHub reviews, while other explicitly selected advisory workflows used their own limits.
 - Namespaced Codex review tracking fields and advanced the consumer code-review contract to v2.
 
 ## [0.0.20] - 2026-08-21
