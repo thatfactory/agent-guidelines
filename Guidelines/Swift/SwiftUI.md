@@ -21,6 +21,7 @@ Use official Apple documentation and Xcode's current SwiftUI skills for API-spec
 - In non-Redux designs, prefer `@Observable` to `ObservableObject` for new shared reference models when platform support allows it.
 - In Redux applications, keep durable app and domain state in Redux. Do not introduce an observable view model as a parallel source of truth.
 - Make observable stored-property types `Equatable` when equality matches their semantics, allowing redundant assignments to avoid unnecessary invalidation.
+- Account for observation granularity: reading a field of a stored value-type property or an element of a stored collection can establish a dependency on the whole property. A computed lookup still tracks the properties it reads. When broad invalidation matters, expose narrow state slices or maintain derived values at the existing state owner; preserve Redux ownership rather than adding a parallel observable model or an unsynchronized cache. Reading several already-narrow properties does not itself require splitting a model.
 - Isolate side effects in `.task`, `.onChange`, actions, or explicit async functions rather than hiding them in rendering logic.
 - Use the current `.onChange(of:)` form and read the updated captured value when the previous value is unnecessary.
 - Avoid closure-based bindings when a writable key-path binding expresses the same relationship.
@@ -31,10 +32,14 @@ With SDKs where `@State` is a macro, do not give a state property a declaration 
 
 - Give `ForEach`, `List`, `Table`, and similar data-driven views stable, unique element identity.
 - Prefer meaningful `Identifiable` conformance when the model has natural identity.
+- Keep identifiers cheap to hash and compare. Do not use an entire large value as its identifier merely because it conforms to `Hashable`; preserve that conformance for other uses and select a small stable key for collection identity.
 - Do not use collection indices, offsets, or transient UUIDs as identity for mutable collections.
 - Do not sort, filter, or map large collections inline inside a frequently evaluated view body. Prepare the collection before rendering.
 - Use a dedicated row `View` for meaningful rows and pass it narrow inputs.
+- In lazy containers such as `List` and `LazyVStack`, keep a constant number of top-level views per element. Use an appropriate single-root container around branching row content when needed; `Group` does not provide that container. If an element should have no row, filter the prepared collection instead of producing a zero-view row or adding an empty container.
 - Avoid `AnyView` in collection rows.
+
+Consult Apple's [model-data guidance](https://developer.apple.com/documentation/swiftui/managing-model-data-in-your-app) for observation dependencies and [`ForEach` documentation](https://developer.apple.com/documentation/swiftui/foreach) for lazy-container row structure. Use the current Xcode SwiftUI skill for detailed diagnostics and SDK-specific behavior.
 
 ## Modifiers and environment
 

@@ -11,7 +11,8 @@
 
 - Organize test intent with `// Given`, `// When`, and `// Then` where the phases are meaningful.
 - Prefer `struct` suites. Use a reference type only when lifecycle or identity requires it.
-- Use suite initialization and `deinit` only for genuine shared setup and cleanup.
+- Initialize per-test fixtures in the suite initializer when setup is needed. Swift Testing creates a fresh suite instance for each instance test; initialization is not once-per-suite setup shared across tests.
+- Use a `final class` or actor suite when per-instance cleanup requires `deinit`; a `struct` suite cannot provide a deinitializer. Do not use that cleanup as a once-per-suite teardown mechanism.
 - Keep each test focused on one behavior and name it in domain language.
 - Mirror production physical folders under the test target.
 - Put reusable mocks and fixtures under the test target's `Mocks/` folder.
@@ -25,6 +26,7 @@
 - Use `#require` for prerequisites whose failure must stop the current test.
 - Prefer exact thrown-error expectations when the particular error is part of the contract.
 - Use confirmation APIs for callback or delegate behavior rather than hand-built counters and arbitrary delays.
+- A confirmation checks its expected event count when its closure returns; it does not wait for future callbacks. Await the operation that delivers the event inside the closure, or use an appropriate async bridge for a completion-handler API. Do not mechanically replace an XCTest wait with a confirmation that returns before the event can occur.
 - Record known failures with Swift Testing's known-issue support instead of silently disabling coverage.
 
 ## Concurrency
@@ -52,3 +54,5 @@
 Follow [Xcode MCP](../Xcode/MCP.md) for build and runtime verification.
 
 Follow [Networking](../Networking.md#ownership-and-validation) for networking test boundaries and required evidence.
+
+Consult Apple's [XCTest migration guidance](https://developer.apple.com/documentation/testing/migratingfromxctest) for suite lifecycle and asynchronous confirmations, and Xcode's current test-modernization skill for detailed migration patterns.

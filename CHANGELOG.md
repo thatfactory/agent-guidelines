@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.49] - 2026-11-09
+
+### Changed
+
+- Expanded task-based discovery of current Xcode skills for SwiftUI, resizability, App Intents, document-based applications, test modernization, and profiling while retaining deployment-aware, scoped adoption.
+- Clarified SwiftUI observation dependencies, inexpensive stable collection identifiers, and constant row structure in lazy containers without introducing parallel Redux state ownership.
+- Clarified Swift Testing's per-test suite lifecycle, cleanup requirements, and confirmation event timing.
+
 ## [0.0.48] - 2026-11-06
 
 ### Changed

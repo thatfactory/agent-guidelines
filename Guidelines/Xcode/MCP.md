@@ -19,6 +19,21 @@ Discover the tools exposed by the active Xcode server. Tool prefixes and exact n
 - Use Xcode-provided skills for specialized current workflows such as SwiftUI modernization, localization, security auditing, device interaction, and C bounds safety.
 - Distill durable project policy into local documentation; do not copy an exported Apple skill into a repository.
 
+### Specialized skill selection
+
+Discover the installed skills and read the references relevant to the task before applying SDK-specific changes. These names are discovery hints from current Xcode exports, not guarantees that a host exposes a skill or tool with that exact name. If a relevant skill is unavailable, use current official Apple documentation and report any unresolved limitation.
+
+| Task | Relevant Xcode skill |
+| --- | --- |
+| SwiftUI structure, data flow, identity, or modernization | `swiftui-specialist`; `swiftui-whats-new-27` for SDK 27 source and API changes |
+| Window resizing, scene lifecycle, local geometry, or changing safe areas | `app-resizability` |
+| App Intents, entities, queries, or Shortcuts | `app-intents-specialist`; `app-intents-whats-new-27` for release-specific adoption |
+| Document-based SwiftUI open, edit, save, export, or migration | `building-document-based-swiftui-applications` |
+| XCTest migration or Swift Testing modernization | `modernize-tests` |
+| Profiling, trace inspection, or hang diagnosis | `xctrace` |
+
+Keep adoption scoped to the requested work and deployment targets. For profiling, inspect the selected toolchain's command help before relying on `xctrace` subcommands or flags, and capture the workload being diagnosed; an idle trace is not performance evidence. A newer exported skill does not authorize a whole-repository migration, higher deployment targets, or changes to consumer exceptions.
+
 ## Project operations
 
 - Prefer Xcode project-aware file, target, build-setting, issue, build, test, preview, and documentation tools when available.
