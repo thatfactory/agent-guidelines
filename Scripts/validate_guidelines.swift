@@ -720,12 +720,58 @@ func validateNetworkingPolicy(_ errors: inout [String]) {
     }
 }
 
+/// Protects the SwiftUI-first threshold and its mandatory completion-audit gate.
+func validateSwiftUIFirstPolicy(_ errors: inout [String]) {
+    let requirements: [(URL, [String])] = [
+        (
+            swiftUIGuideline,
+            [
+                "## SwiftUI-first implementation",
+                "Implement a SwiftUI application's UI with SwiftUI",
+                "`UIViewRepresentable`, `UIViewControllerRepresentable`",
+                "`NSViewRepresentable`, `NSViewControllerRepresentable`",
+                "`UIHostingController`, `NSHostingController`",
+                "unless the required behavior cannot be implemented with public SwiftUI APIs",
+                "A UIKit implementation being Apple-native does not satisfy this SwiftUI-first requirement",
+                "including compositions of those APIs",
+                "If SwiftUI can implement the behavior, use it; do not request a convenience exception",
+                "obtain explicit repository-owner approval and record a durable consumer exception",
+                "Approval alone does not replace capability-gap evidence",
+                "Do not bypass this rule through controller introspection",
+                "Unjustified interoperability blocks completion",
+            ]
+        ),
+        (
+            auditSkill,
+            [
+                "Perform the mandatory [SwiftUI-first implementation check]",
+                "## Audit SwiftUI-first implementation",
+                "Guidelines/Swift/SwiftUI.md#swiftui-first-implementation",
+                "Follow wrappers and relevant dependency calls to their implementation",
+                "Include directly affected existing bridges rather than grandfathering them",
+                "Require current documentation or reproducible evidence that SwiftUI cannot meet the requirement",
+                "When SwiftUI can implement the behavior, require the in-scope implementation to use SwiftUI",
+                "UIKit/AppKit interoperability without a demonstrated SwiftUI capability gap blocks audit completion",
+                "verify explicit repository-owner approval before implementation",
+                "Approval alone does not replace capability-gap evidence",
+                "Keep approved interoperability limited to the missing capability",
+            ]
+        ),
+    ]
+    for (url, fragments) in requirements {
+        guard let contents = readText(url, errors: &errors) else { continue }
+        for fragment in fragments where !contents.contains(fragment) {
+            errors.append("\(relativePath(url)): missing SwiftUI-first requirement '\(fragment)'")
+        }
+    }
+}
+
 /// Protects the native-component decision, ownership, and runtime-evidence policy.
 func validateNativeComponentPolicy(_ errors: inout [String]) {
     guard let contents = readText(swiftUIGuideline, errors: &errors) else { return }
     let required = [
         "## Native components and presentation",
-        "Prefer native SwiftUI or platform controls and presentation APIs",
+        "Use native SwiftUI controls and presentation APIs in SwiftUI applications",
         "sheets, alerts, confirmation dialogs, navigation, menus, pickers, popovers",
         "Custom fonts, button styles, and content inside a native sheet are compatible",
         "Do not substitute a sheet-shaped `ZStack`, offset animation, or custom scrim",
@@ -1121,6 +1167,7 @@ func main() -> Int32 {
     validatePackageCompilerSettingsGuideline(&errors)
     validateExternalDependencyPolicy(&errors)
     validateNetworkingPolicy(&errors)
+    validateSwiftUIFirstPolicy(&errors)
     validateNativeComponentPolicy(&errors)
     validateInteractionRenderingPolicy(&errors)
     validateCodexReviewEvidence(&errors)

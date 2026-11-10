@@ -30,6 +30,7 @@ Review the actual change rather than only checking whether files exist:
 - Perform the mandatory [networking check](#audit-networking) for network implementation, dependency changes, and networking-policy adoption.
 - Check SwiftUI composition, narrow inputs, local versus durable state, localization, accessibility, and safe deterministic previews where applicable.
 - For each new or changed SwiftUI `ScrollView`, apply the shared [scrolling guidance](../../../Guidelines/Swift/SwiftUI.md#scrolling): verify `.scrollBounceBehavior(.basedOnSize)` covers its scrolling axes on supported deployment targets, including scroll views in modal sheets. Check the modifier's environment scope around nested scrollables and require a documented interaction reason for a different bounce behavior.
+- Perform the mandatory [SwiftUI-first implementation check](#audit-swiftui-first-implementation) before accepting UIKit/AppKit code or interoperability in a SwiftUI application.
 - Perform the mandatory [native-component and presentation decision check](#audit-native-components-and-presentation) for changed SwiftUI controls and presentation behavior.
 - Perform the mandatory [system-control placement check](#audit-system-control-placement) for changed navigation, toolbars, dismissal controls, and window chrome, including affected UIKit/AppKit wrappers.
 - Perform the mandatory [animation and image-rendering check](#audit-animation-and-image-rendering) for changed visual transitions, reusable control styles, and dynamic image paths, including directly affected consumers.
@@ -91,6 +92,27 @@ Use these scenarios to distinguish valid outcomes:
 | Alternative library chosen for convenience, including behind a ThatFactory wrapper | Block until compliant or covered by the capability-gap exception |
 | Adoption discovers untouched legacy HTTP | Migrate within scope or record an explicit owner-approved deferral; no full-compliance claim |
 | No networking implementation or dependency change, and no policy adoption | Evidence-backed not applicable |
+
+## Audit SwiftUI-first implementation
+
+Apply the authoritative [SwiftUI-first policy](../../../Guidelines/Swift/SwiftUI.md#swiftui-first-implementation) to the completed change and directly affected UI boundaries:
+
+1. Inspect UIKit/AppKit imports and actual UI responsibilities, view/controller subclasses, `UIViewRepresentable`, `UIViewControllerRepresentable`, `NSViewRepresentable`, `NSViewControllerRepresentable`, hosting controllers, controller introspection, and presentation or animation bridges. Follow wrappers and relevant dependency calls to their implementation; a SwiftUI-facing API or an Apple-native presenter does not establish compliance. Include directly affected existing bridges rather than grandfathering them. Do not expand a focused audit into an unrelated application rewrite.
+2. For each interoperability boundary, identify the exact requirement and supported deployment targets. Check the evaluated public SwiftUI alternatives, including compositions of presentation modifiers, state, layout, transitions, animations, and materials. Require current documentation or reproducible evidence that SwiftUI cannot meet the requirement. A failed first attempt, visual preference, convenience, or familiarity with UIKit is insufficient.
+3. When SwiftUI can implement the behavior, require the in-scope implementation to use SwiftUI. Do not accept a convenience exception or ask the owner to approve one. UIKit/AppKit interoperability without a demonstrated SwiftUI capability gap blocks audit completion, even when the underlying API is native or another native-component check passes.
+4. For a genuine gap, verify explicit repository-owner approval before implementation and the durable consumer exception required by the policy. Verify the approved scope, lifecycle/state ownership, validation, and revisit condition. Approval alone does not replace capability-gap evidence. Missing evidence, approval, documentation, or boundary validation blocks completion; neither this audit nor an agent's implementation choice grants an exception.
+5. Keep approved interoperability limited to the missing capability. Check that it does not recreate unrelated SwiftUI navigation, presentation, environment propagation, or application state in a parallel controller hierarchy. Apply the existing native-component, system-control, lifecycle, and runtime-evidence checks to the affected boundary as well. Record applicability, inspected paths, alternatives, exception evidence, and validation in the handoff.
+
+Use these scenarios to distinguish valid outcomes:
+
+| Scenario | Audit outcome |
+| --- | --- |
+| Public SwiftUI APIs implement the required UI | Use SwiftUI; accept with applicable validation |
+| UIKit controller or representable added for a transition SwiftUI can express | Block until the in-scope implementation uses SwiftUI |
+| UIKit hidden inside a SwiftUI modifier or dependency without gap evidence | Block; trace and apply the same requirement |
+| Missing SwiftUI capability demonstrated, owner-approved, documented, and narrowly bridged | Accept only the approved boundary with validation |
+| Owner approval exists but SwiftUI capability-gap evidence is absent | Block; approval does not establish impossibility |
+| No SwiftUI application or interoperability boundary is in scope | Record not applicable; do not invent a migration |
 
 ## Audit native components and presentation
 
