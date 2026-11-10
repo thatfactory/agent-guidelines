@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.50] - 2026-11-10
+
+### Changed
+
+- Required SwiftUI implementations for SwiftUI application UI, permitting UIKit/AppKit controllers, representables, hosting, or other bridges only for a demonstrated missing SwiftUI capability with prior owner approval and a durable, narrowly scoped exception.
+- Added a mandatory completion-audit gate that traces interoperability through wrappers and dependencies, verifies SwiftUI alternatives and exception evidence, and rejects convenience or transition-style fallbacks that SwiftUI can implement.
+- Added validator and mutation-test coverage protecting the SwiftUI-first policy and audit gate from removal or drift.
+
 ## [0.0.49] - 2026-11-09
 
 ### Changed

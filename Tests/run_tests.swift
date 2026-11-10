@@ -307,6 +307,51 @@ let tests: [(String, () throws -> Void)] = [
         }
     ),
     (
+        "SwiftUI-first validator rejects missing policy and audit safeguards",
+        {
+            let mutations: [(String, [String])] = [
+                (
+                    "Guidelines/Swift/SwiftUI.md",
+                    [
+                        "unless the required behavior cannot be implemented with public SwiftUI APIs",
+                        "A UIKit implementation being Apple-native does not satisfy this SwiftUI-first requirement",
+                        "If SwiftUI can implement the behavior, use it; do not request a convenience exception",
+                        "obtain explicit repository-owner approval and record a durable consumer exception",
+                        "Approval alone does not replace capability-gap evidence",
+                        "Do not bypass this rule through controller introspection",
+                    ]
+                ),
+                (
+                    ".agents/skills/agent-guidelines-audit/SKILL.md",
+                    [
+                        "Perform the mandatory [SwiftUI-first implementation check]",
+                        "Follow wrappers and relevant dependency calls to their implementation",
+                        "Require current documentation or reproducible evidence that SwiftUI cannot meet the requirement",
+                        "When SwiftUI can implement the behavior, require the in-scope implementation to use SwiftUI",
+                        "UIKit/AppKit interoperability without a demonstrated SwiftUI capability gap blocks audit completion",
+                        "verify explicit repository-owner approval before implementation",
+                    ]
+                ),
+            ]
+            try withTemporaryDirectory { temporary in
+                let fixture = temporary.appendingPathComponent("repository")
+                try copyRepositoryFixture(to: fixture)
+                for (path, fragments) in mutations {
+                    let file = fixture.appendingPathComponent(path)
+                    let contents = try String(contentsOf: file, encoding: .utf8)
+                    for fragment in fragments {
+                        try require(contents.contains(fragment), "missing test fixture text: \(fragment)")
+                        try write(contents.replacingOccurrences(of: fragment, with: "REMOVED"), to: file)
+                        let result = try run([fixture.appendingPathComponent("Scripts/validate_guidelines.swift").path])
+                        try require(!result.succeeded, "SwiftUI-first mutation unexpectedly passed: \(fragment)")
+                        try require(result.output.contains("missing SwiftUI-first requirement"), result.output)
+                        try write(contents, to: file)
+                    }
+                }
+            }
+        }
+    ),
+    (
         "native-component validator rejects policy and decision drift",
         {
             let mutations = [

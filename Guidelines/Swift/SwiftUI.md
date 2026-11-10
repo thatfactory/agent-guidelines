@@ -2,6 +2,16 @@
 
 Use official Apple documentation and Xcode's current SwiftUI skills for API-specific behavior. This guide captures stable project policy rather than reproducing the current SDK's API catalog.
 
+## SwiftUI-first implementation
+
+Implement a SwiftUI application's UI with SwiftUI. Do not introduce or expand UIKit or AppKit UI code, view controllers, `UIViewRepresentable`, `UIViewControllerRepresentable`, `NSViewRepresentable`, `NSViewControllerRepresentable`, `UIHostingController`, `NSHostingController`, or equivalent bridges unless the required behavior cannot be implemented with public SwiftUI APIs on the supported deployment targets. A UIKit implementation being Apple-native does not satisfy this SwiftUI-first requirement.
+
+Before considering interoperability, evaluate SwiftUI's controls, presentation modifiers, state, layout, transitions, animations, and materials, including compositions of those APIs. Verify the relevant current Apple/Xcode documentation and use a focused SwiftUI reproduction when behavior is uncertain. Failure of a first attempt, convenience, familiarity with UIKit, a desired transition style, or a wrapper with a SwiftUI-facing name is not evidence of a missing SwiftUI capability. If SwiftUI can implement the behavior, use it; do not request a convenience exception.
+
+Only a demonstrated SwiftUI capability gap can justify interoperability. Before implementing that fallback, obtain explicit repository-owner approval and record a durable consumer exception identifying the required behavior, supported targets, evaluated SwiftUI alternatives, documentation or reproducible evidence that those alternatives cannot meet the requirement, approved boundary, lifecycle and state ownership, validation, and a condition for revisiting the fallback. Approval alone does not replace capability-gap evidence. Keep any approved bridge limited to the missing capability rather than moving unrelated SwiftUI presentation or application state into a parallel controller hierarchy.
+
+Do not bypass this rule through controller introspection, a reusable component, or a dependency that hides the same UIKit/AppKit implementation. Inspect the actual UI responsibility, not just the import or wrapper name. The [native-component policy](#native-components-and-presentation) remains an additional requirement; calling a UIKit presenter native does not waive this rule. Unjustified interoperability blocks completion and the [completion audit](../../.agents/skills/agent-guidelines-audit/SKILL.md#audit-swiftui-first-implementation).
+
 ## View structure
 
 - Put SwiftUI dynamic properties such as `@Environment`, `@Query`, `@State`, and `@Binding` before ordinary stored `let` and `var` properties. Keep injected environment dependencies before locally owned state when both are present.
@@ -64,7 +74,7 @@ Consult Apple's [model-data guidance](https://developer.apple.com/documentation/
 
 ## Native components and presentation
 
-- Prefer native SwiftUI or platform controls and presentation APIs whenever they express the supported interaction. Evaluate sheets, alerts, confirmation dialogs, navigation, menus, pickers, popovers, and similar components before implementing an equivalent. Consult official Apple/Xcode documentation for behavior and availability on the current deployment target, following [documentation lookup](../Xcode/MCP.md#documentation-lookup).
+- Use native SwiftUI controls and presentation APIs in SwiftUI applications whenever they express the supported interaction. Evaluate sheets, alerts, confirmation dialogs, navigation, menus, pickers, popovers, and similar components before implementing an equivalent. UIKit/AppKit alternatives must first satisfy the [SwiftUI-first requirement](#swiftui-first-implementation). Consult official Apple/Xcode documentation for behavior and availability on the current deployment target, following [documentation lookup](../Xcode/MCP.md#documentation-lookup).
 - Keep branded content and styling inside native components. Custom fonts, button styles, and content inside a native sheet are compatible with this policy when the system retains presentation and dismissal ownership.
 - Do not substitute a sheet-shaped `ZStack`, offset animation, or custom scrim for a suitable native sheet API. The same rule applies to other simulated system components, including custom discard dialogs. Pixel fidelity to a static design and preserving mounted state are insufficient reasons to replace native presentation behavior; a mockup is not approval for an exception.
 - Use a custom equivalent only for an actual native capability gap verified against the supported platform and deployment target. Before implementation, obtain explicit repository-owner approval and record a durable exception in consumer documentation: the required interaction, evaluated native alternatives, concrete missing capability and documentation or reproducible evidence, approved scope, lifecycle ownership, compensating validation, and revisit condition. Do not invent a capability gap or infer approval from existing custom code. An unapproved or undocumented replacement blocks completion.
