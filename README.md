@@ -61,6 +61,7 @@ The subtree does not automatically import every guide into an agent's context. A
 ## Guideline catalog
 
 - [Agent workflow and tool execution](Guidelines/AgentWorkflow.md)
+- [Animations](Guidelines/Design/Animations.md)
 - [App Store metadata](Guidelines/AppStore.md)
 - [CI/CD](Guidelines/CICD.md)
 - [Codex review policy](ReviewPolicy/README.md)
@@ -80,11 +81,12 @@ The subtree does not automatically import every guide into an agent's context. A
 - [Swift style](Guidelines/Swift/SwiftStyle.md)
 - [SwiftUI](Guidelines/Swift/SwiftUI.md)
 - [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
+- [User experience](Guidelines/Design/UX.md)
 - [Xcode MCP and visual verification](Guidelines/Xcode/MCP.md)
 - [Xcode project settings](Guidelines/Xcode/ProjectSettings.md)
 - [Xcode security audits](Guidelines/Xcode/Security.md)
 
-Only reference the guides that apply. Agent workflow normally applies to both applications and packages. A UI-agnostic package normally also uses Swift, style, testing, documentation, logging, packages, CI/CD, and Xcode guidance, but not Redux or SwiftUI guidance.
+Only reference the guides that apply. Agent workflow normally applies to both applications and packages. App and game interface work uses the Design guides alongside the relevant implementation guide. A UI-agnostic package normally also uses Swift, style, testing, documentation, logging, packages, CI/CD, and Xcode guidance, but not Design, Redux, or SwiftUI guidance.
 
 ## Add to a consumer
 
@@ -94,7 +96,7 @@ From the consumer repository root, install a tagged release:
 git subtree add \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.50 \
+  0.0.51 \
   --squash
 ```
 
@@ -156,7 +158,7 @@ Review the target release's changelog, then pull it deliberately:
 git subtree pull \
   --prefix=AgentGuidelines \
   https://github.com/thatfactory/agent-guidelines.git \
-  0.0.50 \
+  0.0.51 \
   --squash
 ```
 

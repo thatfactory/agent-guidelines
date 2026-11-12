@@ -33,6 +33,7 @@ Review the actual change rather than only checking whether files exist:
 - Perform the mandatory [SwiftUI-first implementation check](#audit-swiftui-first-implementation) before accepting UIKit/AppKit code or interoperability in a SwiftUI application.
 - Perform the mandatory [native-component and presentation decision check](#audit-native-components-and-presentation) for changed SwiftUI controls and presentation behavior.
 - Perform the mandatory [system-control placement check](#audit-system-control-placement) for changed navigation, toolbars, dismissal controls, and window chrome, including affected UIKit/AppKit wrappers.
+- Perform the mandatory [user-experience check](#audit-user-experience) for changed task continuity, lifecycle-driven UI, automatic refreshes, and loading behavior, regardless of implementation framework.
 - Perform the mandatory [animation and image-rendering check](#audit-animation-and-image-rendering) for changed visual transitions, reusable control styles, and dynamic image paths, including directly affected consumers.
 - Perform the [Reduce Motion check](#audit-reduce-motion) for affected motion and for Reduced Motion support declarations.
 - Perform the [tvOS current-user identity check](#audit-tvos-current-user-identity) when changed behavior relies on selected-profile preferences, CloudKit accounts, or personal store binding.
@@ -134,9 +135,31 @@ Apply the authoritative [system control placement policy](../../../Guidelines/Sw
 4. For changed navigation or toolbar behavior, record supported target/OS and targeted runtime actions and outcomes: Back navigates, dismissal closes the intended presentation, and cancellation/confirmation retain their actual semantics. Check relevant layout direction, accessibility, keyboard/remote, and gesture behavior. When presentation lifecycle also changes, apply the existing [interaction evidence requirements](../../../Guidelines/Swift/SwiftUI.md#required-interaction-evidence) to that affected flow. Documentation-only policy changes do not require simulator evidence.
 5. An unjustified placement override or missing relevant interaction evidence blocks audit completion. Report the exact control, ownership, violated policy, and missing evidence; do not report an Apple-selected side as a defect.
 
+## Audit user experience
+
+Apply the canonical [User Experience guide](../../../Guidelines/Design/UX.md) to changed behavior and directly affected flows in apps and games, regardless of implementation framework. Record an evidence-backed `not applicable` for changes without these behaviors; do not expand into unrelated flows. These are implementation acceptance checks; they do not change the PR review contract's P0/P1 reporting threshold.
+
+1. Identify the current task, recoverable input and presentation context, and every relevant automatic-work trigger. Trace what makes that work necessary now, what the user sees, and what happens if the trigger arrives while a flow is active. A foreground callback or a retained draft alone is not proof of a good experience.
+2. Exercise background and foreground transitions during affected editing, entry, selection, search, and presentation flows. Require preserved task context and the absence of unnecessary overlays, focus loss, or navigation resets. Verify cold loading and actual access invalidation separately; the continuity rule must not suppress necessary protection.
+3. Trace skipped refreshes through subsequent save, cancellation, and dismissal. Require runtime outcomes plus deterministic tests or event evidence when needed to prove that closing a flow cannot replay an unrelated skipped attempt. Distinguish synchronization caused by a real mutation and a new independent refresh trigger from catch-up work.
+4. For intentionally deferred required work, inspect the consumer's durable reason, eligibility, need recheck, and expected presentation against the canonical guide. Convenience or a desire to eventually process every lifecycle callback is insufficient. Verify that a result arriving after the user starts a new task does not interrupt that task.
+5. Require runtime evidence for applicable scenarios in the guide: platform/OS, app revision, initial state, trigger, actions, and observed result. Accept recorded manual verification where automation is unavailable; static screenshots and successful tests alone do not prove visible continuity. Documentation-only policy changes require scenario walkthroughs rather than consumer runtime evidence.
+6. Unnecessary interruption, unjustified catch-up refresh, lost context, or missing applicable evidence blocks audit completion. Record the violated guide section and exact correction or missing evidence. Fix authorized in-scope behavior and reconcile durable product documentation; do not silently rewrite a consumer's documented freshness requirement.
+
+| Scenario | Audit outcome |
+| --- | --- |
+| An editor survives activation but a routine loading overlay covers it | Blocked; retained input does not justify interrupting the task |
+| A busy foreground attempt is skipped, then dismissal starts its reload | Blocked until the unjustified catch-up path is removed |
+| Saving synchronizes the actual edit, without replaying the skipped attempt | Accepted with trigger and interaction evidence |
+| A later eligible activation starts a newly assessed refresh | Accepted when the current task and loading behavior satisfy the guide |
+| Revoked access interrupts a flow for a documented safety reason | Accepted with prompt access protection and appropriate recovery evidence |
+| Code claims to skip a refresh, but dismissal and visible continuity were not exercised | Incomplete pending applicable evidence |
+
 ## Audit animation and image rendering
 
 Apply the authoritative [animation policy](../../../Guidelines/Swift/SwiftUI.md#animation) and [image-rendering policy](../../../Guidelines/Swift/SwiftUI.md#image-rendering) to changed components and directly affected consumers; do not expand the audit into unrelated screens.
+
+For motion, also apply the framework-independent [Animations guide](../../../Guidelines/Design/Animations.md), including in non-SwiftUI app and game interfaces. Exercise its applicable acceptance scenarios: inspect movement of the complete component and coordinated container resizing, entrance and exit direction and concealment, incoming and outgoing feedback, unchanged neighbours, and reversals before completion. Require normal-speed runtime observation; inspect intermediate frames when a defect is suspected. Record any intentional choreography or immediate feedback rationale. An unresolved violation of these experience requirements blocks audit completion even when animation modifiers or settled states appear correct; use the canonical guide to direct the correction.
 
 1. Identify each meaningful visual transition, its owner, and its intended animation or justified immediate feedback. Inspect stable view identity and transaction scope, including simultaneous changes and surrounding layout animations; an `.animation` modifier alone is not evidence of correct scope. Accept appropriate native feedback without additional animation.
 2. Verify reusable defaults without caller-added animation. Exercise enabled to disabled and disabled to enabled, ordinary presses, rapid reversals, and relevant show/hide behavior. Confirm enabled state, hit-testing, accessibility state, and action availability change immediately while appearance animates.
@@ -153,6 +176,10 @@ Use these scenario walkthroughs when evaluating the check:
 | Custom main-button style changes colors abruptly | Blocked until shared behavior is corrected or an intentional immediate transition is justified |
 | Shared style animates both directions; actions remain immediate | Accepted with runtime evidence, including ordinary presses and rapid reversals |
 | Appropriate native control already supplies feedback | Accepted without additional animation |
+| A button label arrives before its surface, or its container expands before the reveal starts | Blocked until the transition is coordinated |
+| An outgoing edge protrudes past the intended concealing field | Blocked until both directions preserve the boundary |
+| A new selection animates, but the old selection snaps back or an unchanged neighbour shifts | Blocked until outgoing feedback and surrounding stability satisfy the guide |
+| Rapid reversal continues smoothly to the latest state with stable neighbours | Accepted with applicable runtime evidence |
 | Animated thumbnail repeatedly processes a large original | Requires correction and relevant verification |
 | Prepared derivative preserves originals and rejects stale results | Accepted with applicable tests and interaction evidence |
 | Zero hitches recorded without actual interaction | Insufficient performance evidence; applicable verification remains blocked |

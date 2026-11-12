@@ -2,6 +2,8 @@
 
 Use official Apple documentation and Xcode's current SwiftUI skills for API-specific behavior. This guide captures stable project policy rather than reproducing the current SDK's API catalog.
 
+Apply [User Experience](../Design/UX.md) when changing task continuity, lifecycle-driven UI, automatic refreshes, or loading behavior. It defines when work and interruptions are warranted independently of the implementation framework.
+
 ## SwiftUI-first implementation
 
 Implement a SwiftUI application's UI with SwiftUI. Do not introduce or expand UIKit or AppKit UI code, view controllers, `UIViewRepresentable`, `UIViewControllerRepresentable`, `NSViewRepresentable`, `NSViewControllerRepresentable`, `UIHostingController`, `NSHostingController`, or equivalent bridges unless the required behavior cannot be implemented with public SwiftUI APIs on the supported deployment targets. A UIKit implementation being Apple-native does not satisfy this SwiftUI-first requirement.
@@ -117,6 +119,8 @@ Use these decisions when auditing an implementation:
 | Presentation with missing relevant runtime evidence | Blocked |
 
 ## Animation
+
+Apply [Animations](../Design/Animations.md) for coordinated movement, concealment boundaries, graceful reversal, and stable surroundings. Those observable requirements complement the implementation rules below.
 
 - Use native SwiftUI animation to make apps fluid rather than static. Apply it purposefully to buttons, transitions, interactions, selection, colors, and other visible state changes that benefit from feedback; do not animate every update or add motion for its own sake.
 - Prefer the default SwiftUI animation, using `withAnimation { ... }` or `.animation(.default, value: ...)`, unless the task prompt explicitly requests a specific animation. Prefer system-provided transitions and SF Symbol effects when they fit the interaction instead of recreating them with custom timing, curves, or rendering.
