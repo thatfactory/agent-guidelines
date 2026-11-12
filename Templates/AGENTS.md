@@ -30,6 +30,8 @@ Read only the guides relevant to the task:
 
 For an application that uses Redux, also read [Redux architecture](AgentGuidelines/Guidelines/Architecture/Redux.md).
 
+For app and game interface work, also read [User experience](AgentGuidelines/Guidelines/Design/UX.md) when changing task continuity, automatic work, or loading, and [Animations](AgentGuidelines/Guidelines/Design/Animations.md) when changing motion. Apply these experience requirements alongside the framework-specific implementation guide.
+
 For Codex pull-request review, use the linked review evidence rules. If authoritative repository-specific evidence establishes that automatic review is enabled, apply its current-head gate. If the executing agent cannot establish the setting, record it as `unknown`; this template does not establish that automatic review is configured.
 
 Keep the following observability contract in the consumer repository's root `AGENTS.md` so implementation agents treat runtime diagnostics as part of lifecycle work. Copy it unchanged and update it when the marker version changes in this template.

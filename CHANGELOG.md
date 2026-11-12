@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.51] - 2026-11-12
+
+### Added
+
+- Added focused Design guides for user experience and animations, defining task continuity, justified automatic work and loading, discarded opportunistic refreshes, coordinated movement, concealment, graceful reversal, and stable neighbouring controls.
+- Added framework-independent completion-audit coverage with observable acceptance scenarios, scoped runtime evidence, documentation-only walkthroughs, and concrete stopping rules for these experience requirements.
+
+### Changed
+
+- Linked the Design guides from SwiftUI, the consumer template, and the guideline catalog, retaining implementation and Reduce Motion policy in the SwiftUI guide.
+
 ## [0.0.50] - 2026-11-10
 
 ### Changed
