@@ -126,7 +126,7 @@ Use `always()` so a failed prerequisite produces a failed check instead of a ski
 ### New repository checklist
 
 1. Configure the review-policy validator and the `Review policy` check in CI. Verify the exact check name and GitHub Actions source on a representative pull request and on the current default-branch commit.
-2. Add the repository to the organization’s `Codex review policy` ruleset. It requires the GitHub Actions `Review policy` check on selected repositories. The organization’s `Default branch policy` provides the shared branch and pull-request protections.
+2. In the organization settings, open Repository → Custom properties → Set values and set `review_policy_enabled` to `true` for the repository. The property defaults to `false`, and organization actors with permission manage its values. The `Codex review policy` ruleset requires the GitHub Actions `Review policy` check when this property is enabled. The `Default branch policy` provides the shared branch and pull-request protections.
 3. Verify the default branch shows the inherited `Review policy` requirement in the repository’s rules settings. When migrating an existing repository, retire its old repository-level review rule only after the organization rule is effective and the replacement check is green on the default branch.
 
 ## Failure investigation
