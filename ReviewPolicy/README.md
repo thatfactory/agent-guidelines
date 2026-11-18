@@ -23,6 +23,8 @@ The validator resolves the highest published `codex-review-vN` tag once per invo
 
 A green CI run cannot invalidate itself when a later policy tag appears. The executor must rerun the latest-policy check immediately before merge. Publishing a policy revision includes a coordinated consumer rollout; CI never edits files, opens PRs, or merges updates itself. Keep consumer inventories and private repository names in the authorized local task, not in this public repository.
 
+Follow the [CI/CD setup checklist](../Guidelines/CICD.md#required-review-policy-check) to register a new repository with the organization ruleset.
+
 ## Publishing and bootstrapping
 
 Change the canonical contracts, increment the independent policy revision, synchronize mirrors, and validate through the central PR. Prepare the regular guidelines release metadata as usual. After the reviewed release commit is merged and validated, publish its normal guidelines tag/release, then create the immutable `codex-review-vN` tag at that same commit. Never move a published policy tag. Only policy changes need a new policy tag; all other guidelines releases retain the existing policy revision.
