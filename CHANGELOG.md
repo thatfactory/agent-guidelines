@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.52] - 2026-11-18
+
+### Added
+
+- Documented the `Review policy` check with a GitHub Actions example and a checklist for enrolling new repositories in the organization ruleset.
+
+### Changed
+
+- Standardized review-policy guidance on one required check that depends on the published policy validator and the repository's existing CI jobs.
+
 ## [0.0.51] - 2026-11-12
 
 ### Added
