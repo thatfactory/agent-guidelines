@@ -99,6 +99,36 @@ Xcode projects and Swift packages must run on self-hosted macOS runners with the
 
 Validation of merges to `main` should live in `.github/workflows/ci.yml`, triggered by `push` on `main`. Use the same build, test, lint, and platform coverage as pull-request validation unless the repository documents a deliberate difference.
 
+## Required Review policy check
+
+Publish one GitHub Actions check named `Review policy` for every pull request to the default branch and every push to the default branch. Keep workflow-level path filters off the workflow that reports it so documentation-only and other small changes still receive the required check.
+
+Run the [published policy validator](../ReviewPolicy/README.md#ci-and-freshness) alongside the repository's existing lint, test, and build jobs. A repository whose only validation is the policy validator can name that job `Review policy`. For workflows with multiple CI jobs, give the aggregate job this name and list every prerequisite by job ID, including the job that runs the policy validator. Keep the individual jobs visible in CI.
+
+```yaml
+jobs:
+  # Define validate-policy and test above this job.
+  review-policy:
+    name: Review policy
+    needs: [validate-policy, test]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Require CI to pass
+        env:
+          CI_PASSED: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}
+        run: test "$CI_PASSED" = true
+```
+
+Use `always()` so a failed prerequisite produces a failed check instead of a skipped check that GitHub can accept. Keep repository-specific fork handling explicit and follow the [runner trust boundary](#private-repository-dependencies) for any job that executes pull-request code. Publish the check from both workflows if pull-request and default-branch CI use separate files.
+
+### New repository checklist
+
+1. Configure the review-policy validator and the `Review policy` check in CI. Verify the exact check name and GitHub Actions source on a representative pull request and on the current default-branch commit.
+2. Add the repository to the organization’s `Codex review policy` ruleset. It requires the GitHub Actions `Review policy` check on selected repositories. The organization’s `Default branch policy` provides the shared branch and pull-request protections.
+3. Verify the default branch shows the inherited `Review policy` requirement in the repository’s rules settings. When migrating an existing repository, retire its old repository-level review rule only after the organization rule is effective and the replacement check is green on the default branch.
+
 ## Failure investigation
 
 1. Use GitHub MCP connector tools to inspect check runs and logs for the failing commit or pull request.
