@@ -89,6 +89,13 @@ When reviewing a consumer pull request, do not review or comment on files under 
 - Consumer repositories adopt releases deliberately through Git subtree updates.
 - Follow [the pull-request review workflow](Guidelines/GitHub/PullRequests.md) before merging any release change.
 
+## Post-merge cleanup
+
+1. Read the applicable repository instructions and inspect the working tree. Make a focused change, review the diff, and run the relevant local checks.
+2. For pull requests, follow the managed Pull Request Lifecycle below. Merge and publish only within the task or standing repository authorization and after the applicable checks pass.
+3. After a merge, verify the merge commit and post-merge CI. For a direct push, verify that the intended commit reached the remote default branch. When the task includes a release, verify publication on the applicable registry or release channel.
+4. Before closing the task, return the original checkout to the default branch, fast-forward it from its upstream, and prune stale remote-tracking refs. Remove only task branches confirmed merged. For a squash merge, verify that the local branch tip matches the final head of the merged PR. Confirm remote branch removal when GitHub is configured to delete merged branches. Preserve unrelated work. If the checkout is dirty, another worktree uses the branch, or the default branch cannot fast-forward, stop the affected cleanup and report the blocker.
+
 ## Repository review configuration
 
 Automatic Codex PR review is enabled. Use all PR authors and the opening/ready trigger, keep exhaustive review off, and keep separate Security Review manual. Apply the managed lifecycle and [review-policy integration](ReviewPolicy/README.md).
