@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.0.53] - 2026-11-19
+
+### Added
+
+- Documented opt-in automatic internal TestFlight delivery from a protected default branch, exact-commit delivery verification, and explicit external promotion of eligible Xcode Cloud builds.
+- Defined when to require App Review sign-in and how the completion audit verifies production and external TestFlight review records independently.
+
 ## [0.0.52] - 2026-11-18
 
 ### Added
