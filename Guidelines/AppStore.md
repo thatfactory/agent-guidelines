@@ -21,6 +21,19 @@ Omission means unmanaged. Add only fields and domains the project intends to rec
 
 Ordinary metadata, screenshot, commerce, provisioning, or signing synchronization does not authorize submitting a version for review or releasing it. Use the MCP's explicit readiness and submission workflow only when the owner has separately placed submission in scope.
 
+## App Review sign-in
+
+Leave **Sign-in required** off by default. Set `"demoAccountRequired": false` explicitly in each managed review record when reviewers can access the features under review without signing in to an app account. Check reviewer access on each supported platform. An app that uses the device's existing iCloud account can qualify if reviewers can complete the review with that system setup and no separate app login. Explain device settings, account prerequisites, and review steps in `review-notes.txt`. Required federated login counts as app sign-in when it signs the reviewer into an app account.
+
+When review requires app sign-in, set `"demoAccountRequired": true` and document the exception in the consumer's App Store documentation. Record why sign-in is needed, the affected platforms, review records and features, and how reviewers get full access. Provide working demo credentials through the MCP's supported [environment-variable references](#credentials-and-operational-state) and describe the steps in the notes. If legal or security obligations prevent providing credentials, obtain Apple's prior approval for a fully featured built-in demo mode and document the approved access path. Set the flag according to whether that review path requires sign-in. Keep credential and private contact values out of version control, diffs, logs, and audit evidence. [Apple App Review Guidelines §2.1](https://developer.apple.com/app-store/review/guidelines/#app-completeness)
+
+Manage and verify these records independently. Each can have an adjacent `review-notes.txt`.
+
+- **Production App Review Information** is scoped to the app, platform, and version. Use `AppStore/versions/<platform>/<version>/review.json`. [Apple's platform version information](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/) · [MCP AppStore directory format](https://github.com/thatfactory/app-store-connect-mcp/blob/main/Documentation/AppStore-Format.md)
+- **TestFlight Beta App Review** uses the app-wide `AppStore/testflight/review.json` when the project manages that record for external testing. Check that its instructions cover each platform under review. [MCP TestFlight directory format](https://github.com/thatfactory/app-store-connect-mcp/blob/main/Documentation/TestFlight.md)
+
+An explicit `false` removes the requirement to provide demo sign-in credentials. Keep other applicable review fields and instructions. External TestFlight still needs the applicable beta test information, including the beta app description and feedback email, and the required beta review information. Internal-only delivery is independent of external beta review setup. [Apple's TestFlight test information requirements](https://developer.apple.com/help/app-store-connect/test-a-beta-version/provide-test-information) · [Xcode Cloud delivery to TestFlight](CICD.md#xcode-cloud-delivery-to-testflight)
+
 ## Accessibility support claims
 
 Before adding or retaining a Reduced Motion support declaration, apply the shared [Reduce Motion support evaluation](Swift/SwiftUI.md#declaring-support). Keep the platform-specific consumer evidence current; adopting these guidelines alone does not establish support. Include any requested metadata change in the inspected synchronization plan above rather than inferring publication authority from a policy or implementation change.
